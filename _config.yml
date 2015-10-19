@@ -1,29 +1,29 @@
 # Site settings
-title: Hux Blog
-SEOTitle: 黄玄的博客 | Hux Blog
+title: Maru Blog
+SEOTitle: 张斌辉的博客 | Maru Blog
 header-img: img/home-bg.jpg
-email: huxpro@gmail.com
-description: "关于前端与设计、黑客与画家 | 黄玄，Web & Mobile Lover，Front-End Engineer，UX Designer | 这里是 @Hux黄玄 的个人博客，与你一起发现更大的世界。"
-keyword: "黄玄, Hux黄玄, Hux, 鬼栈, huxpro, @huxpro, 黄玄的博客, Hux Blog, 博客, 个人网站, 互联网, 前端, 设计, 产品, 肖玉, Lynn, 肖玉的男朋友"
-url: "http://huangxuan.me"
+email: 475435200@qq.com
+description: "密集恐惧患者、选择恐惧缓则、人际恐惧患者"
+keyword: "keyword"
+url: ""
 baseurl: ""
 
 
 
 # SNS settings
 RSS: false
-weibo_username:     huxpro
-zhihu_username:     huxpro
-github_username:    huxpro
+weibo_username:     Maru
+# zhihu_username:     Maru
+github_username:    Maru
 #twitter_username:  huxpro
-facebook_username:  huxpro
+# facebook_username:  Maru
 
 
 
 # Build settings
 highlighter: pygments
 permalink: pretty
-paginate: 10
+paginate: 8
 exclude: ["less","node_modules","Gruntfile.js","package.json","README.md"]
 anchorjs: true                          # if you want to customize anchor. check out line:181 of `post.html`
 
@@ -40,7 +40,7 @@ kramdown:
 
 
 # Duoshuo settings
-duoshuo_username: huxblog
+duoshuo_username: MaruBlog
 # Share component is depend on Comment so we can NOT use share only.
 duoshuo_share: true                     # set to false if you want to use Comment without Sharing
 
@@ -52,14 +52,14 @@ duoshuo_share: true                     # set to false if you want to use Commen
 ba_track_id: 4cc1f2d8f3067386cc5cdb626a202900
 # Google Analytics
 ga_track_id: 'UA-49627206-1'            # Format: UA-xxxxxx-xx
-ga_domain: huangxuan.me
+ga_domain: 
 
 
 
 # Sidebar settings
-sidebar: true                           # whether or not using Sidebar.
-sidebar-about-description: "写写代码，做做设计，看看产品。世界那么大，多玩玩看看。"
-sidebar-avatar: /img/avatar-hux.jpg     # use absolute URL.
+# sidebar: true                           # whether or not using Sidebar.
+# sidebar-about-description: "不过是极客世界里的一颗沙粒,喜欢那么酷炫的技术，喜欢这个五彩的世界"
+# sidebar-avatar: /img/blog_me.jpg     # use absolute URL.
 
 
 
@@ -72,16 +72,11 @@ featured-condition-size: 1              # A tag will be featured if the size of 
 # Friends
 friends: [
     {
-        title: "天镶的博客",
-        href: "http://lingyu.wang/"
-    },{
-        title: "Luke的自留地",
-        href: "http://hmqk1995.github.io"
-    },{
-        title: "SmdCn's Blog",
-        href: "http://blog.smdcn.net"
-    },{
-        title: "解旻的博客",
-        href: "http://xieminis.me/"
+        title: "Ivy的博客",
+        href: "http://laichanwai.github.io/"
+    },
+    {
+        title: "Fay的博客",
+        href: "http://www.cnblogs.com/aeronfay"
     }
 ]
