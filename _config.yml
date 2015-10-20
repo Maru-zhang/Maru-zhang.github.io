@@ -3,8 +3,8 @@ title: Maru Blog
 SEOTitle: 张斌辉的博客 | Maru Blog
 header-img: img/home-bg.jpg
 email: 475435200@qq.com
-description: "密集恐惧患者、选择恐惧缓则、人际恐惧患者"
-keyword: "keyword"
+description: "密集恐惧患者、选择恐惧患者、人际恐惧患者"
+keyword: "Maru-zhang，Maru Blog，张斌辉"
 url: ""
 baseurl: ""
 
@@ -12,10 +12,10 @@ baseurl: ""
 
 # SNS settings
 RSS: false
-weibo_username:     Maru
+weibo_username:     教主桑麻
 # zhihu_username:     Maru
-github_username:    Maru
-#twitter_username:  huxpro
+github_username:    Maru-zhang
+#twitter_username:  
 # facebook_username:  Maru
 
 
@@ -40,7 +40,7 @@ kramdown:
 
 
 # Duoshuo settings
-duoshuo_username: MaruBlog
+duoshuo_username: Maru Blog
 # Share component is depend on Comment so we can NOT use share only.
 duoshuo_share: true                     # set to false if you want to use Comment without Sharing
 
@@ -57,7 +57,7 @@ ga_domain:
 
 
 # Sidebar settings
-# sidebar: true                           # whether or not using Sidebar.
+sidebar: false                           # whether or not using Sidebar.
 # sidebar-about-description: "不过是极客世界里的一颗沙粒,喜欢那么酷炫的技术，喜欢这个五彩的世界"
 # sidebar-avatar: /img/blog_me.jpg     # use absolute URL.
 
