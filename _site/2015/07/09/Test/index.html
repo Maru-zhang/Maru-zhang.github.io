@@ -128,45 +128,36 @@
 
     <!-- Image to hack wechat -->
 <!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
-<!-- <img src="/img/post-bg-js-version.jpg" width="0" height="0"> -->
+<!-- <img src="/img/post-bg-01.jpg" width="0" height="0"> -->
 
 <!-- Post Header -->
 <style type="text/css">
     header.intro-header{
-        /*background-image: url('/img/post-bg-js-version.jpg')*/
-        height: 500px;
-        overflow: hidden;
-    }
-    header iframe{
-        width: 100%;
-        height: 100%;
-        border: 0;
+        background-image: url('/img/post-bg-01.jpg')
     }
 </style>
 <header class="intro-header" >
-    <iframe src="http://huangxuan.me/js-module-7day/"/>
-        <div class="container">
-            <div class="row">
-                <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-                    <div class="post-heading">
-                        <div class="tags">
-                            
-                            <a class="tag" href="/tags/#iOS" title="iOS">iOS</a>
-                            
-                            <a class="tag" href="/tags/#Objc" title="Objc">Objc</a>
-                            
-                        </div>
-                        <h1>iOS开发Delegate,Notification,Block使用心得</h1>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
                         
+                        <a class="tag" href="/tags/#iOS" title="iOS">iOS</a>
                         
-                        <h2 class="subheading">Keynote: JavaScript Modularization Seven Day</h2>
+                        <a class="tag" href="/tags/#Objc" title="Objc">Objc</a>
                         
-                        <span class="meta">Posted by Hux on July 9, 2015</span>
                     </div>
+                    <h1>iOS开发Delegate,Notification,Block使用心得</h1>
+                    
+                    
+                    <h2 class="subheading"></h2>
+                    
+                    <span class="meta">Posted by Maru on July 9, 2015</span>
                 </div>
             </div>
         </div>
-    </iframe>
+    </div>
 </header>
 
 <!-- Post Content -->
@@ -174,10 +165,11 @@
     <div class="container">
         <div class="row">
 
-            <!-- Post Container -->
-            <div class="post-container
+    <!-- Post Container -->
+            <div class="
                 col-lg-8 col-lg-offset-2
-                col-md-10 col-md-offset-1 ">
+                col-md-10 col-md-offset-1
+                post-container">
 
 				<p>##（一）简要介绍<br />
 &gt;###1.Delegate(代理、委托)<br />
@@ -335,12 +327,13 @@ dispatch_async(dispatch_get_main_queue(), &lt;^(void)block&gt;)，在block中写
                 </style>
                 <div class="ds-share"
                     style="text-align: right"
-                    data-thread-key="/2015/07/09/Test" data-title="iOS开发Delegate,Notification,Block使用心得"
-                    data-images="/img/post-bg-js-version.jpg"
+                    data-thread-key="/2015/07/09/Test"
+                    data-title="iOS开发Delegate,Notification,Block使用心得"
+                    data-url="/2015/07/09/Test/"
+                    data-images="/img/post-bg-01.jpg"
                     data-content="##（一）简要介绍
 &gt;###1.Delegate(代理、委托)
-####代理几乎是iOS开发中最常用的传值方式，在项目中的AppDelegate就是... | Hux Blog，@Hux黄玄 的个人博客"
-                    data-url="/2015/07/09/Test/">
+####代理几乎是iOS开发中最常用的传值方式，在项目中的AppDelegate就是... | 张斌辉的博客 | Maru Blog " >
                     <div class="ds-share-inline">
                       <ul  class="ds-share-icons-16">
                         <li data-toggle="ds-share-icons-more"><a class="ds-more" href="#">分享到：</a></li>
@@ -353,7 +346,7 @@ dispatch_async(dispatch_get_main_queue(), &lt;^(void)block&gt;)，在block中写
                     </div>
                 <hr>
                 </div>
-                <!-- 多少 Share end-->
+                <!-- 多说 Share end-->
                 
 
 
@@ -364,12 +357,24 @@ dispatch_async(dispatch_get_main_queue(), &lt;^(void)block&gt;)，在block中写
 
 
                 
+                <!-- 多说评论框 start -->
+                <div class="comment">
+                    <div class="ds-thread"
+                        data-thread-key="/2015/07/09/Test"
+                        data-title="iOS开发Delegate,Notification,Block使用心得"
+                        data-url="/2015/07/09/Test/" >
+                    </div>
+                </div>
+                <!-- 多说评论框 end -->
+                
+
             </div>
 
-            <!-- Sidebar Container -->
-            <div class="sidebar-container
+    <!-- Sidebar Container -->
+            <div class="
                 col-lg-8 col-lg-offset-2
-                col-md-10 col-md-offset-1 ">
+                col-md-10 col-md-offset-1
+                sidebar-container">
 
                 <!-- Featured Tags -->
                 
@@ -377,12 +382,12 @@ dispatch_async(dispatch_get_main_queue(), &lt;^(void)block&gt;)，在block中写
                     <hr class="hidden-sm hidden-xs">
                     <h5><a href="/tags/">FEATURED TAGS</a></h5>
                     <div class="tags">
-                        
+        				
                             
-                        
+        				
                             
-                        
-                    </div>
+        				
+        			</div>
                 </section>
                 
 
@@ -403,32 +408,9 @@ dispatch_async(dispatch_get_main_queue(), &lt;^(void)block&gt;)，在block中写
     </div>
 </article>
 
-<!-- resize header to fullscreen keynotes -->
-<script>
-    var $header = document.getElementsByTagName("header")[0];
-    function resize(){
-        /*
-         * leave 85px to both
-         * - told/imply users that there has more content below
-         * - let user can scroll in mobile device, seeing the keynote-view is unscrollable
-         */
-        $header.style.height = (window.innerHeight-85) + 'px';
-    }
-    document.addEventListener('DOMContentLoaded', function(){
-        resize();
-    })
-    window.addEventListener('load', function(){
-        resize();
-    })
-    window.addEventListener('resize', function(){
-        resize();
-    })
-    resize();
-</script>
-
 
 <!-- Duoshuo hacking -->
-<input id="dsUser" type="hidden" value="MaruBlog"  />
+<input id="dsUser" type="hidden" value="maru"  />
 
 <!-- 多说公共JS代码 start (一个网页只需插入一次) -->
 <script type="text/javascript">
@@ -586,46 +568,8 @@ dispatch_async(dispatch_get_main_queue(), &lt;^(void)block&gt;)，在block中写
 
 
 
-<!-- GA hacking -->
-<input id="gaId" type="hidden" value="UA-49627206-1"  />
-<input id="gaDomain" type="hidden" value=""  />
-
-<!-- Google Analytics -->
-<script>
-    // dynamic User hacking by Hux
-    var _gaId = document.getElementById('gaId').value;
-    var _gaDomain = document.getElementById('gaDomain').value;
-
-    // Originial
-    (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-    m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-    })(window,document,'script','//www.google-analytics.com/analytics.js','ga');
-
-    ga('create', _gaId, _gaDomain);
-    ga('send', 'pageview');
-</script>
 
 
-
-
-<!-- BT hacking -->
-<input id="baId" type="hidden" value="4cc1f2d8f3067386cc5cdb626a202900"  />
-
-<!-- Baidu Tongji -->
-<script>
-    // dynamic User hacking by Hux
-    var _baId = document.getElementById('baId').value;
-
-    // Originial
-    var _hmt = _hmt || [];
-    (function() {
-      var hm = document.createElement("script");
-      hm.src = "//hm.baidu.com/hm.js?" + _baId;
-      var s = document.getElementsByTagName("script")[0];
-      s.parentNode.insertBefore(hm, s);
-    })();
-</script>
 
 
 

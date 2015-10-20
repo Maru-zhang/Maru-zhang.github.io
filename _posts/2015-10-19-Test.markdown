@@ -1,11 +1,11 @@
 ---
-layout:     keynote
+layout:     post
 title:      "iOS开发Delegate,Notification,Block使用心得"
-subtitle:   "Keynote: JavaScript Modularization Seven Day"
+subtitle:   ""
 iframe:     "http://huangxuan.me/js-module-7day/"
 date:       2015-07-09
-author:     "Hux"
-header-img: "img/post-bg-js-version.jpg"
+author:     "Maru"
+header-img: "img/post-bg-01.jpg"
 tags:
     - iOS
     - Objc
