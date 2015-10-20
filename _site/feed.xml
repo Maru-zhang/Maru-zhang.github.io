@@ -5,18 +5,98 @@
     <description>密集恐惧患者、选择恐惧患者、人际恐惧患者</description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Tue, 20 Oct 2015 20:21:05 +0800</pubDate>
-    <lastBuildDate>Tue, 20 Oct 2015 20:21:05 +0800</lastBuildDate>
+    <pubDate>Tue, 20 Oct 2015 21:06:30 +0800</pubDate>
+    <lastBuildDate>Tue, 20 Oct 2015 21:06:30 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
+    
+      <item>
+        <title>开发中遇到的那些莫名其妙的坑-第一弹</title>
+        <description>&lt;h1 id=&quot;ios&quot;&gt;iOS开发中遇到的那些莫名其妙的坑&lt;/h1&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;写在前面的话：在苦逼的iOS开发过程中，总会碰到各种各样莫名其妙的问题，有的时候由于Apple官方的限制，有的时候又由于技术因素，总会有各种各样的问题困扰着自己。所以我决定把一些让我很生气的坑记录下来，留作纪念和参考，不定时更新。&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;1.AVAudioRecorder的Duration问题&lt;/p&gt;
+
+&lt;p&gt;在进行Yinner的开发过程中，用到了系统原生的AVAudioRecorder类来进行真机录音，模拟器上调用&lt;code&gt;- (BOOL)recordForDuration:(NSTimeInterval) duration;&lt;/code&gt;的时候完全没有问题，监听录音完成的代理也可以通过代理方法检测到。然而奇怪的是当使用真机的时候代理方法完全没有响应，通过断点最后定位到这一句代码。最后换了一种思路，利用NSNotificationCenter来控制和监听录音的始末动作。&lt;/p&gt;
+
+&lt;p&gt;2.AVAudioRecorder的真机测试无声问题&lt;/p&gt;
+
+&lt;p&gt;在进行Yinner的开发过程中，利用原生的AVAudioRecorder进行音频录制并且合成视频。然而，在模拟器上完全没有问题的代码，在进行真机测试的时候就发现变成了“无声电影”。经过查找，发现原因是没有激活真机的硬件音频会话层，官方解释如下：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Checks to see if calling process has permission to record audio.  The ‘response’ block will be called immediately if permission has already been granted or denied.  Otherwise, it presents a dialog to notify the user and allow them to choose, and calls the block once the UI has been dismissed.  ‘granted’ indicates whether permission has been granted.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;因此只需要添加如下代码，激活会话层即可。&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;no&quot;&gt;AVAudioSession&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;session&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;AVAudioSession&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;sharedInstance&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;no&quot;&gt;NSError&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sessionError&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;session&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;setCategory&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;AVAudioSessionCategoryPlayAndRecord&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;&amp;amp;&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sessionError&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;；&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;session&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;
+        &lt;span class=&quot;no&quot;&gt;NSLog&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;@&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;Error creating session: %@&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;sessionError&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;description&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;else&lt;/span&gt;
+        &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;session&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;setActive&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;YES&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;error&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;3.UIGestureRecognizer重用的无效问题&lt;/p&gt;
+
+&lt;p&gt;这是最近在进行Yinner侧滑开发的过程中遇到的一个小问题。在侧滑菜单打开和关闭的时候要用到相同的UIGestureRecognizer对象和一个相同的方法- (void)onPanGuestureRecginizer:(UIPanGestureRecognizer *)pan。而在主界面侧滑缩放以后，需要给主界面添加一个蒙版遮罩，以突出侧滑菜单的重点。这样的情况就是，侧滑菜单在打开的时候主界面需要一个Pan手势，而在侧滑菜单缩放回去的时候主菜单上面的蒙版图层又需要另外一个Pan手势，并且这两个手势所调用的方法是同一个因此，我自作聪明，将这个手势对象设置为全局变量，在侧滑菜单出现后给蒙版也使用addGestureRecognizer方法添加同一个手势对象。这样所造成的问题是，当侧滑菜单消失后，主界面的蒙版也随之消失，而这一个手势对象只能添加在一个VIew中，因此，主界面原来的手势就消失了，导致莫名其妙的手势方法不进入的问题。真是蠢= =。&lt;/p&gt;
+
+&lt;p&gt;4.Navgation下的UITableView存在偏移的解决方法&lt;/p&gt;
+
+&lt;p&gt;最近在开发中遇到一个小问题，当一个UITableview嵌套在一个NavgationController上的时候，会发现，明明Tableview的frame以及其他的各项设置没有问题，但是显示的时候还是会存在TableView的向下偏移。后来发现，这个是ios7开始有的一个新的属性，目的是，如果视图中存在唯一一个scrollView，那么它会设置相应的内边距，这样可以占据整个视图。所以只需要把UITableView的automaticallyAdjustsScrollViewInsets属性设置为NO，就能解决这个问题。&lt;/p&gt;
+
+&lt;p&gt;5.iOS中两种退出触摸键盘的简单方法&lt;/p&gt;
+
+&lt;p&gt;比较常用的一种键盘失焦的方法是令UITextfiled对象调用resignFirstResponder。然而这个方法有一定的局限性，如果界面中存在多个UITextFiled输入框，那么你如果想要退出键盘你就需要多次调用上面的方法，这样会显得非常的繁琐。因此，可以的使用如下的方法。&lt;/p&gt;
+
+&lt;p&gt;第一种方法&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;o&quot;&gt;[[[&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;UIApplication&lt;/span&gt;
+ &lt;span class=&quot;n&quot;&gt;sharedApplication&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;keyWindow&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;endEditing&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;YES&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+&lt;p&gt;第二种方法&lt;/p&gt;
+
+&lt;div class=&quot;highlight&quot;&gt;&lt;pre&gt;&lt;code class=&quot;language-ruby&quot; data-lang=&quot;ruby&quot;&gt;&lt;span class=&quot;o&quot;&gt;[[&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;findFirstResponderBeneathView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;resignFirstResponder&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+ 
+&lt;span class=&quot;o&quot;&gt;-&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;UIView&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;ss&quot;&gt;findFirstResponderBeneathView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:(&lt;/span&gt;&lt;span class=&quot;no&quot;&gt;UIView&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;view&lt;/span&gt; 
+&lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+    &lt;span class=&quot;sr&quot;&gt;//&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;Search&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;recursively&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;first&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;responder&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;for&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;UIView&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;childView&lt;/span&gt; &lt;span class=&quot;k&quot;&gt;in&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;view&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;subviews&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;childView&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;respondsToSelector&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;vi&quot;&gt;@selector&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;isFirstResponder&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;&amp;amp;&amp;amp;&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;childView&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;isFirstResponder&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; 
+            &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;childView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;no&quot;&gt;UIView&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;*&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;[&lt;/span&gt;&lt;span class=&quot;nb&quot;&gt;self&lt;/span&gt; &lt;span class=&quot;ss&quot;&gt;findFirstResponderBeneathView&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;:&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;childView&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;]&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+        &lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; 
+            &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;result&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+    &lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
+    &lt;span class=&quot;k&quot;&gt;return&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;nil&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
+&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;/code&gt;&lt;/pre&gt;&lt;/div&gt;
+
+</description>
+        <pubDate>Tue, 20 Oct 2015 00:58:00 +0800</pubDate>
+        <link>/2015/10/20/Something-trouble-in-development-1/</link>
+        <guid isPermaLink="true">/2015/10/20/Something-trouble-in-development-1/</guid>
+        
+        <category>iOS</category>
+        
+        
+      </item>
     
       <item>
         <title>iOS开发Delegate,Notification,Block使用心得</title>
         <description>&lt;h2 id=&quot;section&quot;&gt;（一）简要介绍&lt;/h2&gt;
-&lt;p&gt;### 1.Delegate(代理、委托)&lt;br /&gt;
-#### 代理几乎是iOS开发中最常用的传值方式，在项目中的AppDelegate就是使用的这种设计模式，不仅如此，还有很多原生的控件也使用的这种设计模式，比如：UITextFiled，UITableView等等。官方给出的解释如下：&lt;br /&gt;
-&amp;gt; Delegation is a simple and powerful pattern in which one object in a program				1	 acts on behalf of, or in coordination with, another object. The delegating object keeps a reference to the other object—the delegate—and at the appropriate time sends a message to it. The message informs the delegate of an event that the delegating object is about to handle or has just handled. The delegate may respond to the message by updating the appearance or state of itself or other objects in the application, and in some cases it can return a value that affects how an impending event is handled. The main value of delegation is that it allows you to easily customize the behavior of several objects in one central object.&lt;br /&gt;
-####具体使用方法不再示例（网上关于Delegate基础使用的博文数不胜数&lt;a href=&quot;http://www.2cto.com/kf/201307/229082.html&quot;&gt;示例&lt;/a&gt;），主要总结一下Delegate的优点和缺陷。&lt;br /&gt;
-优点：&lt;br /&gt;
+
+&lt;p&gt;1.Delegate(代理、委托)&lt;br /&gt;
+ 代理几乎是iOS开发中最常用的传值方式，在项目中的AppDelegate就是使用的这种设计模式，不仅如此，还有很多原生的控件也使用的这种设计模式，比如：UITextFiled，UITableView等等。官方给出的解释如下：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;Delegation is a simple and powerful pattern in which one object in a program				1	 acts on behalf of, or in coordination with, another object. The delegating object keeps a reference to the other object—the delegate—and at the appropriate time sends a message to it. The message informs the delegate of an event that the delegating object is about to handle or has just handled. The delegate may respond to the message by updating the appearance or state of itself or other objects in the application, and in some cases it can return a value that affects how an impending event is handled. The main value of delegation is that it allows you to easily customize the behavior of several objects in one central object.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;p&gt;具体使用方法不再示例（网上关于Delegate基础使用的博文数不胜数&lt;a href=&quot;http://www.2cto.com/kf/201307/229082.html&quot;&gt;示例&lt;/a&gt;），主要总结一下Delegate的优点和缺陷。&lt;/p&gt;
+
+&lt;p&gt;优点：&lt;br /&gt;
 1.减少代码的耦合性，使事件监听和事件处理相分离。&lt;br /&gt;
 2.清晰的语法定义，减少维护成本，较强的代码可读性。&lt;br /&gt;
 3.不需要创建第三方来监听事件和传输数据。&lt;br /&gt;
@@ -27,9 +107,12 @@
 2.当实现跨层传值监听的时候将加大代码的耦合性，并且程序的层次结构将变的混乱。&lt;br /&gt;
 3.当对多个对象同时传值响应的时候，委托的易用性将大大降低。&lt;/p&gt;
 
-&lt;p&gt;###2.NotificationCenter（通知）&lt;br /&gt;
-####通知也是iOS开发中常用的一种传值响应方法，例如在AVFoundation框架中的MPMoviePlayerController在监听播放状态改变，播放停止等事件时使用的也正是NotificationCenter。官方给出的解释如下：&lt;br /&gt;
-&amp;gt;An NSNotificationCenter object (or simply, notification center) provides a mechanism for broadcasting information within a program. An NSNotificationCenter object is essentially a notification dispatch table.&lt;/p&gt;
+&lt;p&gt;2.NotificationCenter（通知）&lt;br /&gt;
+通知也是iOS开发中常用的一种传值响应方法，例如在AVFoundation框架中的MPMoviePlayerController在监听播放状态改变，播放停止等事件时使用的也正是NotificationCenter。官方给出的解释如下：&lt;/p&gt;
+
+&lt;blockquote&gt;
+  &lt;p&gt;An NSNotificationCenter object (or simply, notification center) provides a mechanism for broadcasting information within a program. An NSNotificationCenter object is essentially a notification dispatch table.&lt;/p&gt;
+&lt;/blockquote&gt;
 
 &lt;blockquote&gt;
   &lt;p&gt;Objects register with a notification center to receive notifications (NSNotification objects) using the addObserver:selector:name:object: or addObserverForName:object:queue:usingBlock: methods. Each invocation of this method specifies a set of notifications. Therefore, objects may register as observers of different notification sets by calling these methods several times.&lt;/p&gt;
@@ -39,8 +122,9 @@
   &lt;p&gt;Each running Cocoa program has a default notification center. You typically don’t create your own. An NSNotificationCenter object can deliver notifications only within a single program. If you want to post a notification to other processes or receive notifications from other processes, use an instance of NSDistributedNotificationCenter.&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;####NSNotification采用的单例设计模式，当给通知中心注册一个key以后，那么无论在什么地方只要给通知中心发送一个这个key的消息，那么就实现了通信传值，注册的通知的对象就会调用相应的方法。&lt;br /&gt;
-优点：&lt;br /&gt;
+&lt;p&gt;NSNotification采用的单例设计模式，当给通知中心注册一个key以后，那么无论在什么地方只要给通知中心发送一个这个key的消息，那么就实现了通信传值，注册的通知的对象就会调用相应的方法。&lt;/p&gt;
+
+&lt;p&gt;优点：&lt;br /&gt;
 1.使用简单，代码精简。&lt;br /&gt;
 2.解决了同时向多个对象监听相应的问题。&lt;br /&gt;
 3.传值方便快捷，Context自身携带相应的内容。&lt;br /&gt;
@@ -51,16 +135,16 @@
 4.当使用者向通知中心发送通知的时候，并不能获得任何反馈信息。&lt;br /&gt;
 5.需要一个第三方的对象来做监听者与被监听者的中介。&lt;/p&gt;
 
-&lt;p&gt;###3.Block（代码块）&lt;br /&gt;
-####Block是iOS4.0+ 和Mac OS X 10.6+ 引进的对C语言的扩展，用来实现匿名函数的特性。苹果官方对于Block的解释也是十分的简洁：&lt;br /&gt;
-&amp;gt;A block is an anonymous inline collection of code, and sometimes also called a “closure”.&lt;/p&gt;
+&lt;p&gt;3.Block（代码块）&lt;br /&gt;
+Block是iOS4.0+ 和Mac OS X 10.6+ 引进的对C语言的扩展，用来实现匿名函数的特性。苹果官方对于Block的解释也是十分的简洁：&lt;/p&gt;
 
 &lt;blockquote&gt;
-  &lt;p&gt;Blocks are a powerful C-language feature that is part of Cocoa application development. They are similar to “closures” and “lambdas” you may find in scripting and programming languages such as Ruby, Python, and Lisp. Although the syntax and storage details of blocks might at first glance seem cryptic, you’ll find that it’s actually quite easy to incorporate blocks into your projects’ code.&lt;br /&gt;
-####翻译过来就是，闭包是一个能够访问其他函数内部变量的函数。Block的使用在这里也不在赘述（&lt;a href=&quot;http://blog.csdn.net/totogo2010/article/details/7839061&quot;&gt;不知道的同学可以点这个链接，我觉得写的很详细&lt;/a&gt;）。不论是原生的框架还是第三方的框架，我们都可以看到Block的身影，Block强大的功能性和易用性使得深受架构师的喜爱。&lt;/p&gt;
+  &lt;p&gt;A block is an anonymous inline collection of code, and sometimes also called a “closure”.Blocks are a powerful C-language feature that is part of Cocoa application development. They are similar to “closures” and “lambdas” you may find in scripting and programming languages such as Ruby, Python, and Lisp. Although the syntax and storage details of blocks might at first glance seem cryptic, you’ll find that it’s actually quite easy to incorporate blocks into your projects’ code.&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;p&gt;####官方也有一篇简短的指导文档,有兴趣的同学可以看一下（&lt;a href=&quot;https://developer.apple.com/library/ios/featuredarticles/Short_Practical_Guide_Blocks/index.html&quot;&gt;官方指导&lt;/a&gt;）。值得注意的是，在这份文档中也提到了几种Block的使用场合。&lt;/p&gt;
+&lt;p&gt;翻译过来就是，闭包是一个能够访问其他函数内部变量的函数。Block的使用在这里也不在赘述（&lt;a href=&quot;http://blog.csdn.net/totogo2010/article/details/7839061&quot;&gt;不知道的同学可以点这个链接，我觉得写的很详细&lt;/a&gt;）。不论是原生的框架还是第三方的框架，我们都可以看到Block的身影，Block强大的功能性和易用性使得深受架构师的喜爱。&lt;/p&gt;
+
+&lt;p&gt;官方也有一篇简短的指导文档,有兴趣的同学可以看一下（&lt;a href=&quot;https://developer.apple.com/library/ios/featuredarticles/Short_Practical_Guide_Blocks/index.html&quot;&gt;官方指导&lt;/a&gt;）。值得注意的是，在这份文档中也提到了几种Block的使用场合。&lt;/p&gt;
 
 &lt;ul&gt;
   &lt;li&gt;任务完成时回调处理&lt;/li&gt;
@@ -80,306 +164,48 @@
 1.Block中得代码将自动进行一次retain操作，容易造成内存泄露。&lt;br /&gt;
 2.Block内默认引用为强引用，容易造成循环引用。&lt;/p&gt;
 
-&lt;p&gt;##（二）注意事项&lt;/p&gt;
+&lt;h2 id=&quot;section-1&quot;&gt;（二）注意事项&lt;/h2&gt;
 
-&lt;p&gt;###1.代理&lt;br /&gt;
-* 在代理中调用方法的时候使用的是系统的子线程，因此，当使用Delegate进行UI操作的时候，必须调用GCD的主线程方法：&lt;br /&gt;
-dispatch_async(dispatch_get_main_queue(), &amp;lt;^(void)block&amp;gt;)，在block中写进行的UI操作代码。&lt;/p&gt;
+&lt;p&gt;1.代理&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;在代理中调用方法的时候使用的是系统的子线程，因此，当使用Delegate进行UI操作的时候，必须调用GCD的主线程方法：
+dispatch_async(dispatch_get_main_queue(), &amp;lt;^(void)block&amp;gt;)，在block中写进行的UI操作代码。&lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;p&gt;###2.通知&lt;br /&gt;
-* 在通知的使用过程中Crash的原因很多情况都是注册观察者以后没有及时的注销观察者，当然这个情况在非ARC时代比较常见，但是这并不是说在现在的ARC时代就不会出现这个问题。往往一旦出现问题就很难追查，所以还是要养成及时注销的习惯。&lt;br /&gt;
-* 由于通知的使用极其简单，往往能够看到很多开发人员在开发过程中滥用NSNoticationCenter的现象。导致到处都是乱七八糟的通知，代码的可维护性和可读性非常差，即便是使用了宏定义也不能完全避免这些问题。比如在Debug的时候，当存在多个Observe的时候，简直就是要人命的感觉，想死的心都有了。在这方面Block和Delegate比Notification强太多了。&lt;/p&gt;
+&lt;p&gt;2.通知&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;在通知的使用过程中Crash的原因很多情况都是注册观察者以后没有及时的注销观察者，当然这个情况在非ARC时代比较常见，但是这并不是说在现在的ARC时代就不会出现这个问题。往往一旦出现问题就很难追查，所以还是要养成及时注销的习惯。&lt;/li&gt;
+	&lt;li&gt;由于通知的使用极其简单，往往能够看到很多开发人员在开发过程中滥用NSNoticationCenter的现象。导致到处都是乱七八糟的通知，代码的可维护性和可读性非常差，即便是使用了宏定义也不能完全避免这些问题。比如在Debug的时候，当存在多个Observe的时候，简直就是要人命的感觉，想死的心都有了。在这方面Block和Delegate比Notification强太多了。&lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;p&gt;###3.Block&lt;br /&gt;
-* 当在Block中引用某个外部变量的时候，Block内部只会进行只读拷贝，这也就意味着，即便你在使用Block之前修改了那个外部变量的值，那么在你使用的Block里面它的值依旧是最开始的那个外部变量的值。如果想要同步外部变量的值，那么就需要在block内部引用变量时，在前面加上__block关键字。&lt;br /&gt;
-* block本身是像对象一样可以retain，和release。但是，block在创建的时候，它的内存是分配在栈(stack)上，而不是在堆(heap)上。他本身的作于域是属于创建时候的作用域，一旦在创建时候的作用域外面调用block将导致程序崩溃。&lt;/p&gt;
+&lt;p&gt;3.Block&lt;/p&gt;
+&lt;ul&gt;
+	&lt;li&gt;当在Block中引用某个外部变量的时候，Block内部只会进行只读拷贝，这也就意味着，即便你在使用Block之前修改了那个外部变量的值，那么在你使用的Block里面它的值依旧是最开始的那个外部变量的值。如果想要同步外部变量的值，那么就需要在block内部引用变量时，在前面加上__block关键字。&lt;/li&gt;
+	&lt;li&gt;block本身是像对象一样可以retain，和release。但是，block在创建的时候，它的内存是分配在栈(stack)上，而不是在堆(heap)上。他本身的作于域是属于创建时候的作用域，一旦在创建时候的作用域外面调用block将导致程序崩溃。&lt;/li&gt;
+&lt;/ul&gt;
 
-&lt;p&gt;##（三）使用场景对比&lt;/p&gt;
+&lt;h2 id=&quot;section-2&quot;&gt;（三）使用场景对比&lt;/h2&gt;
 
-&lt;p&gt;###1.回调方法&lt;br /&gt;
+&lt;p&gt;1.回调方法&lt;br /&gt;
 在日常的开发过程中，我们经常会遇到一些完成之后的处理问题，比如完成网路请求之后的回调，或者页面加载完成之后的回调等。这个时候我们一般使用的是前两者方法，即Block或者Delegate。而在一对一传输回&lt;br /&gt;
 调的时候明显Block的使用更加的简单高效，只需要在代码块中执行所需要的操作即可。在一对多的情况下，Delegate更加能够发挥出自己的优势。&lt;/p&gt;
 
-&lt;p&gt;###2.跨层通信&lt;br /&gt;
+&lt;p&gt;2.跨层通信&lt;br /&gt;
 有的时候我们需要实现在两个毫无关联的对象之间的通信，这个时候如果使用Block或者Delegate就势必会增加代码的耦合性，这样对于代码的结构来说是不健康的，因此这个时候使用Notification便是明智的选择。&lt;/p&gt;
 
-&lt;p&gt;###3.UI响应事件&lt;br /&gt;
+&lt;p&gt;3.UI响应事件&lt;br /&gt;
 用户在于App的UI进行互动的时候，总会需要App进行交互响应，这个时候就毫无疑问的使用代理设计模式。而苹果官方给出的建议也是可以肯定的，在Cocoa Touch框架中我们也可以在几乎所有的UI交互控件的头文件里看到Delegate的成员变量，也正是印证了在UI响应事件上Delegate有着绝对的优势。&lt;/p&gt;
 
-&lt;p&gt;###4.简单值得传递&lt;br /&gt;
+&lt;p&gt;4.简单值得传递&lt;br /&gt;
 当需要进行简单值得传递的时候，比如子控件传输给父控件所点击的IndexPath的时候，更加适合使用Block来传值。因为，如果只是为了传这一个简单的值而没有特别的业务处理而定义一个协议，然后实现协议，设置代理再写方法的话将十分麻烦，得不偿失，这个时候简单高效的Block就可以完美的替代Delegate完成任务了。&lt;/p&gt;
 </description>
-        <pubDate>Thu, 09 Jul 2015 00:00:00 +0800</pubDate>
-        <link>/2015/07/09/iOS-Development-Delegate,Notification,Block/</link>
-        <guid isPermaLink="true">/2015/07/09/iOS-Development-Delegate,Notification,Block/</guid>
+        <pubDate>Mon, 08 Jun 2015 00:58:00 +0800</pubDate>
+        <link>/2015/06/08/iOS-Development-Delegate,Notification,Block/</link>
+        <guid isPermaLink="true">/2015/06/08/iOS-Development-Delegate,Notification,Block/</guid>
         
         <category>iOS</category>
         
         <category>Objc</category>
-        
-        
-      </item>
-    
-      <item>
-        <title>Man must explore, and this is exploration at its greatest</title>
-        <description>&lt;p&gt;Never in all their history have men been able truly to conceive of the world as one: a single sphere, a globe, having the qualities of a globe, a round earth in which all the directions eventually meet, in which there is no center because every point, or none, is center — an equal earth which all men occupy as equals. The airman&#39;s earth, if free men make it, will be truly round: a globe in practice, not in theory.&lt;/p&gt;
-
-&lt;p&gt;Science cuts two ways, of course; its products can be used for both good and evil. But there&#39;s no turning back from science. The early warnings about technological dangers also come from science.&lt;/p&gt;
-
-&lt;p&gt;What was most significant about the lunar voyage was not that man set foot on the Moon but that they set eye on the earth.&lt;/p&gt;
-
-&lt;p&gt;A Chinese tale tells of some men sent to harm a young girl who, upon seeing her beauty, become her protectors rather than her violators. That&#39;s how I felt seeing the Earth for the first time. I could not help but love and cherish her.&lt;/p&gt;
-
-&lt;p&gt;For those who have seen the Earth from space, and for the hundreds and perhaps thousands more who will, the experience most certainly changes your perspective. The things that we share in our world are far more valuable than those which divide us.&lt;/p&gt;
-
-&lt;h2 class=&quot;section-heading&quot;&gt;The Final Frontier&lt;/h2&gt;
-
-&lt;p&gt;There can be no thought of finishing for ‘aiming for the stars.’ Both figuratively and literally, it is a task to occupy the generations. And no matter how much progress one makes, there is always the thrill of just beginning.&lt;/p&gt;
-
-&lt;p&gt;There can be no thought of finishing for ‘aiming for the stars.’ Both figuratively and literally, it is a task to occupy the generations. And no matter how much progress one makes, there is always the thrill of just beginning.&lt;/p&gt;
-
-&lt;blockquote&gt;The dreams of yesterday are the hopes of today and the reality of tomorrow. Science has not yet mastered prophecy. We predict too much for the next year and yet far too little for the next ten.&lt;/blockquote&gt;
-
-&lt;p&gt;Spaceflights cannot be stopped. This is not the work of any one man or even a group of men. It is a historical process which mankind is carrying out in accordance with the natural laws of human development.&lt;/p&gt;
-
-&lt;h2 class=&quot;section-heading&quot;&gt;Reaching for the Stars&lt;/h2&gt;
-
-&lt;p&gt;As we got further and further away, it [the Earth] diminished in size. Finally it shrank to the size of a marble, the most beautiful you can imagine. That beautiful, warm, living object looked so fragile, so delicate, that if you touched it with a finger it would crumble and fall apart. Seeing this has to change a man.&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;#&quot;&gt;
-    &lt;img src=&quot;/img/post-sample-image.jpg&quot; alt=&quot;Post Sample Image&quot; /&gt;
-&lt;/a&gt;&lt;br /&gt;
-&lt;span class=&quot;caption text-muted&quot;&gt;To go places and do things that have never been done before – that’s what living is all about.&lt;/span&gt;&lt;/p&gt;
-
-&lt;p&gt;Space, the final frontier. These are the voyages of the Starship Enterprise. Its five-year mission: to explore strange new worlds, to seek out new life and new civilizations, to boldly go where no man has gone before.&lt;/p&gt;
-
-&lt;p&gt;As I stand out here in the wonders of the unknown at Hadley, I sort of realize there’s a fundamental truth to our nature, Man must explore, and this is exploration at its greatest.&lt;/p&gt;
-
-&lt;p&gt;Placeholder text by &lt;a href=&quot;http://spaceipsum.com/&quot;&gt;Space Ipsum&lt;/a&gt;. Photographs by &lt;a href=&quot;https://www.flickr.com/photos/nasacommons/&quot;&gt;NASA on The Commons&lt;/a&gt;.&lt;/p&gt;
-</description>
-        <pubDate>Wed, 24 Sep 2014 20:00:00 +0800</pubDate>
-        <link>/2014/09/24/man-must-explore/</link>
-        <guid isPermaLink="true">/2014/09/24/man-must-explore/</guid>
-        
-        
-      </item>
-    
-      <item>
-        <title>I believe every human has a finite number of heartbeats. I don&#39;t intend to waste any of mine.</title>
-        <description>&lt;p&gt;Never in all their history have men been able truly to conceive of the world as one: a single sphere, a globe, having the qualities of a globe, a round earth in which all the directions eventually meet, in which there is no center because every point, or none, is center — an equal earth which all men occupy as equals. The airman&#39;s earth, if free men make it, will be truly round: a globe in practice, not in theory.&lt;/p&gt;
-
-&lt;p&gt;Science cuts two ways, of course; its products can be used for both good and evil. But there&#39;s no turning back from science. The early warnings about technological dangers also come from science.&lt;/p&gt;
-
-&lt;p&gt;What was most significant about the lunar voyage was not that man set foot on the Moon but that they set eye on the earth.&lt;/p&gt;
-
-&lt;p&gt;A Chinese tale tells of some men sent to harm a young girl who, upon seeing her beauty, become her protectors rather than her violators. That&#39;s how I felt seeing the Earth for the first time. I could not help but love and cherish her.&lt;/p&gt;
-
-&lt;p&gt;For those who have seen the Earth from space, and for the hundreds and perhaps thousands more who will, the experience most certainly changes your perspective. The things that we share in our world are far more valuable than those which divide us.&lt;/p&gt;
-
-&lt;h2 class=&quot;section-heading&quot;&gt;The Final Frontier&lt;/h2&gt;
-
-&lt;p&gt;There can be no thought of finishing for ‘aiming for the stars.’ Both figuratively and literally, it is a task to occupy the generations. And no matter how much progress one makes, there is always the thrill of just beginning.&lt;/p&gt;
-
-&lt;p&gt;There can be no thought of finishing for ‘aiming for the stars.’ Both figuratively and literally, it is a task to occupy the generations. And no matter how much progress one makes, there is always the thrill of just beginning.&lt;/p&gt;
-
-&lt;blockquote&gt;The dreams of yesterday are the hopes of today and the reality of tomorrow. Science has not yet mastered prophecy. We predict too much for the next year and yet far too little for the next ten.&lt;/blockquote&gt;
-
-&lt;p&gt;Spaceflights cannot be stopped. This is not the work of any one man or even a group of men. It is a historical process which mankind is carrying out in accordance with the natural laws of human development.&lt;/p&gt;
-
-&lt;h2 class=&quot;section-heading&quot;&gt;Reaching for the Stars&lt;/h2&gt;
-
-&lt;p&gt;As we got further and further away, it [the Earth] diminished in size. Finally it shrank to the size of a marble, the most beautiful you can imagine. That beautiful, warm, living object looked so fragile, so delicate, that if you touched it with a finger it would crumble and fall apart. Seeing this has to change a man.&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;#&quot;&gt;
-    &lt;img src=&quot;/img/post-sample-image.jpg&quot; alt=&quot;Post Sample Image&quot; /&gt;
-&lt;/a&gt;&lt;br /&gt;
-&lt;span class=&quot;caption text-muted&quot;&gt;To go places and do things that have never been done before – that’s what living is all about.&lt;/span&gt;&lt;/p&gt;
-
-&lt;p&gt;Space, the final frontier. These are the voyages of the Starship Enterprise. Its five-year mission: to explore strange new worlds, to seek out new life and new civilizations, to boldly go where no man has gone before.&lt;/p&gt;
-
-&lt;p&gt;As I stand out here in the wonders of the unknown at Hadley, I sort of realize there’s a fundamental truth to our nature, Man must explore, and this is exploration at its greatest.&lt;/p&gt;
-
-&lt;p&gt;Placeholder text by &lt;a href=&quot;http://spaceipsum.com/&quot;&gt;Space Ipsum&lt;/a&gt;. Photographs by &lt;a href=&quot;https://www.flickr.com/photos/nasacommons/&quot;&gt;NASA on The Commons&lt;/a&gt;.&lt;/p&gt;
-</description>
-        <pubDate>Thu, 18 Sep 2014 20:00:00 +0800</pubDate>
-        <link>/2014/09/18/i-believe/</link>
-        <guid isPermaLink="true">/2014/09/18/i-believe/</guid>
-        
-        
-      </item>
-    
-      <item>
-        <title>Science has not yet mastered prophecy</title>
-        <description>&lt;p&gt;Never in all their history have men been able truly to conceive of the world as one: a single sphere, a globe, having the qualities of a globe, a round earth in which all the directions eventually meet, in which there is no center because every point, or none, is center — an equal earth which all men occupy as equals. The airman&#39;s earth, if free men make it, will be truly round: a globe in practice, not in theory.&lt;/p&gt;
-
-&lt;p&gt;Science cuts two ways, of course; its products can be used for both good and evil. But there&#39;s no turning back from science. The early warnings about technological dangers also come from science.&lt;/p&gt;
-
-&lt;p&gt;What was most significant about the lunar voyage was not that man set foot on the Moon but that they set eye on the earth.&lt;/p&gt;
-
-&lt;p&gt;A Chinese tale tells of some men sent to harm a young girl who, upon seeing her beauty, become her protectors rather than her violators. That&#39;s how I felt seeing the Earth for the first time. I could not help but love and cherish her.&lt;/p&gt;
-
-&lt;p&gt;For those who have seen the Earth from space, and for the hundreds and perhaps thousands more who will, the experience most certainly changes your perspective. The things that we share in our world are far more valuable than those which divide us.&lt;/p&gt;
-
-&lt;h2 class=&quot;section-heading&quot;&gt;The Final Frontier&lt;/h2&gt;
-
-&lt;p&gt;There can be no thought of finishing for ‘aiming for the stars.’ Both figuratively and literally, it is a task to occupy the generations. And no matter how much progress one makes, there is always the thrill of just beginning.&lt;/p&gt;
-
-&lt;p&gt;There can be no thought of finishing for ‘aiming for the stars.’ Both figuratively and literally, it is a task to occupy the generations. And no matter how much progress one makes, there is always the thrill of just beginning.&lt;/p&gt;
-
-&lt;blockquote&gt;The dreams of yesterday are the hopes of today and the reality of tomorrow. Science has not yet mastered prophecy. We predict too much for the next year and yet far too little for the next ten.&lt;/blockquote&gt;
-
-&lt;p&gt;Spaceflights cannot be stopped. This is not the work of any one man or even a group of men. It is a historical process which mankind is carrying out in accordance with the natural laws of human development.&lt;/p&gt;
-
-&lt;h2 class=&quot;section-heading&quot;&gt;Reaching for the Stars&lt;/h2&gt;
-
-&lt;p&gt;As we got further and further away, it [the Earth] diminished in size. Finally it shrank to the size of a marble, the most beautiful you can imagine. That beautiful, warm, living object looked so fragile, so delicate, that if you touched it with a finger it would crumble and fall apart. Seeing this has to change a man.&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;#&quot;&gt;
-    &lt;img src=&quot;/img/post-sample-image.jpg&quot; alt=&quot;Post Sample Image&quot; /&gt;
-&lt;/a&gt;&lt;br /&gt;
-&lt;span class=&quot;caption text-muted&quot;&gt;To go places and do things that have never been done before – that’s what living is all about.&lt;/span&gt;&lt;/p&gt;
-
-&lt;p&gt;Space, the final frontier. These are the voyages of the Starship Enterprise. Its five-year mission: to explore strange new worlds, to seek out new life and new civilizations, to boldly go where no man has gone before.&lt;/p&gt;
-
-&lt;p&gt;As I stand out here in the wonders of the unknown at Hadley, I sort of realize there’s a fundamental truth to our nature, Man must explore, and this is exploration at its greatest.&lt;/p&gt;
-
-&lt;p&gt;Placeholder text by &lt;a href=&quot;http://spaceipsum.com/&quot;&gt;Space Ipsum&lt;/a&gt;. Photographs by &lt;a href=&quot;https://www.flickr.com/photos/nasacommons/&quot;&gt;NASA on The Commons&lt;/a&gt;.&lt;/p&gt;
-</description>
-        <pubDate>Sun, 24 Aug 2014 20:00:00 +0800</pubDate>
-        <link>/2014/08/24/science-has-not-yet-mastered-prophecy/</link>
-        <guid isPermaLink="true">/2014/08/24/science-has-not-yet-mastered-prophecy/</guid>
-        
-        
-      </item>
-    
-      <item>
-        <title>Failure is not an option</title>
-        <description>&lt;p&gt;Never in all their history have men been able truly to conceive of the world as one: a single sphere, a globe, having the qualities of a globe, a round earth in which all the directions eventually meet, in which there is no center because every point, or none, is center — an equal earth which all men occupy as equals. The airman&#39;s earth, if free men make it, will be truly round: a globe in practice, not in theory.&lt;/p&gt;
-
-&lt;p&gt;Science cuts two ways, of course; its products can be used for both good and evil. But there&#39;s no turning back from science. The early warnings about technological dangers also come from science.&lt;/p&gt;
-
-&lt;p&gt;What was most significant about the lunar voyage was not that man set foot on the Moon but that they set eye on the earth.&lt;/p&gt;
-
-&lt;p&gt;A Chinese tale tells of some men sent to harm a young girl who, upon seeing her beauty, become her protectors rather than her violators. That&#39;s how I felt seeing the Earth for the first time. I could not help but love and cherish her.&lt;/p&gt;
-
-&lt;p&gt;For those who have seen the Earth from space, and for the hundreds and perhaps thousands more who will, the experience most certainly changes your perspective. The things that we share in our world are far more valuable than those which divide us.&lt;/p&gt;
-
-&lt;h2 class=&quot;section-heading&quot;&gt;The Final Frontier&lt;/h2&gt;
-
-&lt;p&gt;There can be no thought of finishing for ‘aiming for the stars.’ Both figuratively and literally, it is a task to occupy the generations. And no matter how much progress one makes, there is always the thrill of just beginning.&lt;/p&gt;
-
-&lt;p&gt;There can be no thought of finishing for ‘aiming for the stars.’ Both figuratively and literally, it is a task to occupy the generations. And no matter how much progress one makes, there is always the thrill of just beginning.&lt;/p&gt;
-
-&lt;blockquote&gt;The dreams of yesterday are the hopes of today and the reality of tomorrow. Science has not yet mastered prophecy. We predict too much for the next year and yet far too little for the next ten.&lt;/blockquote&gt;
-
-&lt;p&gt;Spaceflights cannot be stopped. This is not the work of any one man or even a group of men. It is a historical process which mankind is carrying out in accordance with the natural laws of human development.&lt;/p&gt;
-
-&lt;h2 class=&quot;section-heading&quot;&gt;Reaching for the Stars&lt;/h2&gt;
-
-&lt;p&gt;As we got further and further away, it [the Earth] diminished in size. Finally it shrank to the size of a marble, the most beautiful you can imagine. That beautiful, warm, living object looked so fragile, so delicate, that if you touched it with a finger it would crumble and fall apart. Seeing this has to change a man.&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;#&quot;&gt;
-    &lt;img src=&quot;/img/post-sample-image.jpg&quot; alt=&quot;Post Sample Image&quot; /&gt;
-&lt;/a&gt;&lt;br /&gt;
-&lt;span class=&quot;caption text-muted&quot;&gt;To go places and do things that have never been done before – that’s what living is all about.&lt;/span&gt;&lt;/p&gt;
-
-&lt;p&gt;Space, the final frontier. These are the voyages of the Starship Enterprise. Its five-year mission: to explore strange new worlds, to seek out new life and new civilizations, to boldly go where no man has gone before.&lt;/p&gt;
-
-&lt;p&gt;As I stand out here in the wonders of the unknown at Hadley, I sort of realize there’s a fundamental truth to our nature, Man must explore, and this is exploration at its greatest.&lt;/p&gt;
-
-&lt;p&gt;Placeholder text by &lt;a href=&quot;http://spaceipsum.com/&quot;&gt;Space Ipsum&lt;/a&gt;. Photographs by &lt;a href=&quot;https://www.flickr.com/photos/nasacommons/&quot;&gt;NASA on The Commons&lt;/a&gt;.&lt;/p&gt;
-</description>
-        <pubDate>Tue, 08 Jul 2014 20:00:00 +0800</pubDate>
-        <link>/2014/07/08/failure-is-not-an-option/</link>
-        <guid isPermaLink="true">/2014/07/08/failure-is-not-an-option/</guid>
-        
-        
-      </item>
-    
-      <item>
-        <title>The dreams of yesterday are the hopes of today and the reality of tomorrow.</title>
-        <description>&lt;p&gt;Never in all their history have men been able truly to conceive of the world as one: a single sphere, a globe, having the qualities of a globe, a round earth in which all the directions eventually meet, in which there is no center because every point, or none, is center — an equal earth which all men occupy as equals. The airman&#39;s earth, if free men make it, will be truly round: a globe in practice, not in theory.&lt;/p&gt;
-
-&lt;p&gt;Science cuts two ways, of course; its products can be used for both good and evil. But there&#39;s no turning back from science. The early warnings about technological dangers also come from science.&lt;/p&gt;
-
-&lt;p&gt;What was most significant about the lunar voyage was not that man set foot on the Moon but that they set eye on the earth.&lt;/p&gt;
-
-&lt;p&gt;A Chinese tale tells of some men sent to harm a young girl who, upon seeing her beauty, become her protectors rather than her violators. That&#39;s how I felt seeing the Earth for the first time. I could not help but love and cherish her.&lt;/p&gt;
-
-&lt;p&gt;For those who have seen the Earth from space, and for the hundreds and perhaps thousands more who will, the experience most certainly changes your perspective. The things that we share in our world are far more valuable than those which divide us.&lt;/p&gt;
-
-&lt;h2 class=&quot;section-heading&quot;&gt;The Final Frontier&lt;/h2&gt;
-
-&lt;p&gt;There can be no thought of finishing for ‘aiming for the stars.’ Both figuratively and literally, it is a task to occupy the generations. And no matter how much progress one makes, there is always the thrill of just beginning.&lt;/p&gt;
-
-&lt;p&gt;There can be no thought of finishing for ‘aiming for the stars.’ Both figuratively and literally, it is a task to occupy the generations. And no matter how much progress one makes, there is always the thrill of just beginning.&lt;/p&gt;
-
-&lt;blockquote&gt;The dreams of yesterday are the hopes of today and the reality of tomorrow. Science has not yet mastered prophecy. We predict too much for the next year and yet far too little for the next ten.&lt;/blockquote&gt;
-
-&lt;p&gt;Spaceflights cannot be stopped. This is not the work of any one man or even a group of men. It is a historical process which mankind is carrying out in accordance with the natural laws of human development.&lt;/p&gt;
-
-&lt;h2 class=&quot;section-heading&quot;&gt;Reaching for the Stars&lt;/h2&gt;
-
-&lt;p&gt;As we got further and further away, it [the Earth] diminished in size. Finally it shrank to the size of a marble, the most beautiful you can imagine. That beautiful, warm, living object looked so fragile, so delicate, that if you touched it with a finger it would crumble and fall apart. Seeing this has to change a man.&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;#&quot;&gt;
-    &lt;img src=&quot;/img/post-sample-image.jpg&quot; alt=&quot;Post Sample Image&quot; /&gt;
-&lt;/a&gt;&lt;br /&gt;
-&lt;span class=&quot;caption text-muted&quot;&gt;To go places and do things that have never been done before – that’s what living is all about.&lt;/span&gt;&lt;/p&gt;
-
-&lt;p&gt;Space, the final frontier. These are the voyages of the Starship Enterprise. Its five-year mission: to explore strange new worlds, to seek out new life and new civilizations, to boldly go where no man has gone before.&lt;/p&gt;
-
-&lt;p&gt;As I stand out here in the wonders of the unknown at Hadley, I sort of realize there’s a fundamental truth to our nature, Man must explore, and this is exploration at its greatest.&lt;/p&gt;
-
-&lt;p&gt;Placeholder text by &lt;a href=&quot;http://spaceipsum.com/&quot;&gt;Space Ipsum&lt;/a&gt;. Photographs by &lt;a href=&quot;https://www.flickr.com/photos/nasacommons/&quot;&gt;NASA on The Commons&lt;/a&gt;.&lt;/p&gt;
-</description>
-        <pubDate>Tue, 01 Jul 2014 20:00:00 +0800</pubDate>
-        <link>/2014/07/01/dreams/</link>
-        <guid isPermaLink="true">/2014/07/01/dreams/</guid>
-        
-        
-      </item>
-    
-      <item>
-        <title>Dinosaurs are extinct today</title>
-        <description>&lt;p&gt;Never in all their history have men been able truly to conceive of the world as one: a single sphere, a globe, having the qualities of a globe, a round earth in which all the directions eventually meet, in which there is no center because every point, or none, is center — an equal earth which all men occupy as equals. The airman&#39;s earth, if free men make it, will be truly round: a globe in practice, not in theory.&lt;/p&gt;
-
-&lt;p&gt;Science cuts two ways, of course; its products can be used for both good and evil. But there&#39;s no turning back from science. The early warnings about technological dangers also come from science.&lt;/p&gt;
-
-&lt;p&gt;What was most significant about the lunar voyage was not that man set foot on the Moon but that they set eye on the earth.&lt;/p&gt;
-
-&lt;p&gt;A Chinese tale tells of some men sent to harm a young girl who, upon seeing her beauty, become her protectors rather than her violators. That&#39;s how I felt seeing the Earth for the first time. I could not help but love and cherish her.&lt;/p&gt;
-
-&lt;p&gt;For those who have seen the Earth from space, and for the hundreds and perhaps thousands more who will, the experience most certainly changes your perspective. The things that we share in our world are far more valuable than those which divide us.&lt;/p&gt;
-
-&lt;h2 class=&quot;section-heading&quot;&gt;The Final Frontier&lt;/h2&gt;
-
-&lt;p&gt;There can be no thought of finishing for ‘aiming for the stars.’ Both figuratively and literally, it is a task to occupy the generations. And no matter how much progress one makes, there is always the thrill of just beginning.&lt;/p&gt;
-
-&lt;p&gt;There can be no thought of finishing for ‘aiming for the stars.’ Both figuratively and literally, it is a task to occupy the generations. And no matter how much progress one makes, there is always the thrill of just beginning.&lt;/p&gt;
-
-&lt;blockquote&gt;The dreams of yesterday are the hopes of today and the reality of tomorrow. Science has not yet mastered prophecy. We predict too much for the next year and yet far too little for the next ten.&lt;/blockquote&gt;
-
-&lt;p&gt;Spaceflights cannot be stopped. This is not the work of any one man or even a group of men. It is a historical process which mankind is carrying out in accordance with the natural laws of human development.&lt;/p&gt;
-
-&lt;h2 class=&quot;section-heading&quot;&gt;Reaching for the Stars&lt;/h2&gt;
-
-&lt;p&gt;As we got further and further away, it [the Earth] diminished in size. Finally it shrank to the size of a marble, the most beautiful you can imagine. That beautiful, warm, living object looked so fragile, so delicate, that if you touched it with a finger it would crumble and fall apart. Seeing this has to change a man.&lt;/p&gt;
-
-&lt;p&gt;&lt;a href=&quot;#&quot;&gt;
-    &lt;img src=&quot;/img/post-sample-image.jpg&quot; alt=&quot;Post Sample Image&quot; /&gt;
-&lt;/a&gt;&lt;br /&gt;
-&lt;span class=&quot;caption text-muted&quot;&gt;To go places and do things that have never been done before – that’s what living is all about.&lt;/span&gt;&lt;/p&gt;
-
-&lt;p&gt;Space, the final frontier. These are the voyages of the Starship Enterprise. Its five-year mission: to explore strange new worlds, to seek out new life and new civilizations, to boldly go where no man has gone before.&lt;/p&gt;
-
-&lt;p&gt;As I stand out here in the wonders of the unknown at Hadley, I sort of realize there’s a fundamental truth to our nature, Man must explore, and this is exploration at its greatest.&lt;/p&gt;
-
-&lt;p&gt;Placeholder text by &lt;a href=&quot;http://spaceipsum.com/&quot;&gt;Space Ipsum&lt;/a&gt;. Photographs by &lt;a href=&quot;https://www.flickr.com/photos/nasacommons/&quot;&gt;NASA on The Commons&lt;/a&gt;.&lt;/p&gt;
-</description>
-        <pubDate>Tue, 10 Jun 2014 20:00:00 +0800</pubDate>
-        <link>/2014/06/10/dinosaurs/</link>
-        <guid isPermaLink="true">/2014/06/10/dinosaurs/</guid>
         
         
       </item>
