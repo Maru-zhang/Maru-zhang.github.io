@@ -9,7 +9,7 @@
     <meta name="keyword"  content="Maru-zhang，Maru Blog，张斌辉">
     <link rel="shortcut icon" href="img/favicon.ico">
 
-    <title>全栈项目iCCUT之服务端开发（一） - 张斌辉的博客 | Maru Blog</title>
+    <title>全栈项目iCCUT之数据篇（一） - 张斌辉的博客 | Maru Blog</title>
 
     <link rel="canonical" href="/2015/10/26/Full-Stack-1/">
 
@@ -148,7 +148,7 @@
                         <a class="tag" href="/tags/#MySQL" title="MySQL">MySQL</a>
                         
                     </div>
-                    <h1>全栈项目iCCUT之服务端开发（一）</h1>
+                    <h1>全栈项目iCCUT之数据篇（一）</h1>
                     
                     
                     <h2 class="subheading"></h2>
@@ -283,6 +283,34 @@ OS X 10.11 中System Integrity Protection 的功能，阻止了写入的操作�
 <p>先通过urllib2获取页面内容，当然还要经过我们学校隔路的gb2312编码才能看到内容：</p>
 
 <p>html = urllib2.urlopen(url).read().decode(“gb2312”)</p>
+
+<p>观察一下HTML源码：</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">&lt;</span><span class="n">table</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;100%&quot;</span> <span class="n">border</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">cellspacing</span><span class="o">=</span><span class="s2">&quot;4&quot;</span> <span class="n">cellpadding</span><span class="o">=</span><span class="s2">&quot;0&quot;</span>  <span class="n">bgcolor</span><span class="o">=</span><span class="s2">&quot;#EEEEEE&quot;</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="n">tr</span><span class="o">&gt;</span>
+    <span class="o">&lt;</span><span class="n">td</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">span</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;normalfont&quot;</span><span class="o">&gt;&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;http://v8.ccut.edu.cn/index.php&quot;</span><span class="o">&gt;</span><span class="no">VideoBar</span><span class="o">&lt;</span><span class="sr">/a&gt; /</span> <span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;http://v8.ccut.edu.cn/sort.php?/1&quot;</span><span class="o">&gt;</span><span class="err">纪录片</span><span class="o">&lt;</span><span class="sr">/a&gt; /</span> <span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;http://v8.ccut.edu.cn/sort.php?/17&quot;</span><span class="o">&gt;</span><span class="err">走近科学</span><span class="o">&lt;</span><span class="sr">/a&gt; /</span> <span class="err">湖底迷城</span><span class="o">&lt;</span><span class="sr">/span&gt;</span>
+<span class="sr">    &lt;/</span><span class="n">td</span><span class="o">&gt;</span>
+  <span class="o">&lt;</span><span class="sr">/tr&gt;</span>
+<span class="sr">&lt;/</span><span class="n">table</span><span class="o">&gt;</span>
+      <span class="o">&lt;</span><span class="n">table</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;100%&quot;</span> <span class="n">border</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">cellpadding</span><span class="o">=</span><span class="s2">&quot;5&quot;</span> <span class="n">cellspacing</span><span class="o">=</span><span class="s2">&quot;0&quot;</span><span class="o">&gt;</span>
+        <span class="o">&lt;</span><span class="n">tr</span><span class="o">&gt;</span>
+          <span class="o">&lt;</span><span class="n">td</span> <span class="n">colspan</span><span class="o">=</span><span class="s2">&quot;2&quot;</span><span class="o">&gt;</span>
+          
+            <span class="o">&lt;</span><span class="n">table</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;100%&quot;</span> <span class="n">border</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">cellspacing</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">cellpadding</span><span class="o">=</span><span class="s2">&quot;4&quot;</span><span class="o">&gt;</span>
+              <span class="o">&lt;</span><span class="n">tr</span><span class="o">&gt;</span>
+                <span class="o">&lt;</span><span class="n">td</span> <span class="n">valign</span><span class="o">=</span><span class="s2">&quot;top&quot;</span> <span class="n">align</span><span class="o">=</span><span class="s2">&quot;center&quot;</span> <span class="n">colspan</span><span class="o">=</span><span class="s2">&quot;2&quot;</span><span class="o">&gt;&lt;</span><span class="n">font</span> <span class="n">class</span><span class="o">=</span><span class="n">bigfont</span><span class="o">&gt;&lt;</span><span class="n">b</span><span class="o">&gt;</span><span class="err">湖底迷城</span><span class="o">&lt;</span><span class="sr">/b&gt;&lt;/</span><span class="n">font</span><span class="o">&gt;&lt;</span><span class="sr">/td&gt;</span>
+<span class="sr">              &lt;/</span><span class="n">tr</span><span class="o">&gt;</span>
+              <span class="o">&lt;</span><span class="n">tr</span><span class="o">&gt;</span>
+                <span class="o">&lt;</span><span class="n">td</span> <span class="n">valign</span><span class="o">=</span><span class="s2">&quot;top&quot;</span> <span class="n">align</span><span class="o">=</span><span class="s2">&quot;center&quot;</span> <span class="n">colspan</span><span class="o">=</span><span class="s2">&quot;2&quot;</span><span class="o">&gt;&lt;</span><span class="n">span</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;normalfont&quot;</span><span class="o">&gt;&lt;</span><span class="n">font</span> <span class="n">color</span><span class="o">=</span><span class="s2">&quot;#666666&quot;</span><span class="o">&gt;</span><span class="mi">2005</span><span class="o">-</span><span class="mi">11</span><span class="o">-</span><span class="mi">30</span><span class="o">&lt;</span><span class="sr">/font&gt;</span>
+<span class="sr">                  &amp;nbsp;&amp;nbsp;  &amp;nbsp;&amp;nbsp;  &amp;nbsp;&amp;nbsp; 点击: 6169&lt;/s</span><span class="n">pan</span><span class="o">&gt;&lt;</span><span class="sr">/td&gt;</span>
+<span class="sr">              &lt;/</span><span class="n">tr</span><span class="o">&gt;</span>
+              <span class="o">&lt;</span><span class="n">tr</span><span class="o">&gt;</span>
+                <span class="o">&lt;</span><span class="n">td</span> <span class="n">valign</span><span class="o">=</span><span class="s2">&quot;top&quot;</span> <span class="n">bgcolor</span><span class="o">=</span><span class="s2">&quot;#EEEEEE&quot;</span> <span class="n">height</span><span class="o">=</span><span class="s2">&quot;1&quot;</span> <span class="n">colspan</span><span class="o">=</span><span class="s2">&quot;2&quot;</span><span class="o">&gt;&lt;</span><span class="sr">/td&gt;</span>
+<span class="sr">              &lt;/</span><span class="n">tr</span><span class="o">&gt;</span>
+              <span class="o">&lt;</span><span class="n">tr</span><span class="o">&gt;</span>
+                <span class="o">&lt;</span><span class="n">td</span> <span class="n">valign</span><span class="o">=</span><span class="s2">&quot;top&quot;</span> <span class="n">colspan</span><span class="o">=</span><span class="s2">&quot;2&quot;</span><span class="o">&gt;</span>
+                  <span class="o">&lt;</span><span class="n">table</span>    <span class="n">width</span><span class="o">=</span><span class="s2">&quot;100%&quot;</span> <span class="n">border</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">cellspacing</span><span class="o">=</span><span class="s2">&quot;1&quot;</span> <span class="n">cellpadding</span><span class="o">=</span><span class="s2">&quot;4&quot;</span><span class="o">&gt;</span></code></pre></div>
 
 <p>然后再定义三个正则表达式，分别从下载界面中获取视频名称、地址和两个分类。</p>
 
@@ -470,7 +498,7 @@ pwd = ''
                 <div class="ds-share"
                     style="text-align: right"
                     data-thread-key="/2015/10/26/Full-Stack-1"
-                    data-title="全栈项目iCCUT之服务端开发（一）"
+                    data-title="全栈项目iCCUT之数据篇（一）"
                     data-url="/2015/10/26/Full-Stack-1/"
                     data-images="/img/post-bg-01.jpg"
                     data-content="（一）项目简介
@@ -507,7 +535,7 @@ pwd = ''
                 <div class="comment">
                     <div class="ds-thread"
                         data-thread-key="/2015/10/26/Full-Stack-1"
-                        data-title="全栈项目iCCUT之服务端开发（一）"
+                        data-title="全栈项目iCCUT之数据篇（一）"
                         data-url="/2015/10/26/Full-Stack-1/" >
                     </div>
                 </div>
