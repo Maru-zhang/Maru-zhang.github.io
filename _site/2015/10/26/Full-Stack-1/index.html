@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="密集恐惧患者、选择恐惧患者、人际恐惧患者">
+    <meta name="keyword"  content="Maru-zhang，Maru Blog，张斌辉">
+    <link rel="shortcut icon" href="img/favicon.ico">
+
+    <title>全栈项目iCCUT之服务端开发（一） - 张斌辉的博客 | Maru Blog</title>
+
+    <link rel="canonical" href="/2015/10/26/Full-Stack-1/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="http://cdn.staticfile.org/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Maru Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/about/">About</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/portfolio/">Portfolio</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/tags/">Tags</a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Image to hack wechat -->
+<!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="/img/post-bg-01.jpg" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/post-bg-01.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#Python" title="Python">Python</a>
+                        
+                        <a class="tag" href="/tags/#MySQL" title="MySQL">MySQL</a>
+                        
+                    </div>
+                    <h1>全栈项目iCCUT之服务端开发（一）</h1>
+                    
+                    
+                    <h2 class="subheading"></h2>
+                    
+                    <span class="meta">Posted by Maru on October 26, 2015</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+				<h3>（一）项目简介</h3>
+
+<p>由于博主是一个二流大学的码农，所以想为二流大学量身定做一款APP（当然啦，我只做iOS端的），一来方便学校生活，二来也锻炼一下自己的全栈能力。这个项目的主要功能嘛，无非就是搞个校园新闻首页，偷看学校的免费影视资源，还有就是自动登录上网账号什么的。OK，废话不多说，开始上手。</p>
+
+<h3>（二）开发准备</h3>
+
+<p>在本篇中，博主的主要目的是用简单的爬虫把校园网上的影视资源爬取下来并且存储到MySQL中去，以供以后APP服务端使用。为此，我们即将用到的是以下的一些工具：</p>
+
+<ul>
+<li>MySQL</li>
+<li>Python</li>
+<li>PyCharm</li>
+<li>Navicat for MySQL</li>
+</ul>
+
+<h3>（三）环境配置</h3>
+
+<p>由于我们需要通过Python连接数据库，因此我们少不了使用MySQLdb模块。唉…Mac装这玩意还真没我想象中轻松啊。</p>
+
+<p>1.安装MySQLdb<br />
+在max os x下安装mysql,我们需要使用python访问mysql数据库，需要安装MySQLdb模块，方法如下：</p>
+
+<p>在下面的网址下载mysqldb模块：</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="ss">http</span><span class="p">:</span><span class="sr">//sou</span><span class="n">rceforge</span><span class="o">.</span><span class="n">net</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">mysql</span><span class="o">-</span><span class="n">python</span><span class="o">/</span></code></pre></div>
+
+<p>解压以后，在解压文件中找到setup_posix.py</p>
+
+<p>找到:</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">mysql_config</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="s2">&quot;mysql_config&quot;</span></code></pre></div>
+
+<p>改为：</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">mysql_config</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="s2">&quot;/usr/local/mysql/bin/mysql_config&quot;</span></code></pre></div>
+
+<p>然后执行：</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">sudo</span> <span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">install</span></code></pre></div>
+
+<p>安装成功后，在命令行输入python进入python环境，输入import MySQLdb，我的环境中报下面的错误：</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">&gt;&gt;&gt;</span> <span class="n">import</span> <span class="no">MySQLdb</span>
+<span class="no">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
+  <span class="no">File</span> <span class="s2">&quot;&lt;stdin&gt;&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span><span class="p">,</span> <span class="k">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+  <span class="no">File</span> <span class="s2">&quot;/Library/Python/2.7/site-packages/MySQL_python-1.2.4b4-py2.7-macosx-10.11-intel.egg/MySQLdb/__init__.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">19</span><span class="p">,</span> <span class="k">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
+    <span class="n">import</span> <span class="n">_mysql</span>
+<span class="ss">ImportError</span><span class="p">:</span> <span class="n">dlopen</span><span class="p">(</span><span class="sr">/Library/</span><span class="no">Python</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="no">MySQL_python</span><span class="o">-</span><span class="mi">1</span><span class="o">.</span><span class="mi">2</span><span class="o">.</span><span class="mi">4</span><span class="n">b4</span><span class="o">-</span><span class="n">py2</span><span class="o">.</span><span class="mi">7</span><span class="o">-</span><span class="n">macosx</span><span class="o">-</span><span class="mi">10</span><span class="o">.</span><span class="mi">11</span><span class="o">-</span><span class="n">intel</span><span class="o">.</span><span class="n">egg</span><span class="o">/</span><span class="n">_mysql</span><span class="o">.</span><span class="n">so</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span> <span class="no">Library</span> <span class="ow">not</span> <span class="ss">loaded</span><span class="p">:</span> <span class="n">libmysqlclient</span><span class="o">.</span><span class="mi">18</span><span class="o">.</span><span class="n">dylib</span>
+  <span class="no">Referenced</span> <span class="ss">from</span><span class="p">:</span> <span class="sr">/Library/</span><span class="no">Python</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="no">MySQL_python</span><span class="o">-</span><span class="mi">1</span><span class="o">.</span><span class="mi">2</span><span class="o">.</span><span class="mi">4</span><span class="n">b4</span><span class="o">-</span><span class="n">py2</span><span class="o">.</span><span class="mi">7</span><span class="o">-</span><span class="n">macosx</span><span class="o">-</span><span class="mi">10</span><span class="o">.</span><span class="mi">11</span><span class="o">-</span><span class="n">intel</span><span class="o">.</span><span class="n">egg</span><span class="o">/</span><span class="n">_mysql</span><span class="o">.</span><span class="n">so</span>
+  <span class="ss">Reason</span><span class="p">:</span> <span class="n">unsafe</span> <span class="n">use</span> <span class="n">of</span> <span class="n">relative</span> <span class="n">rpath</span> <span class="n">libmysqlclient</span><span class="o">.</span><span class="mi">18</span><span class="o">.</span><span class="n">dylib</span> <span class="k">in</span> <span class="sr">/Library/</span><span class="no">Python</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="no">MySQL_python</span><span class="o">-</span><span class="mi">1</span><span class="o">.</span><span class="mi">2</span><span class="o">.</span><span class="mi">4</span><span class="n">b4</span><span class="o">-</span><span class="n">py2</span><span class="o">.</span><span class="mi">7</span><span class="o">-</span><span class="n">macosx</span><span class="o">-</span><span class="mi">10</span><span class="o">.</span><span class="mi">11</span><span class="o">-</span><span class="n">intel</span><span class="o">.</span><span class="n">egg</span><span class="o">/</span><span class="n">_mysql</span><span class="o">.</span><span class="n">so</span> <span class="n">with</span> <span class="n">restricted</span> <span class="n">binary</span></code></pre></div>
+
+<p>在10.10的系统环境下只需要：</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">sudo</span> <span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="sr">/usr/</span><span class="n">local</span><span class="o">/</span><span class="n">mysql</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">libmysqlclient</span><span class="o">.</span><span class="mi">18</span><span class="o">.</span><span class="n">dylib</span> <span class="sr">/usr/</span><span class="n">lib</span><span class="o">/</span><span class="n">libmysqlclient</span><span class="o">.</span><span class="mi">18</span><span class="o">.</span><span class="n">dylib</span></code></pre></div>
+
+<p>然而，我的系统已经升级到了10.11，输入上述的指令以后报错：</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="ss">ln</span><span class="p">:</span> <span class="sr">/usr/</span><span class="n">lib</span><span class="o">/</span><span class="n">libmysqlclient</span><span class="o">.</span><span class="mi">18</span><span class="o">.</span><span class="n">dylib</span><span class="p">:</span> <span class="no">Operation</span> <span class="ow">not</span> <span class="n">permitted</span></code></pre></div>
+
+<p>出现如下提示的原因是：<br />
+OS X 10.11 中System Integrity Protection 的功能，阻止了写入的操作的，默认是开启的，需要关闭。</p>
+
+<p>关闭方式：<br />
+重启电脑，开机时按住 cmd + R，进入 Recovery 模式。然后打开终端工具 ，输入命令：csrutil diable，然后再次重启电脑即可。</p>
+
+<p>但是关闭以后，10.11安全性方面的特性就不复存在了，假如既不想关闭 System Intergrity Protection 功能，又想解决Python-MysqlDB的问题，经过Google的帮助，找到了一个解决方法：</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">sudo</span> <span class="n">install_name_tool</span> <span class="o">-</span><span class="n">change</span> <span class="n">libmysqlclient</span><span class="o">.</span><span class="mi">18</span><span class="o">.</span><span class="n">dylib</span> <span class="p">\</span>  
+<span class="sr">/usr/</span><span class="n">local</span><span class="o">/</span><span class="n">mysql</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">libmysqlclient</span><span class="o">.</span><span class="mi">18</span><span class="o">.</span><span class="n">dylib</span> <span class="p">\</span>  
+<span class="sr">/Library/</span><span class="no">Python</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="no">MySQL_python</span><span class="o">-</span><span class="mi">1</span><span class="o">.</span><span class="mi">2</span><span class="o">.</span><span class="mi">4</span><span class="n">b4</span><span class="o">-</span><span class="n">py2</span><span class="o">.</span><span class="mi">7</span><span class="o">-</span><span class="n">macosx</span><span class="o">-</span><span class="mi">10</span><span class="o">.</span><span class="mi">9</span><span class="o">-</span><span class="n">intel</span><span class="o">.</span><span class="n">egg</span><span class="o">/</span><span class="n">_mysql</span><span class="o">.</span><span class="n">so</span></code></pre></div>
+
+<p>在Python环境下再次import MySQLdb，OK！大功告成，模块已经安装成功了。</p>
+
+<h3>(四)数据库</h3>
+
+<p>在创建数据库之前我们先来看一看校园网视频的下载界面。</p>
+
+<p><img src="/img/post-img/1026-1.png" alt="下载界面" /></p>
+
+<p>好吧，果然丑的那么的理所当然。由于我很懒，所以在构建表的时候我只用上了它的ID，视频名字，视频地址，一级分类和二级分类这些必须的字段。如图：</p>
+
+<p><img src="/img/post-img/1026-2.png" alt="数据库界面" /></p>
+
+<p>这样的话数据库端的告一段落，很简单吧（我还在纠结新闻的数据要不要也用这种方式存储，如果后续添加功能我会更新的）。</p>
+
+<h3>(五）Python</h3>
+
+<blockquote>
+  <p>Python大法好啊！</p>
+</blockquote>
+
+<p>在构建爬虫之前，我们先来分析一下网页。如图：</p>
+
+<p><img src="/img/post-img/1026-3.png" alt="分类界面" /></p>
+
+<p>看这个貌似有很多的目录层级需要爬取，但是进去之后我笑了：</p>
+
+<p>所有的资源地址都有相同的规律，即:</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="ss">http</span><span class="p">:</span><span class="sr">//</span><span class="n">v8</span><span class="o">.</span><span class="n">ccut</span><span class="o">.</span><span class="n">edu</span><span class="o">.</span><span class="n">cn</span><span class="o">/</span><span class="n">article</span><span class="o">.</span><span class="n">php?</span><span class="o">/</span><span class="no">XXXXX</span></code></pre></div>
+
+<p>有了这样的规律以后，就根本不需要翻进去翻出来的爬取数据了，校园网果然有二流学校的作风，连scrapy模块都可以省略了。</p>
+
+<h4>第一步：</h4>
+
+<p>新建一个ParserPage.py</p>
+
+<p>既然是要搞爬虫，那么urllib2和re模块肯定是必不可少的了。</p>
+
+<p>先通过urllib2获取页面内容，当然还要经过我们学校隔路的gb2312编码才能看到内容：</p>
+
+<p>html = urllib2.urlopen(url).read().decode(“gb2312”)</p>
+
+<p>然后再定义三个正则表达式，分别从下载界面中获取视频名称、地址和两个分类。</p>
+
+<pre><code>    #视频名称
+    patName = re.compile(r'&lt;font class=bigfont&gt;&lt;b&gt;(.*)&lt;/b&gt;')
+    #视频地址
+    patURL = re.compile(r'href="(.*\.rmvb|.*\.mp4)"')
+    #视频分类
+    patList = re.compile(r'&lt;a href="http://v8\.ccut\.edu\.cn/sort\.php\?/\d*"&gt;(.*?)&lt;/a&gt;')
+</code></pre>
+
+<p>最后通过findall的方法获取所需要的内容：</p>
+
+<pre><code>        resName = re.findall(patName,html)[0]
+        resURL = re.findall(patURL,html)[0]
+        resList = re.findall(patList,html)
+</code></pre>
+
+<p>这是获取一个下载页面的信息，到时候要获取两万多个地址的信息的时候只需要将其抽成一个方法，传入变化的地址参数就可以解析了。</p>
+
+<h4>第二步：</h4>
+
+<p>新建一个mysql.py</p>
+
+<p>接下来就是连接数据库，并且保存数据了。引入之前搞了蛮久的MySQLdb。</p>
+
+<p>import MySQLdb</p>
+
+<p>定义好host，port，username，pwd。</p>
+
+<pre><code>host = 'localhost'
+port = 3306
+user = 'root'
+pwd = ''
+</code></pre>
+
+<p>进行连接并且获取游标，对了不要忘记了设置字符集哦！</p>
+
+<pre><code>def __init__(self):
+    self.conn = MySQLdb.connect(host=self.host,user=self.user,passwd=self.pwd,db='sy_video',port=self.port,charset='gb2312')
+    self.conn.set_character_set('gb2312')
+    self.cur = self.conn.cursor()
+</code></pre>
+
+<p>定义一个插入数据的方法供外界调用，记得不要忘记了commit。</p>
+
+<pre><code>def insertData(self,id,title,url,leve1,leve2):
+    try:
+        sql = 'insert into FreeVideo values(%d,"%s","%s","%s","%s")' % (id,title,url,leve1,leve2)
+        print(sql)
+        self.cur.execute(sql)
+        self.conn.commit()
+    except MySQLdb.Error,e:
+        print "Mysql Error %d: %s" % (e.args[0], e.args[1])
+</code></pre>
+
+<h3>第三步：</h3>
+
+<p>最后就是把mysql.py和ParserPage.py整和起来使用了。完整的代码如下：</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">mysql</span><span class="o">.</span><span class="n">py</span>
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;Maru&#39;</span>
+<span class="c1">#coding=gb2312</span>
+<span class="n">import</span> <span class="no">MySQLdb</span>
+
+<span class="k">class</span> <span class="nc">Mysql</span><span class="p">:</span>
+
+    <span class="n">host</span> <span class="o">=</span> <span class="s1">&#39;localhost&#39;</span>
+    <span class="n">port</span> <span class="o">=</span> <span class="mi">3306</span>
+    <span class="n">user</span> <span class="o">=</span> <span class="s1">&#39;root&#39;</span>
+    <span class="n">pwd</span> <span class="o">=</span> <span class="s1">&#39;&#39;</span>
+
+    <span class="k">def</span> <span class="nf">__init__</span><span class="p">(</span><span class="nb">self</span><span class="p">):</span>
+        <span class="nb">self</span><span class="o">.</span><span class="n">conn</span> <span class="o">=</span> <span class="no">MySQLdb</span><span class="o">.</span><span class="n">connect</span><span class="p">(</span><span class="n">host</span><span class="o">=</span><span class="nb">self</span><span class="o">.</span><span class="n">host</span><span class="p">,</span><span class="n">user</span><span class="o">=</span><span class="nb">self</span><span class="o">.</span><span class="n">user</span><span class="p">,</span><span class="n">passwd</span><span class="o">=</span><span class="nb">self</span><span class="o">.</span><span class="n">pwd</span><span class="p">,</span><span class="n">db</span><span class="o">=</span><span class="s1">&#39;sy_video&#39;</span><span class="p">,</span><span class="n">port</span><span class="o">=</span><span class="nb">self</span><span class="o">.</span><span class="n">port</span><span class="p">,</span><span class="n">charset</span><span class="o">=</span><span class="s1">&#39;gb2312&#39;</span><span class="p">)</span>
+        <span class="nb">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">set_character_set</span><span class="p">(</span><span class="s1">&#39;gb2312&#39;</span><span class="p">)</span>
+        <span class="nb">self</span><span class="o">.</span><span class="n">cur</span> <span class="o">=</span> <span class="nb">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">cursor</span><span class="p">()</span>
+
+
+    <span class="k">def</span> <span class="nf">queryAllData</span><span class="p">(</span><span class="nb">self</span><span class="p">):</span>
+        <span class="ss">try</span><span class="p">:</span>
+            <span class="n">sql</span> <span class="o">=</span> <span class="s1">&#39;select * from FreeVideo&#39;</span>
+            <span class="nb">self</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+        <span class="n">except</span> <span class="no">MySQLdb</span><span class="o">.</span><span class="n">Error</span><span class="p">,</span><span class="ss">e</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="s2">&quot;Mysql Error %d: %s&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="p">)</span>
+
+    <span class="k">def</span> <span class="nf">insertData</span><span class="p">(</span><span class="nb">self</span><span class="p">,</span><span class="nb">id</span><span class="p">,</span><span class="n">title</span><span class="p">,</span><span class="n">url</span><span class="p">,</span><span class="n">leve1</span><span class="p">,</span><span class="n">leve2</span><span class="p">):</span>
+        <span class="ss">try</span><span class="p">:</span>
+            <span class="n">sql</span> <span class="o">=</span> <span class="s1">&#39;insert into FreeVideo values(%d,&quot;%s&quot;,&quot;%s&quot;,&quot;%s&quot;,&quot;%s&quot;)&#39;</span> <span class="o">%</span> <span class="p">(</span><span class="nb">id</span><span class="p">,</span><span class="n">title</span><span class="p">,</span><span class="n">url</span><span class="p">,</span><span class="n">leve1</span><span class="p">,</span><span class="n">leve2</span><span class="p">)</span>
+            <span class="nb">print</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+            <span class="nb">self</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
+            <span class="nb">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
+        <span class="n">except</span> <span class="no">MySQLdb</span><span class="o">.</span><span class="n">Error</span><span class="p">,</span><span class="ss">e</span><span class="p">:</span>
+            <span class="nb">print</span> <span class="s2">&quot;Mysql Error %d: %s&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="p">)</span></code></pre></div>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">ParserPage</span><span class="o">.</span><span class="n">py</span>
+
+
+<span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;maru&#39;</span>
+<span class="c1">#coding=gb2312</span>
+<span class="n">import</span> <span class="n">urllib2</span>
+<span class="n">import</span> <span class="n">re</span>
+<span class="n">import</span> <span class="n">mysql</span>
+
+
+<span class="k">class</span> <span class="nc">ParserPage</span><span class="p">():</span>
+
+    <span class="k">def</span> <span class="nf">parserPage</span><span class="p">(</span><span class="nb">self</span><span class="p">,</span><span class="n">url</span><span class="p">):</span>
+
+        <span class="ss">try</span><span class="p">:</span>
+            <span class="n">html</span> <span class="o">=</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">urlopen</span><span class="p">(</span><span class="n">url</span><span class="p">)</span><span class="o">.</span><span class="n">read</span><span class="p">()</span><span class="o">.</span><span class="n">decode</span><span class="p">(</span><span class="s2">&quot;gb2312&quot;</span><span class="p">)</span>
+        <span class="n">except</span> <span class="no">UnicodeDecodeError</span><span class="p">,</span><span class="ss">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;UnicodeDecodeError:&quot;</span><span class="o">+</span><span class="n">e</span><span class="p">)</span>
+            <span class="k">return</span>
+        <span class="n">except</span> <span class="n">urllib2</span><span class="o">.</span><span class="n">URLError</span><span class="p">,</span><span class="ss">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;URLError&quot;</span><span class="o">+</span><span class="n">e</span><span class="p">)</span>
+            <span class="k">return</span>
+
+        <span class="c1">#视频名称</span>
+        <span class="n">patName</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">r</span><span class="s1">&#39;&lt;font class=bigfont&gt;&lt;b&gt;(.*)&lt;/b&gt;&#39;</span><span class="p">)</span>
+        <span class="c1">#视频地址</span>
+        <span class="n">patURL</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">r</span><span class="s1">&#39;href=&quot;(.*\.rmvb|.*\.mp4)&quot;&#39;</span><span class="p">)</span>
+        <span class="c1">#视频分类</span>
+        <span class="n">patList</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">compile</span><span class="p">(</span><span class="n">r</span><span class="s1">&#39;&lt;a href=&quot;http://v8\.ccut\.edu\.cn/sort\.php\?/\d*&quot;&gt;(.*?)&lt;/a&gt;&#39;</span><span class="p">)</span>
+
+        <span class="ss">try</span><span class="p">:</span>
+            <span class="n">resName</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">patName</span><span class="p">,</span><span class="n">html</span><span class="p">)</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span>
+            <span class="n">resURL</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">patURL</span><span class="p">,</span><span class="n">html</span><span class="p">)</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span>
+            <span class="n">resList</span> <span class="o">=</span> <span class="n">re</span><span class="o">.</span><span class="n">findall</span><span class="p">(</span><span class="n">patList</span><span class="p">,</span><span class="n">html</span><span class="p">)</span>
+
+        <span class="n">except</span> <span class="no">IndexError</span><span class="p">,</span><span class="ss">e</span><span class="p">:</span>
+            <span class="k">return</span>
+
+        <span class="k">return</span> <span class="p">{</span>
+            <span class="s2">&quot;name&quot;</span><span class="p">:</span> <span class="n">resName</span><span class="p">,</span>
+            <span class="s2">&quot;url&quot;</span><span class="p">:</span> <span class="n">resURL</span><span class="p">,</span>
+            <span class="s2">&quot;leve1&quot;</span><span class="p">:</span> <span class="n">resList</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span><span class="p">,</span>
+            <span class="s2">&quot;leve2&quot;</span><span class="p">:</span> <span class="n">resList</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span>
+        <span class="p">}</span>
+
+
+<span class="k">if</span> <span class="n">__name__</span> <span class="o">==</span> <span class="s2">&quot;__main__&quot;</span><span class="p">:</span>
+    <span class="n">index</span> <span class="o">=</span> <span class="mi">500</span>
+    <span class="n">parser</span> <span class="o">=</span> <span class="no">ParserPage</span><span class="p">()</span>
+    <span class="n">db</span> <span class="o">=</span> <span class="n">mysql</span><span class="o">.</span><span class="n">Mysql</span><span class="p">()</span>
+    <span class="k">while</span> <span class="n">index</span> <span class="o">&lt;</span> <span class="mi">2000</span><span class="p">:</span>
+        <span class="ss">try</span><span class="p">:</span>
+            <span class="n">result</span> <span class="o">=</span> <span class="n">parser</span><span class="o">.</span><span class="n">parserPage</span><span class="p">(</span><span class="n">url</span><span class="o">=</span><span class="s2">&quot;http://v8.ccut.edu.cn/article.php?/%s&quot;</span> <span class="o">%</span> <span class="n">index</span><span class="p">)</span>
+            <span class="nb">name</span> <span class="o">=</span> <span class="n">result</span><span class="o">[</span><span class="s1">&#39;name&#39;</span><span class="o">]</span>
+            <span class="n">url</span> <span class="o">=</span> <span class="n">result</span><span class="o">[</span><span class="s1">&#39;url&#39;</span><span class="o">]</span>
+            <span class="n">leve1</span> <span class="o">=</span> <span class="n">result</span><span class="o">[</span><span class="s1">&#39;leve1&#39;</span><span class="o">]</span>
+            <span class="n">leve2</span> <span class="o">=</span> <span class="n">result</span><span class="o">[</span><span class="s1">&#39;leve2&#39;</span><span class="o">]</span>
+            <span class="n">db</span><span class="o">.</span><span class="n">insertData</span><span class="p">(</span><span class="nb">id</span><span class="o">=</span><span class="n">index</span><span class="p">,</span><span class="n">title</span><span class="o">=</span><span class="nb">name</span><span class="p">,</span><span class="n">url</span><span class="o">=</span><span class="n">url</span><span class="p">,</span><span class="n">leve1</span><span class="o">=</span><span class="n">leve1</span><span class="p">,</span><span class="n">leve2</span><span class="o">=</span><span class="n">leve2</span><span class="p">)</span>
+        <span class="n">except</span> <span class="no">TypeError</span><span class="p">,</span><span class="ss">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;TypeError-----%s&quot;</span> <span class="o">%</span> <span class="n">index</span><span class="p">)</span>
+            <span class="n">continue</span>
+        <span class="n">except</span> <span class="no">Exception</span><span class="p">,</span><span class="ss">e</span><span class="p">:</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;resultError-----%s&quot;</span> <span class="o">%</span> <span class="n">index</span><span class="p">)</span>
+            <span class="n">continue</span>
+        <span class="ss">finally</span><span class="p">:</span>
+            <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span></code></pre></div>
+
+<h3>（六）一些需要留意的坑</h3>
+
+<ol>
+<li>在给MySQL插入中文数据的时候千万记得字符集要统一，否则一定会让你生不如死的，博主由于对数据库的使用也不是很熟练，所以在这里浪费了大量的时间。所以记得，我记得是有三个字符集需要统一，加油吧，骚年们！</li>
+<li>CCUT真的不愧是二流大学，获取数据的时候我都快哭了，要不就是莫名其妙资源消失不见，要么就是rmvb变成rm，所以在异常处理的时候我显得异常烦躁，毕竟二流大学啊！</li>
+</ol>
+
+<h3>（七）Finally</h3>
+
+<p>晒一晒最终的成果：</p>
+
+<p><img src="/img/post-img/1026-4.png" alt="结果" /><br />
+<img src="/img/post-img/1026-5.png" alt="结果" /></p>
+
+<p>代码实现非常的简陋，但是第一个全栈项目还是比较有纪念价值的。附上github地址：<a href="https://github.com/Maru-zhang/CCUTSpider">CCUTSpider</a></p>
+
+
+                <hr>
+
+                
+                <!-- 多说 Share start -->
+                </style>
+                <div class="ds-share"
+                    style="text-align: right"
+                    data-thread-key="/2015/10/26/Full-Stack-1"
+                    data-title="全栈项目iCCUT之服务端开发（一）"
+                    data-url="/2015/10/26/Full-Stack-1/"
+                    data-images="/img/post-bg-01.jpg"
+                    data-content="（一）项目简介
+
+由于博主是一个二流大学的码农，所以想为二流大学量身定做一款APP（当然啦，我只做iOS端的），一来方便学校生活，二来也锻炼一下自己的全栈... | 张斌辉的博客 | Maru Blog " >
+                    <div class="ds-share-inline">
+                      <ul  class="ds-share-icons-16">
+                        <li data-toggle="ds-share-icons-more"><a class="ds-more" href="#">分享到：</a></li>
+                        <li><a class="ds-wechat flat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+                        <li><a class="ds-weibo flat" href="javascript:void(0);" data-service="weibo">微博</a></li>
+                        <li><a class="ds-douban flat" href="javascript:void(0);" data-service="douban">豆瓣</a></li>
+                      </ul>
+                      <div class="ds-share-icons-more">
+                      </div>
+                    </div>
+                <hr>
+                </div>
+                <!-- 多说 Share end-->
+                
+
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2015/10/20/Something-trouble-in-development-1/" data-toggle="tooltip" data-placement="top" title="开发中遇到的那些莫名其妙的坑-第一弹">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+
+
+                
+                <!-- 多说评论框 start -->
+                <div class="comment">
+                    <div class="ds-thread"
+                        data-thread-key="/2015/10/26/Full-Stack-1"
+                        data-title="全栈项目iCCUT之服务端开发（一）"
+                        data-url="/2015/10/26/Full-Stack-1/" >
+                    </div>
+                </div>
+                <!-- 多说评论框 end -->
+                
+
+            </div>
+
+    <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+        				
+                            
+                				<a href="/tags/#iOS" title="iOS" rel="2">
+                                    iOS
+                                </a>
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+        				
+        			</div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+                    
+                        <li><a href="http://laichanwai.github.io/">Ivy的博客</a></li>
+                    
+                        <li><a href="http://www.cnblogs.com/aeronfay">Fay的博客</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+<!-- Duoshuo hacking -->
+<input id="dsUser" type="hidden" value="maru"  />
+
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    // dynamic User hacking by Hux
+    var _user = document.getElementById('dsUser').value;
+    // duoshuo comment query.
+    var duoshuoQuery = {short_name: _user };
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0]
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+</script>
+<!-- 多说公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("http://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+                    
+
+                    <!-- add Weibo, Zhihu by Hux, add target = "_blank" to <a> by Hux -->
+                    
+                    
+                    <li>
+                        <a target="_blank" href="http://weibo.com/huxpro">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/Maru-zhang">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Maru Blog 2015
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=huxpro&repo=huxpro.github.io&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js "></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js "></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js "></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- Highlight.js -->
+<script>
+    async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+        hljs.initHighlightingOnLoad();
+    })
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+<link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+
+<!--fastClick.js -->
+<script>
+    async("http://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+
+
+
+<!-- Image to hack wechat -->
+<img src="/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
