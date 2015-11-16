@@ -21,7 +21,7 @@ tags:
 ![下载界面]({{ site.url }}/img/post-img/2015-11-16-1.gif)
 
 
-###2.BUG分析
+### 2.BUG分析
 赶紧看看是什么问题
 
 ![下载界面]({{ site.url }}/img/post-img/2015-11-16-0.png)
@@ -118,6 +118,6 @@ tags:
 
 从图中我们可以看到，第一个框框是在没有发生bug的情况下的打印结果，一切顺序都是那么的完美，先清空数据（顺便提一嘴，图中打印刷新的时候是已经清空了数据源的数据的时候），然后请求回来数据，然后再重新加载。第二个框框是BUG发生时的打印结果，诡异的事情发生了，在还没有获取数据的时候竟然就开始更新了cell6和cell7， 而且并没有打印<code>- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section</code>中的内容（这里在图中对应数字17和27，是数据源的总数）,也就是说<code>- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath</code>并不是在reloadData的时候调用的，而是在刷新的时候，下方的TableviewCell移出屏幕又回到屏幕的时候调用的（从缓存池中加载cell）。
 
-###4.BUG消除
+### 4.BUG消除
 
 由于个人水平的问题，我也不知道为什么相同的手势一快一慢会造成这样的执行顺序的问题，但是我知道的是，想要解决这个BUG必须防止在从缓存池中获取cell之前先清空的数据源。所以把<code>[_tableData removeAllObjects];</code>放在了AFNetworking的响应Block中，这样就没有问题了。
