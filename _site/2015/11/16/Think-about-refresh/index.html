@@ -1,0 +1,563 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="description" content="密集恐惧患者、选择恐惧患者、人际恐惧患者">
+    <meta name="keyword"  content="Maru-zhang，Maru Blog，张斌辉">
+    <link rel="shortcut icon" href="img/favicon.ico">
+
+    <title>关于一个下拉刷新BUG的一些思考 - 张斌辉的博客 | Maru Blog</title>
+
+    <link rel="canonical" href="/2015/11/16/Think-about-refresh/">
+
+    <!-- Bootstrap Core CSS -->
+    <link rel="stylesheet" href="/css/bootstrap.min.css">
+
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="/css/hux-blog.css">
+
+    <!-- Pygments Github CSS -->
+    <link rel="stylesheet" href="/css/syntax.css">
+
+    <!-- Custom Fonts -->
+    <!-- <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.3.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"> -->
+    <!-- Hux change font-awesome CDN to qiniu -->
+    <link href="http://cdn.staticfile.org/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet" type="text/css">
+
+
+    <!-- Hux Delete, sad but pending in China
+    <link href='http://fonts.googleapis.com/css?family=Lora:400,700,400italic,700italic' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans:300italic,400italic,600italic,700italic,800italic,400,300,600,700,800' rel='stylesheet' type='text/
+    css'>
+    -->
+
+
+    <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+        <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+        <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
+    <![endif]-->
+
+    <!-- ga & ba script hoook -->
+    <script></script>
+</head>
+
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    <!-- Navigation -->
+<nav class="navbar navbar-default navbar-custom navbar-fixed-top">
+    <div class="container-fluid">
+        <!-- Brand and toggle get grouped for better mobile display -->
+        <div class="navbar-header page-scroll">
+            <button type="button" class="navbar-toggle">
+                <span class="sr-only">Toggle navigation</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <a class="navbar-brand" href="/">Maru Blog</a>
+        </div>
+
+        <!-- Collect the nav links, forms, and other content for toggling -->
+        <!-- Known Issue, found by Hux:
+            <nav>'s height woule be hold on by its content.
+            so, when navbar scale out, the <nav> will cover tags.
+            also mask any touch event of tags, unfortunately.
+        -->
+        <div id="huxblog_navbar">
+            <div class="navbar-collapse">
+                <ul class="nav navbar-nav navbar-right">
+                    <li>
+                        <a href="/">Home</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/about/">About</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/portfolio/">Portfolio</a>
+                    </li>
+                    
+                    <li>
+                        <a href="/tags/">Tags</a>
+                    </li>
+                    
+                </ul>
+            </div>
+        </div>
+        <!-- /.navbar-collapse -->
+    </div>
+    <!-- /.container -->
+</nav>
+<script>
+    // Drop Bootstarp low-performance Navbar
+    // Use customize navbar with high-quality material design animation
+    // in high-perf jank-free CSS3 implementation
+    var $body   = document.body;
+    var $toggle = document.querySelector('.navbar-toggle');
+    var $navbar = document.querySelector('#huxblog_navbar');
+    var $collapse = document.querySelector('.navbar-collapse');
+
+    $toggle.addEventListener('click', handleMagic)
+    function handleMagic(e){
+        if ($navbar.className.indexOf('in') > 0) {
+        // CLOSE
+            $navbar.className = " ";
+            // wait until animation end.
+            setTimeout(function(){
+                // prevent frequently toggle
+                if($navbar.className.indexOf('in') < 0) {
+                    $collapse.style.height = "0px"
+                }
+            },400)
+        }else{
+        // OPEN
+            $collapse.style.height = "auto"
+            $navbar.className += " in";
+        }
+    }
+</script>
+
+
+    <!-- Image to hack wechat -->
+<!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
+<!-- <img src="/img/post-bg-01.jpg" width="0" height="0"> -->
+
+<!-- Post Header -->
+<style type="text/css">
+    header.intro-header{
+        background-image: url('/img/post-bg-01.jpg')
+    }
+</style>
+<header class="intro-header" >
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <div class="post-heading">
+                    <div class="tags">
+                        
+                        <a class="tag" href="/tags/#iOS" title="iOS">iOS</a>
+                        
+                        <a class="tag" href="/tags/#Objective-C" title="Objective-C">Objective-C</a>
+                        
+                    </div>
+                    <h1>关于一个下拉刷新BUG的一些思考</h1>
+                    
+                    
+                    <h2 class="subheading"></h2>
+                    
+                    <span class="meta">Posted by Maru on November 16, 2015</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Post Content -->
+<article>
+    <div class="container">
+        <div class="row">
+
+    <!-- Post Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                post-container">
+
+				<h2 id="bug">关于一个下拉刷新BUG的一些思考</h2>
+
+<blockquote>
+  <p>世界上没有什么事儿是一顿烧烤不能解决的。如果有,那就两顿。——亚洲气质舞王尼古拉斯 赵四</p>
+</blockquote>
+
+<h3 id="bug-1">1.BUG表现</h3>
+<p>在最近项目中，关于网络请求那部分，还是毫无意外的用到了MJRefresh和AFNetworking。然而这个被玩烂的框架却被我用出了新的BUG：当你以正常人类的速度下拉刷新的时候（就是手指按住屏幕，往下移动，然后放开），刷新正常工作没有任何问题。然而，当你以极快的速度完成上述的动作的时候，奇迹发生了，Crash了！</p>
+
+<p><img src="/img/post-img/2015-11-16-0.gif" alt="下载界面" /><br />
+<img src="/img/post-img/2015-11-16-1.gif" alt="下载界面" /></p>
+
+<p>###2.BUG分析<br />
+赶紧看看是什么问题</p>
+
+<p><img src="/img/post-img/2015-11-16-0.png" alt="下载界面" /></p>
+
+<p><img src="/img/post-img/2015-11-16-1.png" alt="下载界面" /></p>
+
+<p>哦~数据源为空，所以在刷新的时候取值了一个空的数据源数组导致crash。等等，为空？怎么可能！我们先来看一下下拉刷新的方法：</p>
+
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">-</span> <span class="p">(</span><span class="n">void</span><span class="p">)</span><span class="ss">loadDataByAdd</span><span class="p">:(</span><span class="no">BOOL</span><span class="p">)</span><span class="n">isAdd</span> <span class="p">{</span>
+    
+    <span class="no">TSLog</span><span class="p">(</span><span class="err">@</span><span class="s2">&quot;刷新&quot;</span><span class="p">);</span>
+
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">isAdd</span><span class="p">)</span> <span class="p">{</span>
+        
+        <span class="n">_pageIndex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+    <span class="p">}</span><span class="k">else</span> <span class="p">{</span>
+        
+        <span class="n">_pageIndex</span><span class="o">++</span><span class="p">;</span>
+    <span class="p">}</span>
+    
+    <span class="k">if</span> <span class="p">(</span><span class="o">!</span><span class="n">isAdd</span><span class="p">)</span> <span class="p">{</span>
+        
+        <span class="o">[</span><span class="n">_tableData</span> <span class="n">removeAllObjects</span><span class="o">]</span><span class="p">;</span>
+    <span class="p">}</span>
+    
+    <span class="no">NSString</span> <span class="o">*</span><span class="n">url</span> <span class="o">=</span> <span class="o">[</span><span class="no">NSString</span> <span class="ss">stringWithFormat</span><span class="p">:</span><span class="err">@</span><span class="s2">&quot;%@/project/customProjectJSON!costDetailMobileList.action?&quot;</span><span class="p">,</span> <span class="n">kHostUrl</span><span class="o">]</span><span class="p">;</span>
+
+    <span class="no">NSDateFormatter</span> <span class="o">*</span><span class="n">formatter</span> <span class="o">=</span> <span class="o">[[</span><span class="no">NSDateFormatter</span> <span class="n">alloc</span><span class="o">]</span> <span class="n">init</span><span class="o">]</span><span class="p">;</span>
+    <span class="n">formatter</span><span class="o">.</span><span class="n">dateFormat</span> <span class="o">=</span> <span class="err">@</span><span class="s2">&quot;yyyy年MM月&quot;</span><span class="p">;</span>
+    <span class="no">NSDate</span> <span class="o">*</span><span class="n">date</span> <span class="o">=</span> <span class="o">[</span><span class="n">formatter</span> <span class="ss">dateFromString</span><span class="p">:</span><span class="n">displayDateString</span><span class="o">]</span><span class="p">;</span>
+    <span class="n">formatter</span><span class="o">.</span><span class="n">dateFormat</span> <span class="o">=</span> <span class="err">@</span><span class="s2">&quot;yyyy-MM&quot;</span><span class="p">;</span>
+    
+    <span class="no">NSDictionary</span> <span class="o">*</span><span class="n">params</span> <span class="o">=</span> <span class="err">@</span><span class="p">{</span>
+                             <span class="err">@</span><span class="s2">&quot;userId&quot;</span> <span class="p">:</span> <span class="n">kUserId</span><span class="p">,</span>
+                             <span class="err">@</span><span class="s2">&quot;date&quot;</span>   <span class="p">:</span> <span class="o">[</span><span class="n">formatter</span> <span class="ss">stringFromDate</span><span class="p">:</span><span class="n">date</span><span class="o">]</span><span class="p">,</span>
+                             <span class="err">@</span><span class="s2">&quot;pageIndex&quot;</span> <span class="p">:</span> <span class="o">[</span><span class="no">NSString</span> <span class="ss">stringWithFormat</span><span class="p">:</span><span class="err">@</span><span class="s2">&quot;%li&quot;</span><span class="p">,</span> <span class="n">_pageIndex</span><span class="o">]</span><span class="p">,</span>
+                             <span class="err">@</span><span class="s2">&quot;pageCount&quot;</span> <span class="p">:</span> <span class="o">[</span><span class="no">NSString</span> <span class="ss">stringWithFormat</span><span class="p">:</span><span class="err">@</span><span class="s2">&quot;10&quot;</span><span class="o">]</span>
+                             <span class="p">};</span>
+    
+    <span class="n">__weak</span> <span class="n">typeof</span><span class="p">(</span><span class="n">_tableView</span><span class="p">)</span> <span class="n">weakTableView</span> <span class="o">=</span> <span class="n">_tableView</span><span class="p">;</span>
+    
+    <span class="no">AFHTTPSessionManager</span> <span class="o">*</span><span class="n">manager</span> <span class="o">=</span> <span class="o">[</span><span class="no">AFHTTPSessionManager</span> <span class="n">manager</span><span class="o">]</span><span class="p">;</span>
+    <span class="n">manager</span><span class="o">.</span><span class="n">requestSerializer</span><span class="o">.</span><span class="n">timeoutInterval</span> <span class="o">=</span> <span class="mi">10</span><span class="p">;</span>
+    <span class="o">[</span><span class="n">manager</span> <span class="ss">POST</span><span class="p">:</span><span class="n">url</span> <span class="ss">parameters</span><span class="p">:</span><span class="n">params</span> <span class="ss">success</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="no">NSURLSessionDataTask</span> <span class="o">*</span><span class="n">task</span><span class="p">,</span> <span class="nb">id</span> <span class="n">responseObject</span><span class="p">)</span> <span class="p">{</span>
+        
+        <span class="no">TSLog</span><span class="p">(</span><span class="err">@</span><span class="s2">&quot;获取了数据&quot;</span><span class="p">);</span>
+
+        <span class="no">NSString</span> <span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="o">[</span><span class="n">responseObject</span> <span class="ss">objectForKey</span><span class="p">:</span><span class="err">@</span><span class="s2">&quot;success&quot;</span><span class="o">]</span><span class="p">;</span>
+        
+        <span class="k">if</span> <span class="p">(</span><span class="o">[</span><span class="n">result</span> <span class="ss">isEqualToString</span><span class="p">:</span><span class="err">@</span><span class="s2">&quot;0&quot;</span><span class="o">]</span><span class="p">)</span> <span class="p">{</span>
+
+            <span class="no">NSArray</span> <span class="o">*</span><span class="n">array</span> <span class="o">=</span> <span class="o">[</span><span class="n">responseObject</span> <span class="ss">objectForKey</span><span class="p">:</span><span class="err">@</span><span class="s2">&quot;datas&quot;</span><span class="o">]</span><span class="p">;</span>
+            <span class="k">if</span> <span class="p">(</span><span class="n">array</span><span class="p">)</span> <span class="p">{</span>
+                <span class="k">for</span> <span class="p">(</span><span class="no">NSDictionary</span> <span class="o">*</span><span class="n">dict</span> <span class="k">in</span> <span class="n">array</span><span class="p">)</span> <span class="p">{</span>
+                    <span class="no">XFJLModel</span> <span class="o">*</span><span class="n">model</span> <span class="o">=</span> <span class="o">[</span><span class="no">XFJLModel</span> <span class="ss">objectWithKeyValues</span><span class="p">:</span><span class="n">dict</span><span class="o">]</span><span class="p">;</span>
+                    <span class="o">[</span><span class="n">_tableData</span> <span class="ss">addObject</span><span class="p">:</span><span class="n">model</span><span class="o">]</span><span class="p">;</span>
+                <span class="p">}</span>
+            <span class="p">}</span>
+
+        <span class="p">}</span><span class="k">else</span> <span class="p">{</span>
+
+            <span class="n">_pageIndex</span> <span class="o">=</span> <span class="n">_pageIndex</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">?</span> <span class="mi">0</span> <span class="p">:</span> <span class="n">_pageIndex</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+            
+        <span class="p">}</span>
+
+        <span class="o">[</span><span class="n">weakTableView</span><span class="o">.</span><span class="n">footer</span> <span class="n">endRefreshing</span><span class="o">]</span><span class="p">;</span>
+        <span class="o">[</span><span class="n">weakTableView</span><span class="o">.</span><span class="n">header</span> <span class="n">endRefreshing</span><span class="o">]</span><span class="p">;</span>
+        <span class="o">[</span><span class="n">weakTableView</span> <span class="n">reloadData</span><span class="o">]</span><span class="p">;</span>
+
+
+    <span class="p">}</span> <span class="ss">failure</span><span class="p">:</span><span class="o">^</span><span class="p">(</span><span class="no">NSURLSessionDataTask</span> <span class="o">*</span><span class="n">task</span><span class="p">,</span> <span class="no">NSError</span> <span class="o">*</span><span class="n">error</span><span class="p">)</span> <span class="p">{</span>
+        
+        <span class="n">_pageIndex</span> <span class="o">=</span> <span class="n">_pageIndex</span> <span class="o">==</span> <span class="mi">0</span> <span class="o">?</span> <span class="mi">0</span> <span class="p">:</span> <span class="n">_pageIndex</span> <span class="o">-</span> <span class="mi">1</span><span class="p">;</span>
+        
+        <span class="o">[</span><span class="n">weakTableView</span><span class="o">.</span><span class="n">footer</span> <span class="n">endRefreshing</span><span class="o">]</span><span class="p">;</span>
+        <span class="o">[</span><span class="n">weakTableView</span><span class="o">.</span><span class="n">header</span> <span class="n">endRefreshing</span><span class="o">]</span><span class="p">;</span>
+        <span class="o">[</span><span class="no">ZMAleart</span> <span class="ss">aleartwithVC</span><span class="p">:</span><span class="nb">self</span> <span class="ss">addRemark</span><span class="p">:</span><span class="err">@</span><span class="s2">&quot;服务器连接失败,请检查网络&quot;</span><span class="o">]</span><span class="p">;</span>
+    <span class="p">}</span><span class="o">]</span><span class="p">;</span>
+<span class="p">}</span></code></pre></div>
+
+<p>从上面的代码可以看出来，当isAdd为NO时，也就是下拉刷新的时候，在请求之前我们先移除了所有数据源的内容，然后再进行请求刷新。那么问题来了，按照这个顺序，为什么在<code>- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath</code>这个方法中拿到的数据源会是空呢？</p>
+
+<h3 id="bug-2">3.BUG定位</h3>
+
+<p>是时候来一发DebugLog了，我分别在MJRefresh和TableView的刷新方法中标注了一些打印内容，现在让我们来看一下打印的结果：</p>
+
+<p><img src="/img/post-img/2015-11-16-2.png" alt="分类界面" /></p>
+
+<p>从图中我们可以看到，第一个框框是在没有发生bug的情况下的打印结果，一切顺序都是那么的完美，先清空数据（顺便提一嘴，图中打印刷新的时候是已经清空了数据源的数据的时候），然后请求回来数据，然后再重新加载。第二个框框是BUG发生时的打印结果，诡异的事情发生了，在还没有获取数据的时候竟然就开始更新了cell6和cell7， 而且并没有打印<code>- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section</code>中的内容（这里在图中对应数字17和27，是数据源的总数）,也就是说<code>- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath</code>并不是在reloadData的时候调用的，而是在刷新的时候，下方的TableviewCell移出屏幕又回到屏幕的时候调用的（从缓存池中加载cell）。</p>
+
+<p>###4.BUG消除</p>
+
+<p>由于个人水平的问题，我也不知道为什么相同的手势一快一慢会造成这样的执行顺序的问题，但是我知道的是，想要解决这个BUG必须防止在从缓存池中获取cell之前先清空的数据源。所以把<code>[_tableData removeAllObjects];</code>放在了AFNetworking的响应Block中，这样就没有问题了。</p>
+
+
+                <hr>
+
+                
+                <!-- 多说 Share start -->
+                </style>
+                <div class="ds-share"
+                    style="text-align: right"
+                    data-thread-key="/2015/11/16/Think-about-refresh"
+                    data-title="关于一个下拉刷新BUG的一些思考"
+                    data-url="/2015/11/16/Think-about-refresh/"
+                    data-images="/img/post-bg-01.jpg"
+                    data-content="关于一个下拉刷新BUG的一些思考
+
+
+  世界上没有什么事儿是一顿烧烤不能解决的。如果有,那就两顿。——亚洲气质舞王尼古拉斯 赵四
+
+
+1.BUG表现
+在... | 张斌辉的博客 | Maru Blog " >
+                    <div class="ds-share-inline">
+                      <ul  class="ds-share-icons-16">
+                        <li data-toggle="ds-share-icons-more"><a class="ds-more" href="#">分享到：</a></li>
+                        <li><a class="ds-wechat flat" href="javascript:void(0);" data-service="wechat">微信</a></li>
+                        <li><a class="ds-weibo flat" href="javascript:void(0);" data-service="weibo">微博</a></li>
+                        <li><a class="ds-douban flat" href="javascript:void(0);" data-service="douban">豆瓣</a></li>
+                      </ul>
+                      <div class="ds-share-icons-more">
+                      </div>
+                    </div>
+                <hr>
+                </div>
+                <!-- 多说 Share end-->
+                
+
+
+                <ul class="pager">
+                    
+                    <li class="previous">
+                        <a href="/2015/10/26/Full-Stack-1/" data-toggle="tooltip" data-placement="top" title="全栈项目iCCUT之数据篇（一）">&larr; Previous Post</a>
+                    </li>
+                    
+                    
+                </ul>
+
+
+                
+                <!-- 多说评论框 start -->
+                <div class="comment">
+                    <div class="ds-thread"
+                        data-thread-key="/2015/11/16/Think-about-refresh"
+                        data-title="关于一个下拉刷新BUG的一些思考"
+                        data-url="/2015/11/16/Think-about-refresh/" >
+                    </div>
+                </div>
+                <!-- 多说评论框 end -->
+                
+
+            </div>
+
+    <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <hr class="hidden-sm hidden-xs">
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+        				
+                            
+        				
+                            
+                				<a href="/tags/#iOS" title="iOS" rel="3">
+                                    iOS
+                                </a>
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+        				
+        			</div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+                    
+                        <li><a href="http://laichanwai.github.io/">Ivy的博客</a></li>
+                    
+                        <li><a href="http://www.cnblogs.com/aeronfay">Fay的博客</a></li>
+                    
+                </ul>
+                
+            </div>
+        </div>
+    </div>
+</article>
+
+
+<!-- Duoshuo hacking -->
+<input id="dsUser" type="hidden" value="maru"  />
+
+<!-- 多说公共JS代码 start (一个网页只需插入一次) -->
+<script type="text/javascript">
+    // dynamic User hacking by Hux
+    var _user = document.getElementById('dsUser').value;
+    // duoshuo comment query.
+    var duoshuoQuery = {short_name: _user };
+    (function() {
+        var ds = document.createElement('script');
+        ds.type = 'text/javascript';ds.async = true;
+        ds.src = (document.location.protocol == 'https:' ? 'https:' : 'http:') + '//static.duoshuo.com/embed.js';
+        ds.charset = 'UTF-8';
+        (document.getElementsByTagName('head')[0]
+         || document.getElementsByTagName('body')[0]).appendChild(ds);
+    })();
+</script>
+<!-- 多说公共JS代码 end -->
+
+
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+<!-- anchor-js, Doc:http://bryanbraun.github.io/anchorjs/ -->
+<script>
+    async("http://cdn.bootcss.com/anchor-js/1.1.1/anchor.min.js",function(){
+        anchors.options = {
+          visible: 'always',
+          placement: 'right',
+          icon: '#'
+        };
+        anchors.add().remove('.intro-header h1').remove('.subheading').remove('.sidebar-container h5');
+    })
+</script>
+<style>
+    /* place left on bigger screen */
+    @media all and (min-width: 800px) {
+        .anchorjs-link{
+            position: absolute;
+            left: -0.75em;
+            font-size: 1.1em;
+            margin-top : -0.1em;
+        }
+    }
+</style>
+
+
+
+    <!-- Footer -->
+<footer>
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
+                <ul class="list-inline text-center">
+                    
+                    
+
+                    <!-- add Weibo, Zhihu by Hux, add target = "_blank" to <a> by Hux -->
+                    
+                    
+                    <li>
+                        <a target="_blank" href="http://weibo.com/huxpro">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-weibo fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+
+
+                    
+                    
+                    <li>
+                        <a target="_blank" href="https://github.com/Maru-zhang">
+                            <span class="fa-stack fa-lg">
+                                <i class="fa fa-circle fa-stack-2x"></i>
+                                <i class="fa fa-github fa-stack-1x fa-inverse"></i>
+                            </span>
+                        </a>
+                    </li>
+                    
+                </ul>
+                <p class="copyright text-muted">
+                    Copyright &copy; Maru Blog 2015
+                    <br>
+                    Theme by <a href="http://huangxuan.me">Hux</a> |
+                    <iframe
+                        style="margin-left: 2px; margin-bottom:-5px;"
+                        frameborder="0" scrolling="0" width="91px" height="20px"
+                        src="https://ghbtns.com/github-btn.html?user=huxpro&repo=huxpro.github.io&type=star&count=true" >
+                    </iframe>
+                </p>
+            </div>
+        </div>
+    </div>
+</footer>
+
+<!-- jQuery -->
+<script src="/js/jquery.min.js "></script>
+
+<!-- Bootstrap Core JavaScript -->
+<script src="/js/bootstrap.min.js "></script>
+
+<!-- Custom Theme JavaScript -->
+<script src="/js/hux-blog.min.js "></script>
+
+
+<!-- async load function -->
+<script>
+    function async(u, c) {
+      var d = document, t = 'script',
+          o = d.createElement(t),
+          s = d.getElementsByTagName(t)[0];
+      o.src = u;
+      if (c) { o.addEventListener('load', function (e) { c(null, e); }, false); }
+      s.parentNode.insertBefore(o, s);
+    }
+</script>
+
+<!-- Highlight.js -->
+<script>
+    async("http://cdn.bootcss.com/highlight.js/8.6/highlight.min.js", function(){
+        hljs.initHighlightingOnLoad();
+    })
+    // only load tagcloud.js in tag.html
+    if($('#tag_cloud').length !== 0){
+        async("/js/jquery.tagcloud.js",function(){
+            $.fn.tagcloud.defaults = {
+                //size: {start: 1, end: 1, unit: 'em'},
+                color: {start: '#bbbbee', end: '#0085a1'},
+            };
+            $('#tag_cloud a').tagcloud();
+        })
+    }
+</script>
+<link href="http://cdn.bootcss.com/highlight.js/8.6/styles/github.min.css" rel="stylesheet">
+
+<!--fastClick.js -->
+<script>
+    async("http://cdn.bootcss.com/fastclick/1.0.6/fastclick.min.js", function(){
+        var $nav = document.querySelector("nav");
+        if($nav) FastClick.attach($nav);
+    })
+</script>
+
+
+
+
+
+
+
+
+
+<!-- Image to hack wechat -->
+<!-- <img src="/img/icon_wechat.png" width="0" height="0" /> -->
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
+</html>
