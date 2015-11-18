@@ -183,8 +183,8 @@
 <p><img src="/img/post-img/2015-11-16-0.gif" alt="下载界面" /><br />
 <img src="/img/post-img/2015-11-16-1.gif" alt="下载界面" /></p>
 
-<p>###2.BUG分析<br />
-赶紧看看是什么问题</p>
+<h3 id="bug-2">2.BUG分析</h3>
+<p>赶紧看看是什么问题</p>
 
 <p><img src="/img/post-img/2015-11-16-0.png" alt="下载界面" /></p>
 
@@ -266,7 +266,7 @@
 
 <p>从上面的代码可以看出来，当isAdd为NO时，也就是下拉刷新的时候，在请求之前我们先移除了所有数据源的内容，然后再进行请求刷新。那么问题来了，按照这个顺序，为什么在<code>- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath</code>这个方法中拿到的数据源会是空呢？</p>
 
-<h3 id="bug-2">3.BUG定位</h3>
+<h3 id="bug-3">3.BUG定位</h3>
 
 <p>是时候来一发DebugLog了，我分别在MJRefresh和TableView的刷新方法中标注了一些打印内容，现在让我们来看一下打印的结果：</p>
 
@@ -274,7 +274,7 @@
 
 <p>从图中我们可以看到，第一个框框是在没有发生bug的情况下的打印结果，一切顺序都是那么的完美，先清空数据（顺便提一嘴，图中打印刷新的时候是已经清空了数据源的数据的时候），然后请求回来数据，然后再重新加载。第二个框框是BUG发生时的打印结果，诡异的事情发生了，在还没有获取数据的时候竟然就开始更新了cell6和cell7， 而且并没有打印<code>- (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section</code>中的内容（这里在图中对应数字17和27，是数据源的总数）,也就是说<code>- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath</code>并不是在reloadData的时候调用的，而是在刷新的时候，下方的TableviewCell移出屏幕又回到屏幕的时候调用的（从缓存池中加载cell）。</p>
 
-<p>###4.BUG消除</p>
+<h3 id="bug-4">4.BUG消除</h3>
 
 <p>由于个人水平的问题，我也不知道为什么相同的手势一快一慢会造成这样的执行顺序的问题，但是我知道的是，想要解决这个BUG必须防止在从缓存池中获取cell之前先清空的数据源。所以把<code>[_tableData removeAllObjects];</code>放在了AFNetworking的响应Block中，这样就没有问题了。</p>
 
