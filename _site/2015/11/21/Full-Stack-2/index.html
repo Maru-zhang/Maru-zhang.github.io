@@ -282,8 +282,7 @@
 
 <p>好，接下来就是真正的响应处理了，leve1和index参数为必传参数，而leve2为可选参数。首先是响应的检查处理，看传入的参数是否符合要求，如果没有通过那么就返回错误信息响应:</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="sr">//</span> <span class="err">获取请求参数</span>
-		<span class="nb">Integer</span> <span class="n">index</span> <span class="o">=</span> <span class="nb">Integer</span><span class="o">.</span><span class="n">parseInt</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">getParameter</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">));</span>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">Integer</span> <span class="n">index</span> <span class="o">=</span> <span class="nb">Integer</span><span class="o">.</span><span class="n">parseInt</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">getParameter</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">));</span>
 		<span class="nb">String</span> <span class="n">leve1</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">getParameter</span><span class="p">(</span><span class="s2">&quot;leve1&quot;</span><span class="p">);</span>
 		<span class="nb">String</span> <span class="n">leve2</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">getParameter</span><span class="p">(</span><span class="s2">&quot;leve2&quot;</span><span class="p">);</span>
 		
