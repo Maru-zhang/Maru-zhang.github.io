@@ -171,21 +171,19 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-				<h2 id="iccut">全栈项目iCCUT之服务器篇（二）</h2>
-
-<h3 id="section">（一）序言</h3>
+				<h3 id="section">（一）序言</h3>
 
 <p>秉承着一个礼拜装一次*的原则，我又开始写这个LowB全栈系列的博文了。上一次博主已经通过Python获取到了20000+多条的数据，当然啦，最后还是要APP获取这些数据的，那么这个时候流弊的服务器就需要站出来了！由于我们专业学的是JSP，所以我也就用Tomcat+Servlet来进行服务器端的开发，其实博主特别想用PHP来写，但是奈何精力不够。</p>
 
 <p>顺便提一嘴。之前博主一直在用的可视化数据库工具是Navicat for MySQL，但是很可惜到期了，后来用了一下MySQLWorkbench.我现在只想对Navicat for MySQL说一个字，滚~（谁用谁知道！）</p>
 
-<p>###（二）接口思路与规划</p>
+<h3 id="section-1">（二）接口思路与规划</h3>
 
 <p>MySQL中我们已经存储了视频的名字、URL、分类等信息，那么在接口我们要做的就是根据指定的分类或者名字来获取视频的列表（其中只需要视频名字和URL地址）。</p>
 
 <p><img src="/img/post-img/2015-11-21-0.png" alt="img" /></p>
 
-<h3 id="section-1">（三）框架选择和驱动准备</h3>
+<h3 id="section-2">（三）框架选择和驱动准备</h3>
 
 <p>和上一篇一样，首先第一步我们还是需要用Java连接MySQL数据库，然后就是古老的“增、删、改、查”了。最后一步就是把从数据库里获取的数据以Json的格式返回给APP。OVER。</p>
 
@@ -286,7 +284,6 @@
 		<span class="nb">String</span> <span class="n">leve1</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">getParameter</span><span class="p">(</span><span class="s2">&quot;leve1&quot;</span><span class="p">);</span>
 		<span class="nb">String</span> <span class="n">leve2</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">getParameter</span><span class="p">(</span><span class="s2">&quot;leve2&quot;</span><span class="p">);</span>
 		
-		<span class="sr">//</span><span class="err">如果缺少一些必要参数，那么就返回错误的信息</span>
 		<span class="k">if</span> <span class="p">(</span><span class="n">index</span> <span class="o">==</span> <span class="n">null</span> <span class="o">||</span> <span class="n">leve1</span> <span class="o">==</span> <span class="n">null</span><span class="p">)</span> <span class="p">{</span>
 			<span class="no">JSONObject</span> <span class="n">object</span> <span class="o">=</span> <span class="n">getErrorJSONObject</span><span class="p">();</span>
 			<span class="no">PrintWriter</span> <span class="n">out</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">getWriter</span><span class="p">();</span>
@@ -310,7 +307,6 @@
 		<span class="n">try</span> <span class="p">{</span>
 			<span class="no">ResultSet</span> <span class="n">resultSet</span> <span class="o">=</span> <span class="n">dbHelper</span><span class="o">.</span><span class="n">pst</span><span class="o">.</span><span class="n">executeQuery</span><span class="p">();</span>
 			<span class="k">while</span> <span class="p">(</span><span class="n">resultSet</span><span class="o">.</span><span class="n">next</span><span class="p">())</span> <span class="p">{</span>
-				<span class="sr">//</span> <span class="err">添加每一条记录</span>
 				<span class="no">JSONObject</span> <span class="n">object</span> <span class="o">=</span> <span class="kp">new</span> <span class="no">JSONObject</span><span class="p">();</span>
 				<span class="n">object</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s2">&quot;title&quot;</span><span class="p">,</span> <span class="n">resultSet</span><span class="o">.</span><span class="n">getString</span><span class="p">(</span><span class="s2">&quot;title&quot;</span><span class="p">));</span>
 				<span class="n">object</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s2">&quot;url&quot;</span><span class="p">,</span> <span class="n">resultSet</span><span class="o">.</span><span class="n">getString</span><span class="p">(</span><span class="s2">&quot;url&quot;</span><span class="p">));</span>
@@ -323,10 +319,8 @@
 			<span class="no">System</span><span class="o">.</span><span class="n">out</span><span class="o">.</span><span class="n">println</span><span class="p">(</span><span class="n">e</span><span class="p">);</span>
 		<span class="p">}</span>
 		
-		<span class="sr">//</span> <span class="err">输出</span>
 		<span class="no">JSONObject</span> <span class="n">obect</span><span class="p">;</span>
 		<span class="k">if</span> <span class="p">(</span><span class="n">resultList</span><span class="o">.</span><span class="n">length</span><span class="p">()</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
-			<span class="sr">//</span><span class="err">为空</span>
 			<span class="n">obect</span> <span class="o">=</span> <span class="n">this</span><span class="o">.</span><span class="n">getBaseJsonObject</span><span class="p">(</span><span class="n">resultList</span><span class="p">,</span><span class="s2">&quot;没有更多&quot;</span><span class="p">,</span> <span class="kp">true</span><span class="p">);</span>
 		<span class="p">}</span><span class="k">else</span> <span class="p">{</span>
 			<span class="n">obect</span> <span class="o">=</span> <span class="n">this</span><span class="o">.</span><span class="n">getBaseJsonObject</span><span class="p">(</span><span class="n">resultList</span><span class="p">,</span><span class="s2">&quot;成功查询&quot;</span><span class="p">,</span> <span class="kp">true</span><span class="p">);</span>
@@ -338,7 +332,7 @@
   <p>这里需要注意的就是当SQL语句中出现中文查询的时候，字符集的统一就是特别重要了。否则你会发现明明什么都是对的，但是为什么就是查询不到结果呢？这就是那句characterEncoding的力量！</p>
 </blockquote>
 
-<h3 id="section-2">(五)结语</h3>
+<h3 id="section-3">(五)结语</h3>
 
 <p>最后来看一下用Alamofire获取的结果：</p>
 
@@ -358,11 +352,9 @@
                     data-title="全栈项目iCCUT之服务器篇（二)"
                     data-url="/2015/11/21/Full-Stack-2/"
                     data-images="/img/post-bg-02.jpg"
-                    data-content="全栈项目iCCUT之服务器篇（二）
+                    data-content="（一）序言
 
-（一）序言
-
-秉承着一个礼拜装一次*的原则，我又开始写这个LowB全栈系列的博文了。上一次博主已经通过Python获... | 张斌辉的博客 | Maru Blog " >
+秉承着一个礼拜装一次*的原则，我又开始写这个LowB全栈系列的博文了。上一次博主已经通过Python获取到了20000+多条的数据，当然啦，... | 张斌辉的博客 | Maru Blog " >
                     <div class="ds-share-inline">
                       <ul  class="ds-share-icons-16">
                         <li data-toggle="ds-share-icons-more"><a class="ds-more" href="#">分享到：</a></li>

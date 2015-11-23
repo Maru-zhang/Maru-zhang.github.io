@@ -5,27 +5,25 @@
     <description>密集恐惧患者、选择恐惧患者、人际恐惧患者</description>
     <link>/</link>
     <atom:link href="/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Sun, 22 Nov 2015 21:05:10 +0800</pubDate>
-    <lastBuildDate>Sun, 22 Nov 2015 21:05:10 +0800</lastBuildDate>
+    <pubDate>Mon, 23 Nov 2015 09:30:04 +0800</pubDate>
+    <lastBuildDate>Mon, 23 Nov 2015 09:30:04 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
     
       <item>
         <title>全栈项目iCCUT之服务器篇（二)</title>
-        <description>&lt;h2 id=&quot;iccut&quot;&gt;全栈项目iCCUT之服务器篇（二）&lt;/h2&gt;
-
-&lt;h3 id=&quot;section&quot;&gt;（一）序言&lt;/h3&gt;
+        <description>&lt;h3 id=&quot;section&quot;&gt;（一）序言&lt;/h3&gt;
 
 &lt;p&gt;秉承着一个礼拜装一次*的原则，我又开始写这个LowB全栈系列的博文了。上一次博主已经通过Python获取到了20000+多条的数据，当然啦，最后还是要APP获取这些数据的，那么这个时候流弊的服务器就需要站出来了！由于我们专业学的是JSP，所以我也就用Tomcat+Servlet来进行服务器端的开发，其实博主特别想用PHP来写，但是奈何精力不够。&lt;/p&gt;
 
 &lt;p&gt;顺便提一嘴。之前博主一直在用的可视化数据库工具是Navicat for MySQL，但是很可惜到期了，后来用了一下MySQLWorkbench.我现在只想对Navicat for MySQL说一个字，滚~（谁用谁知道！）&lt;/p&gt;
 
-&lt;p&gt;###（二）接口思路与规划&lt;/p&gt;
+&lt;h3 id=&quot;section-1&quot;&gt;（二）接口思路与规划&lt;/h3&gt;
 
 &lt;p&gt;MySQL中我们已经存储了视频的名字、URL、分类等信息，那么在接口我们要做的就是根据指定的分类或者名字来获取视频的列表（其中只需要视频名字和URL地址）。&lt;/p&gt;
 
 &lt;p&gt;&lt;img src=&quot;/img/post-img/2015-11-21-0.png&quot; alt=&quot;img&quot; /&gt;&lt;/p&gt;
 
-&lt;h3 id=&quot;section-1&quot;&gt;（三）框架选择和驱动准备&lt;/h3&gt;
+&lt;h3 id=&quot;section-2&quot;&gt;（三）框架选择和驱动准备&lt;/h3&gt;
 
 &lt;p&gt;和上一篇一样，首先第一步我们还是需要用Java连接MySQL数据库，然后就是古老的“增、删、改、查”了。最后一步就是把从数据库里获取的数据以Json的格式返回给APP。OVER。&lt;/p&gt;
 
@@ -126,7 +124,6 @@
 		&lt;span class=&quot;nb&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;leve1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;getParameter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;leve1&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 		&lt;span class=&quot;nb&quot;&gt;String&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;leve2&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;request&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;getParameter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;leve2&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 		
-		&lt;span class=&quot;sr&quot;&gt;//&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;如果缺少一些必要参数，那么就返回错误的信息&lt;/span&gt;
 		&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;index&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;null&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;||&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;leve1&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;null&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
 			&lt;span class=&quot;no&quot;&gt;JSONObject&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;object&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;getErrorJSONObject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
 			&lt;span class=&quot;no&quot;&gt;PrintWriter&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;out&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;response&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;getWriter&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
@@ -150,7 +147,6 @@
 		&lt;span class=&quot;n&quot;&gt;try&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
 			&lt;span class=&quot;no&quot;&gt;ResultSet&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;resultSet&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;dbHelper&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;pst&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;executeQuery&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
 			&lt;span class=&quot;k&quot;&gt;while&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;resultSet&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;next&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;())&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-				&lt;span class=&quot;sr&quot;&gt;//&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;添加每一条记录&lt;/span&gt;
 				&lt;span class=&quot;no&quot;&gt;JSONObject&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;object&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;new&lt;/span&gt; &lt;span class=&quot;no&quot;&gt;JSONObject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;();&lt;/span&gt;
 				&lt;span class=&quot;n&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;put&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;title&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;resultSet&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;getString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;title&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
 				&lt;span class=&quot;n&quot;&gt;object&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;put&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;url&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;resultSet&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;getString&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;url&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;));&lt;/span&gt;
@@ -163,10 +159,8 @@
 			&lt;span class=&quot;no&quot;&gt;System&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;out&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;println&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;e&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 		&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;
 		
-		&lt;span class=&quot;sr&quot;&gt;//&lt;/span&gt; &lt;span class=&quot;err&quot;&gt;输出&lt;/span&gt;
 		&lt;span class=&quot;no&quot;&gt;JSONObject&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;obect&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;;&lt;/span&gt;
 		&lt;span class=&quot;k&quot;&gt;if&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;resultList&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;length&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;()&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;==&lt;/span&gt; &lt;span class=&quot;mi&quot;&gt;0&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;)&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
-			&lt;span class=&quot;sr&quot;&gt;//&lt;/span&gt;&lt;span class=&quot;err&quot;&gt;为空&lt;/span&gt;
 			&lt;span class=&quot;n&quot;&gt;obect&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;getBaseJsonObject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;resultList&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;没有更多&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
 		&lt;span class=&quot;p&quot;&gt;}&lt;/span&gt;&lt;span class=&quot;k&quot;&gt;else&lt;/span&gt; &lt;span class=&quot;p&quot;&gt;{&lt;/span&gt;
 			&lt;span class=&quot;n&quot;&gt;obect&lt;/span&gt; &lt;span class=&quot;o&quot;&gt;=&lt;/span&gt; &lt;span class=&quot;n&quot;&gt;this&lt;/span&gt;&lt;span class=&quot;o&quot;&gt;.&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;getBaseJsonObject&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;(&lt;/span&gt;&lt;span class=&quot;n&quot;&gt;resultList&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt;&lt;span class=&quot;s2&quot;&gt;&amp;quot;成功查询&amp;quot;&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;,&lt;/span&gt; &lt;span class=&quot;kp&quot;&gt;true&lt;/span&gt;&lt;span class=&quot;p&quot;&gt;);&lt;/span&gt;
@@ -178,7 +172,7 @@
   &lt;p&gt;这里需要注意的就是当SQL语句中出现中文查询的时候，字符集的统一就是特别重要了。否则你会发现明明什么都是对的，但是为什么就是查询不到结果呢？这就是那句characterEncoding的力量！&lt;/p&gt;
 &lt;/blockquote&gt;
 
-&lt;h3 id=&quot;section-2&quot;&gt;(五)结语&lt;/h3&gt;
+&lt;h3 id=&quot;section-3&quot;&gt;(五)结语&lt;/h3&gt;
 
 &lt;p&gt;最后来看一下用Alamofire获取的结果：&lt;/p&gt;
 
