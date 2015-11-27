@@ -6,7 +6,7 @@ email: 475435200@qq.com
 description: "密集恐惧患者、选择恐惧患者、人际恐惧患者"
 keyword: "Maru-zhang，Maru Blog，张斌辉"
 url: ""
-baseurl: ""
+baseurl: "/"
 
 
 
@@ -52,7 +52,7 @@ duoshuo_share: true                     # set to false if you want to use Commen
 # ba_track_id: 4cc1c5cdb626a202900
 # Google Analytics
 # ga_track_id: 'UA-49627206-1'   # Format: UA-xxxxxx-xx
-ga_domain: 
+ga_domain: maru-zhang.tk
 
 
 
