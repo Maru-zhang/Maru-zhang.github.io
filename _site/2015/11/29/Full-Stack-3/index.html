@@ -9,9 +9,9 @@
     <meta name="keyword"  content="Maru-zhang，Maru Blog，张斌辉">
     <link rel="shortcut icon" href="img/favicon.ico">
 
-    <title>iOS开发Delegate,Notification,Block使用心得 - 张斌辉的博客 | Maru Blog</title>
+    <title>全栈项目iCCUT之客户端篇（三) - 张斌辉的博客 | Maru Blog</title>
 
-    <link rel="canonical" href="/2015/06/08/iOS-Development-Delegate,Notification,Block/">
+    <link rel="canonical" href="/2015/11/29/Full-Stack-3/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -143,17 +143,15 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#iOS" title="iOS">iOS</a>
-                        
-                        <a class="tag" href="/tags/#Objc" title="Objc">Objc</a>
+                        <a class="tag" href="/tags/#Swift" title="Swift">Swift</a>
                         
                     </div>
-                    <h1>iOS开发Delegate,Notification,Block使用心得</h1>
+                    <h1>全栈项目iCCUT之客户端篇（三)</h1>
                     
                     
                     <h2 class="subheading"></h2>
                     
-                    <span class="meta">Posted by Maru on June 8, 2015</span>
+                    <span class="meta">Posted by Maru on November 29, 2015</span>
                 </div>
             </div>
         </div>
@@ -171,119 +169,122 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-				<h2 id="section">（一）简要介绍</h2>
-
-<p>1.Delegate(代理、委托)<br />
- 代理几乎是iOS开发中最常用的传值方式，在项目中的AppDelegate就是使用的这种设计模式，不仅如此，还有很多原生的控件也使用的这种设计模式，比如：UITextFiled，UITableView等等。官方给出的解释如下：</p>
-
-<blockquote>
-  <p>Delegation is a simple and powerful pattern in which one object in a program				1	 acts on behalf of, or in coordination with, another object. The delegating object keeps a reference to the other object—the delegate—and at the appropriate time sends a message to it. The message informs the delegate of an event that the delegating object is about to handle or has just handled. The delegate may respond to the message by updating the appearance or state of itself or other objects in the application, and in some cases it can return a value that affects how an impending event is handled. The main value of delegation is that it allows you to easily customize the behavior of several objects in one central object.</p>
+				<blockquote>
+  <p>Talk is cheap show me the code.</p>
 </blockquote>
 
-<p>具体使用方法不再示例（网上关于Delegate基础使用的博文数不胜数<a href="http://www.2cto.com/kf/201307/229082.html">示例</a>），主要总结一下Delegate的优点和缺陷。</p>
+<h3 id="section">（一）前言</h3>
 
-<p>优点：<br />
-1.减少代码的耦合性，使事件监听和事件处理相分离。<br />
-2.清晰的语法定义，减少维护成本，较强的代码可读性。<br />
-3.不需要创建第三方来监听事件和传输数据。<br />
-4.一个控制器可以实现多个代理，满足自定义开发需求，可选必选有较大的灵活性。</p>
+<hr />
 
-<p>缺点:<br />
-1.实现委托的代码过程比较繁琐。<br />
-2.当实现跨层传值监听的时候将加大代码的耦合性，并且程序的层次结构将变的混乱。<br />
-3.当对多个对象同时传值响应的时候，委托的易用性将大大降低。</p>
+<p>终于来到了iOS的博文，相比较于之前Python和Java的搞笑，在这里我终于可以有一点话语权了，虽然不是学了一年半的OC，但是Swift毫无疑问将要是超越OC的存在，所以这个项目几乎是纯Swift的，除了一些框架。</p>
 
-<p>2.NotificationCenter（通知）<br />
-通知也是iOS开发中常用的一种传值响应方法，例如在AVFoundation框架中的MPMoviePlayerController在监听播放状态改变，播放停止等事件时使用的也正是NotificationCenter。官方给出的解释如下：</p>
+<p>上一周博主实现了接口的编写，这一周我们要做的事情就是把他们展示出来。成果如下：</p>
 
-<blockquote>
-  <p>An NSNotificationCenter object (or simply, notification center) provides a mechanism for broadcasting information within a program. An NSNotificationCenter object is essentially a notification dispatch table.</p>
-</blockquote>
+<p><img src="/img/post-img/2015-11-29-0.gif" alt="Achievement.gif" /></p>
 
-<blockquote>
-  <p>Objects register with a notification center to receive notifications (NSNotification objects) using the addObserver:selector:name:object: or addObserverForName:object:queue:usingBlock: methods. Each invocation of this method specifies a set of notifications. Therefore, objects may register as observers of different notification sets by calling these methods several times.</p>
-</blockquote>
+<p>由于博主的实际开发这个项目的时候的进程并不是线性的，所以有很多UI上的Code我就忽略掉了（其实也没啥好讲的）。</p>
 
-<blockquote>
-  <p>Each running Cocoa program has a default notification center. You typically don’t create your own. An NSNotificationCenter object can deliver notifications only within a single program. If you want to post a notification to other processes or receive notifications from other processes, use an instance of NSDistributedNotificationCenter.</p>
-</blockquote>
-
-<p>NSNotification采用的单例设计模式，当给通知中心注册一个key以后，那么无论在什么地方只要给通知中心发送一个这个key的消息，那么就实现了通信传值，注册的通知的对象就会调用相应的方法。</p>
-
-<p>优点：<br />
-1.使用简单，代码精简。<br />
-2.解决了同时向多个对象监听相应的问题。<br />
-3.传值方便快捷，Context自身携带相应的内容。<br />
-缺点：<br />
-1.使用完毕后，要时刻记得注销通知，否则将出现不可预见的crash。<br />
-2.key不够安全，编译器不会监测是否被通知中心正确处理。<br />
-3.调试的时候动作的跟踪将很难进行。<br />
-4.当使用者向通知中心发送通知的时候，并不能获得任何反馈信息。<br />
-5.需要一个第三方的对象来做监听者与被监听者的中介。</p>
-
-<p>3.Block（代码块）<br />
-Block是iOS4.0+ 和Mac OS X 10.6+ 引进的对C语言的扩展，用来实现匿名函数的特性。苹果官方对于Block的解释也是十分的简洁：</p>
-
-<blockquote>
-  <p>A block is an anonymous inline collection of code, and sometimes also called a “closure”.Blocks are a powerful C-language feature that is part of Cocoa application development. They are similar to “closures” and “lambdas” you may find in scripting and programming languages such as Ruby, Python, and Lisp. Although the syntax and storage details of blocks might at first glance seem cryptic, you’ll find that it’s actually quite easy to incorporate blocks into your projects’ code.</p>
-</blockquote>
-
-<p>翻译过来就是，闭包是一个能够访问其他函数内部变量的函数。Block的使用在这里也不在赘述（<a href="http://blog.csdn.net/totogo2010/article/details/7839061">不知道的同学可以点这个链接，我觉得写的很详细</a>）。不论是原生的框架还是第三方的框架，我们都可以看到Block的身影，Block强大的功能性和易用性使得深受架构师的喜爱。</p>
-
-<p>官方也有一篇简短的指导文档,有兴趣的同学可以看一下（<a href="https://developer.apple.com/library/ios/featuredarticles/Short_Practical_Guide_Blocks/index.html">官方指导</a>）。值得注意的是，在这份文档中也提到了几种Block的使用场合。</p>
+<h3 id="section-1">（二）思路和框架</h3>
+<hr />
 
 <ul>
-  <li>任务完成时回调处理</li>
-  <li>消息监听回调处理</li>
-  <li>错误回调处理</li>
-  <li>枚举回调</li>
-  <li>视图动画、变换</li>
-  <li>排序</li>
+<li><a href="https://github.com/Alamofire/Alamofire">Alamofire</a></li>
+<li><a href="https://github.com/swiftjson/SwiftJson">SwiftyJSON</a></li>
+<li><a href="https://github.com/CoderMJLee/MJRefresh">MJRefresh</a></li>
 </ul>
 
-<p>优点：<br />
-1.语法简洁，实现回调不需要显示的调用方法，代码更为紧凑。<br />
-2.增强代码的可读性和可维护性。<br />
-3.配合GCD优秀的解决多线程问题。</p>
+<p>思路：其实我们要做的东西也都很简单，无非就是获取到json数据，然后把它转化成一个模型，然后TableView再获取模型数据，最后再把他们展现出来。</p>
 
-<p>缺点：<br />
-1.Block中得代码将自动进行一次retain操作，容易造成内存泄露。<br />
-2.Block内默认引用为强引用，容易造成循环引用。</p>
+<p>那么问题就来了，用什么来获取JSON数据呢？由于觉得AFNetworking太厉害了，所以我选择了同门的Alamofire。至于解析JSON嘛，万能的Github让我找到了SwiftyJSON。至于刷新的框架，本来想用DGElasticPullToRefresh，但是它太过浮夸，而且并没有上拉的实现刷新，所以我还是使用了老牌的MJRefresh。</p>
 
-<h2 id="section-1">（二）注意事项</h2>
+<h3 id="show-you-the-code">（三）SHOW YOU THE CODE</h3>
 
-<p>1.代理</p>
-<ul>
-	<li>在代理中调用方法的时候使用的是系统的子线程，因此，当使用Delegate进行UI操作的时候，必须调用GCD的主线程方法：
-dispatch_async(dispatch_get_main_queue(), &lt;^(void)block&gt;)，在block中写进行的UI操作代码。</li>
-</ul>
+<hr />
 
-<p>2.通知</p>
-<ul>
-	<li>在通知的使用过程中Crash的原因很多情况都是注册观察者以后没有及时的注销观察者，当然这个情况在非ARC时代比较常见，但是这并不是说在现在的ARC时代就不会出现这个问题。往往一旦出现问题就很难追查，所以还是要养成及时注销的习惯。</li>
-	<li>由于通知的使用极其简单，往往能够看到很多开发人员在开发过程中滥用NSNoticationCenter的现象。导致到处都是乱七八糟的通知，代码的可维护性和可读性非常差，即便是使用了宏定义也不能完全避免这些问题。比如在Debug的时候，当存在多个Observe的时候，简直就是要人命的感觉，想死的心都有了。在这方面Block和Delegate比Notification强太多了。</li>
-</ul>
+<h4 id="section-2">1.上拉下拉刷新</h4>
 
-<p>3.Block</p>
-<ul>
-	<li>当在Block中引用某个外部变量的时候，Block内部只会进行只读拷贝，这也就意味着，即便你在使用Block之前修改了那个外部变量的值，那么在你使用的Block里面它的值依旧是最开始的那个外部变量的值。如果想要同步外部变量的值，那么就需要在block内部引用变量时，在前面加上__block关键字。</li>
-	<li>block本身是像对象一样可以retain，和release。但是，block在创建的时候，它的内存是分配在栈(stack)上，而不是在堆(heap)上。他本身的作于域是属于创建时候的作用域，一旦在创建时候的作用域外面调用block将导致程序崩溃。</li>
-</ul>
+<p>在刷新的block中，统一调用了一个loadData的方法，并且通过一个Bool的参数来决定是否需要清空数据源重新刷新。这样做的原因是刷新的逻辑大同小异,Don’t  repeat yourself，所以就暂时这个蠢办法。</p>
 
-<h2 id="section-2">（三）使用场景对比</h2>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">tableView</span><span class="o">.</span><span class="n">mj_header</span> <span class="o">=</span> <span class="no">MJRefreshNormalHeader</span><span class="p">(</span><span class="ss">refreshingBlock</span><span class="p">:</span> <span class="p">{</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="no">Void</span> <span class="k">in</span>
+    <span class="nb">self</span><span class="o">.</span><span class="n">loadData</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span>
+<span class="p">});</span>
 
-<p>1.回调方法<br />
-在日常的开发过程中，我们经常会遇到一些完成之后的处理问题，比如完成网路请求之后的回调，或者页面加载完成之后的回调等。这个时候我们一般使用的是前两者方法，即Block或者Delegate。而在一对一传输回<br />
-调的时候明显Block的使用更加的简单高效，只需要在代码块中执行所需要的操作即可。在一对多的情况下，Delegate更加能够发挥出自己的优势。</p>
+<span class="n">tableView</span><span class="o">.</span><span class="n">mj_footer</span> <span class="o">=</span> <span class="no">MJRefreshBackNormalFooter</span><span class="p">(</span><span class="ss">refreshingBlock</span><span class="p">:</span> <span class="p">{</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="no">Void</span> <span class="k">in</span>
+    <span class="nb">self</span><span class="o">.</span><span class="n">loadData</span><span class="p">(</span><span class="kp">false</span><span class="p">)</span>
+<span class="p">});</span></code></pre></div>
 
-<p>2.跨层通信<br />
-有的时候我们需要实现在两个毫无关联的对象之间的通信，这个时候如果使用Block或者Delegate就势必会增加代码的耦合性，这样对于代码的结构来说是不健康的，因此这个时候使用Notification便是明智的选择。</p>
+<h4 id="section-3">2.网络请求</h4>
 
-<p>3.UI响应事件<br />
-用户在于App的UI进行互动的时候，总会需要App进行交互响应，这个时候就毫无疑问的使用代理设计模式。而苹果官方给出的建议也是可以肯定的，在Cocoa Touch框架中我们也可以在几乎所有的UI交互控件的头文件里看到Delegate的成员变量，也正是印证了在UI响应事件上Delegate有着绝对的优势。</p>
+<p>是时候Alamofire出场了，其实它给了我一种不一样的Coding感觉，唯一让我不爽的是，它的提示并不十分友好，难道是我的问题？</p>
 
-<p>4.简单值得传递<br />
-当需要进行简单值得传递的时候，比如子控件传输给父控件所点击的IndexPath的时候，更加适合使用Block来传值。因为，如果只是为了传这一个简单的值而没有特别的业务处理而定义一个协议，然后实现协议，设置代理再写方法的话将十分麻烦，得不偿失，这个时候简单高效的Block就可以完美的替代Delegate完成任务了。</p>
+<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">Alamofire</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span> <span class="s2">&quot;\(HOST)/iCCUT/servlet/MediaList&quot;</span><span class="p">,</span> <span class="ss">parameters</span><span class="p">:</span><span class="n">parmeter</span><span class="p">,</span> <span class="ss">encoding</span><span class="p">:</span> <span class="o">.</span><span class="n">URL</span><span class="p">)</span>
+            <span class="o">.</span><span class="n">responseJSON</span> <span class="p">{</span> <span class="n">response</span> <span class="k">in</span>
+                
+                <span class="n">switch</span> <span class="n">response</span><span class="o">.</span><span class="n">result</span> <span class="p">{</span>
+                <span class="k">case</span> <span class="o">.</span><span class="n">Success</span><span class="p">:</span>
+                    
+                    <span class="k">if</span> <span class="n">isSetup</span> <span class="p">{</span>
+                        <span class="nb">self</span><span class="o">.</span><span class="n">dataArray</span><span class="o">.</span><span class="n">removeAllObjects</span><span class="p">()</span>
+                    <span class="p">}</span>
+                    
+                    
+                    <span class="k">if</span> <span class="n">let</span> <span class="n">value</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">result</span><span class="o">.</span><span class="n">value</span> <span class="p">{</span>
+                        
+                        <span class="n">let</span> <span class="n">json</span> <span class="o">=</span> <span class="no">JSON</span><span class="p">(</span><span class="n">value</span><span class="p">)</span>
+                        
+                        <span class="n">guard</span> <span class="n">json</span><span class="o">[</span><span class="s2">&quot;success&quot;</span><span class="o">].</span><span class="n">boolValue</span> <span class="k">else</span> <span class="p">{</span>
+                            <span class="no">SCLAlertView</span><span class="p">()</span><span class="o">.</span><span class="n">showInfo</span><span class="p">(</span><span class="s2">&quot;温馨提示&quot;</span><span class="p">,</span> <span class="ss">subTitle</span><span class="p">:</span> <span class="n">json</span><span class="o">[</span><span class="s2">&quot;msg&quot;</span><span class="o">].</span><span class="n">stringValue</span><span class="p">)</span>
+
+                            <span class="nb">self</span><span class="o">.</span><span class="n">tableView</span><span class="o">.</span><span class="n">mj_footer</span><span class="o">.</span><span class="n">endRefreshing</span><span class="p">()</span>
+                            <span class="nb">self</span><span class="o">.</span><span class="n">tableView</span><span class="o">.</span><span class="n">mj_header</span><span class="o">.</span><span class="n">endRefreshing</span><span class="p">()</span>
+                            <span class="k">return</span>
+                        <span class="p">}</span>
+                        
+                        <span class="n">debugPrint</span><span class="p">(</span><span class="n">json</span><span class="o">.</span><span class="n">rawString</span><span class="p">())</span>
+                        <span class="k">for</span> <span class="p">(</span><span class="n">_</span><span class="p">,</span><span class="n">subJson</span><span class="p">):</span> <span class="p">(</span><span class="nb">String</span><span class="p">,</span><span class="no">JSON</span><span class="p">)</span> <span class="k">in</span> <span class="n">json</span><span class="o">[</span><span class="s2">&quot;datas&quot;</span><span class="o">]</span> <span class="p">{</span>
+                            <span class="n">let</span> <span class="ss">videoItem</span><span class="p">:</span> <span class="no">CCVideoModel</span> <span class="o">=</span> <span class="no">CCVideoModel</span><span class="p">()</span>
+                            <span class="n">videoItem</span><span class="o">.</span><span class="n">name</span> <span class="o">=</span> <span class="n">subJson</span><span class="o">[</span><span class="s2">&quot;title&quot;</span><span class="o">].</span><span class="n">stringValue</span>
+                            <span class="n">videoItem</span><span class="o">.</span><span class="n">url</span> <span class="o">=</span> <span class="n">subJson</span><span class="o">[</span><span class="s2">&quot;url&quot;</span><span class="o">].</span><span class="n">stringValue</span>
+                            <span class="nb">self</span><span class="o">.</span><span class="n">dataArray</span><span class="o">.</span><span class="n">addObject</span><span class="p">(</span><span class="n">videoItem</span><span class="p">)</span>
+                        <span class="p">}</span>
+                        
+                        
+                    <span class="p">}</span>
+                    
+                    <span class="nb">self</span><span class="o">.</span><span class="n">currentIndex</span><span class="o">++</span>
+                    
+                    <span class="nb">self</span><span class="o">.</span><span class="n">tableView</span><span class="o">.</span><span class="n">reloadData</span><span class="p">()</span>
+                    
+                    <span class="k">break</span>
+                <span class="k">case</span> <span class="o">.</span><span class="n">Failure</span><span class="p">:</span>
+                    <span class="no">SCLAlertView</span><span class="o">.</span><span class="n">showNetworkErrorView</span><span class="p">()</span>
+                    <span class="k">break</span>
+                <span class="p">}</span>
+                <span class="nb">self</span><span class="o">.</span><span class="n">tableView</span><span class="o">.</span><span class="n">mj_footer</span><span class="o">.</span><span class="n">endRefreshing</span><span class="p">()</span>
+                <span class="nb">self</span><span class="o">.</span><span class="n">tableView</span><span class="o">.</span><span class="n">mj_header</span><span class="o">.</span><span class="n">endRefreshing</span><span class="p">()</span>
+        <span class="p">}</span></code></pre></div>
+
+<p>其实上面的注释已经很详细了，Alamofire处理请求结果的方法和AFNetworking有很大的差别。统一获取一个闭包中的response，然后通过switch语句获取。至于JSON数据的解析，其实我本来是不想手打的，毕竟有一个比较厉害的人写了一个<a href="https://github.com/CharlinFeng/Reflect">CFRuntime</a>（现在改名成Reflect了），相当于Swity版本的MJExtension。由于我的数据太简单了，所以我也就懒得用这个框架了，通过SwiftyJSON我们可以非常愉快的和Alamofire一起工作，直接将response的value传给SwiftyJSON就可以完美解析数据。</p>
+
+<p>顺便提一嘴，在上面的代码中，我用到了的HUD是<a href="https://github.com/vikmeup/SCLAlertView-Swift">SCLAlertView</a>，开始的时候我用的是MBProgressHUD，但是由于原则是尽量使用Swift框架，所以我就抛弃了它，找了很多找到了它，非常华丽，也非常的简便，点个赞，哈哈~</p>
+
+<h3 id="section-4">(四)番外</h3>
+
+<p>其实这个礼拜还实现了一个功能，就是通过关键字搜索视频，其实实现起来也是非常的简单无非就是一行SQL代码：</p>
+
+<pre><code>String sql = "select * from FreeVideo where title like '%"+ keyword +"%' limit 0,20";
+</code></pre>
+
+<p>然后查询到的数据再通过JSONArray这个框架来返回给客户端视频列表然后再播放，成功如下：</p>
+
+<p><img src="/img/post-img/2015-11-29-1.gif" alt="SearchAchievement.gif" /></p>
+
+<h3 id="section-5">(五)结语</h3>
+
+<hr />
+
+<p><a href="https://github.com/Maru-zhang/iCCUT">iCCUT</a>这个全栈项目的主要目的还是为了熟悉iOS开发的整个思路，由于是第一次，所以也有很多的遗憾和缺陷，比如服务器代码机器丑陋，比如为什么不用更加轻量级的Flask，比如用户的交互能不能做的再好一点，自己的设计丑的一匹。不过欣慰的是，这个东西并不单单是个练习，我相信它是有生产力的，比如昨天晚上我就用它看了校园网上的《权利的游戏》,我是它的第一个用户，但愿不是最后一个。</p>
 
 
                 <hr>
@@ -293,14 +294,19 @@ dispatch_async(dispatch_get_main_queue(), &lt;^(void)block&gt;)，在block中写
                 </style>
                 <div class="ds-share"
                     style="text-align: right"
-                    data-thread-key="/2015/06/08/iOS-Development-Delegate,Notification,Block"
-                    data-title="iOS开发Delegate,Notification,Block使用心得"
-                    data-url="/2015/06/08/iOS-Development-Delegate,Notification,Block/"
+                    data-thread-key="/2015/11/29/Full-Stack-3"
+                    data-title="全栈项目iCCUT之客户端篇（三)"
+                    data-url="/2015/11/29/Full-Stack-3/"
                     data-images="/img/post-bg-01.jpg"
-                    data-content="（一）简要介绍
+                    data-content="
+  Talk is cheap show me the code.
 
-1.Delegate(代理、委托)
- 代理几乎是iOS开发中最常用的传值方式，在项目中的AppDelegate就是使用的这种设计模式，不... | 张斌辉的博客 | Maru Blog " >
+
+（一）前言
+
+
+
+终于来到了iOS的博文，相比较于之前Python和Java的搞... | 张斌辉的博客 | Maru Blog " >
                     <div class="ds-share-inline">
                       <ul  class="ds-share-icons-16">
                         <li data-toggle="ds-share-icons-more"><a class="ds-more" href="#">分享到：</a></li>
@@ -320,13 +326,9 @@ dispatch_async(dispatch_get_main_queue(), &lt;^(void)block&gt;)，在block中写
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2015/05/10/meaning-for-life/" data-toggle="tooltip" data-placement="top" title="博客的意义&旅行的目地">&larr; Previous Post</a>
+                        <a href="/2015/11/21/Full-Stack-2/" data-toggle="tooltip" data-placement="top" title="全栈项目iCCUT之服务器篇（二)">&larr; Previous Post</a>
                     </li>
                     
-                    
-                    <li class="next">
-                        <a href="/2015/10/20/Something-trouble-in-development-1/" data-toggle="tooltip" data-placement="top" title="开发中遇到的那些莫名其妙的坑-第一弹">Next Post &rarr;</a>
-                    </li>
                     
                 </ul>
 
@@ -335,9 +337,9 @@ dispatch_async(dispatch_get_main_queue(), &lt;^(void)block&gt;)，在block中写
                 <!-- 多说评论框 start -->
                 <div class="comment">
                     <div class="ds-thread"
-                        data-thread-key="/2015/06/08/iOS-Development-Delegate,Notification,Block"
-                        data-title="iOS开发Delegate,Notification,Block使用心得"
-                        data-url="/2015/06/08/iOS-Development-Delegate,Notification,Block/" >
+                        data-thread-key="/2015/11/29/Full-Stack-3"
+                        data-title="全栈项目iCCUT之客户端篇（三)"
+                        data-url="/2015/11/29/Full-Stack-3/" >
                     </div>
                 </div>
                 <!-- 多说评论框 end -->
