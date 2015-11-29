@@ -9,9 +9,9 @@
     <meta name="keyword"  content="Maru-zhang，Maru Blog，张斌辉">
     <link rel="shortcut icon" href="img/favicon.ico">
 
-    <title>开发中遇到的那些莫名其妙的坑-第一弹 - 张斌辉的博客 | Maru Blog</title>
+    <title>全栈项目iCCUT之客户端篇（三) - 张斌辉的博客 | Maru Blog</title>
 
-    <link rel="canonical" href="//2015/10/20/Something-trouble-in-development-1/">
+    <link rel="canonical" href="//2015/11/29/Full-Stack-3/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="//css/bootstrap.min.css">
@@ -128,12 +128,12 @@
 
     <!-- Image to hack wechat -->
 <!-- <img src="/img/icon_wechat.png" width="0" height="0"> -->
-<!-- <img src="//img/post-bg-01.jpg" width="0" height="0"> -->
+<!-- <img src="//img/post-bg-03.jpg" width="0" height="0"> -->
 
 <!-- Post Header -->
 <style type="text/css">
     header.intro-header{
-        background-image: url('//img/post-bg-01.jpg')
+        background-image: url('//img/post-bg-03.jpg')
     }
 </style>
 <header class="intro-header" >
@@ -143,15 +143,15 @@
                 <div class="post-heading">
                     <div class="tags">
                         
-                        <a class="tag" href="/tags/#iOS" title="iOS">iOS</a>
+                        <a class="tag" href="/tags/#Swift" title="Swift">Swift</a>
                         
                     </div>
-                    <h1>开发中遇到的那些莫名其妙的坑-第一弹</h1>
+                    <h1>全栈项目iCCUT之客户端篇（三)</h1>
                     
                     
                     <h2 class="subheading"></h2>
                     
-                    <span class="meta">Posted by Maru on October 20, 2015</span>
+                    <span class="meta">Posted by Maru on November 29, 2015</span>
                 </div>
             </div>
         </div>
@@ -169,68 +169,80 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-				<h1 id="ios">iOS开发中遇到的那些莫名其妙的坑</h1>
-
-<blockquote>
-  <p>写在前面的话：在苦逼的iOS开发过程中，总会碰到各种各样莫名其妙的问题，有的时候由于Apple官方的限制，有的时候又由于技术因素，总会有各种各样的问题困扰着自己。所以我决定把一些让我很生气的坑记录下来，留作纪念和参考，不定时更新。</p>
+				<blockquote>
+  <p>Talk is cheap show me the code.</p>
 </blockquote>
 
-<p>1.AVAudioRecorder的Duration问题</p>
+<h3 id="section">（一）前言</h3>
 
-<p>在进行Yinner的开发过程中，用到了系统原生的AVAudioRecorder类来进行真机录音，模拟器上调用<code>- (BOOL)recordForDuration:(NSTimeInterval) duration;</code>的时候完全没有问题，监听录音完成的代理也可以通过代理方法检测到。然而奇怪的是当使用真机的时候代理方法完全没有响应，通过断点最后定位到这一句代码。最后换了一种思路，利用NSNotificationCenter来控制和监听录音的始末动作。</p>
+<hr />
 
-<p>2.AVAudioRecorder的真机测试无声问题</p>
+<p>终于来到了iOS的博文，相比较于之前Python和Java的搞笑，在这里我终于可以有一点话语权了，虽然不是学了一年半的OC，但是Swift毫无疑问将要是超越OC的存在，所以这个项目几乎是纯Swift的，除了一些框架。</p>
 
-<p>在进行Yinner的开发过程中，利用原生的AVAudioRecorder进行音频录制并且合成视频。然而，在模拟器上完全没有问题的代码，在进行真机测试的时候就发现变成了“无声电影”。经过查找，发现原因是没有激活真机的硬件音频会话层，官方解释如下：</p>
+<p>上一周博主实现了接口的编写，这一周我们要做的事情就是把他们展示出来。成果如下：</p>
 
-<blockquote>
-  <p>Checks to see if calling process has permission to record audio.  The ‘response’ block will be called immediately if permission has already been granted or denied.  Otherwise, it presents a dialog to notify the user and allow them to choose, and calls the block once the UI has been dismissed.  ‘granted’ indicates whether permission has been granted.</p>
-</blockquote>
+<p><img src="http://upload-images.jianshu.io/upload_images/791315-83cd65a11a5510c1.gif?imageMogr2/auto-orient/strip" alt="Achievement.gif" /></p>
 
-<p>因此只需要添加如下代码，激活会话层即可。</p>
+<p>由于博主的实际开发这个项目的时候的进程并不是线性的，所以有很多UI上的Code我就忽略掉了（其实也没啥好讲的）。</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">AVAudioSession</span> <span class="o">*</span><span class="n">session</span> <span class="o">=</span> <span class="o">[</span><span class="no">AVAudioSession</span> <span class="n">sharedInstance</span><span class="o">]</span><span class="p">;</span>
-    <span class="no">NSError</span> <span class="o">*</span><span class="n">sessionError</span><span class="p">;</span>
-    <span class="o">[</span><span class="n">session</span> <span class="ss">setCategory</span><span class="p">:</span><span class="no">AVAudioSessionCategoryPlayAndRecord</span> <span class="ss">error</span><span class="p">:</span><span class="o">&amp;</span><span class="n">sessionError</span><span class="o">]</span><span class="err">；</span>
-    <span class="k">if</span><span class="p">(</span><span class="n">session</span> <span class="o">==</span> <span class="kp">nil</span><span class="p">)</span>
-        <span class="no">NSLog</span><span class="p">(</span><span class="err">@</span><span class="s2">&quot;Error creating session: %@&quot;</span><span class="p">,</span> <span class="o">[</span><span class="n">sessionError</span> <span class="n">description</span><span class="o">]</span><span class="p">);</span>
-    <span class="k">else</span>
-        <span class="o">[</span><span class="n">session</span> <span class="ss">setActive</span><span class="p">:</span><span class="no">YES</span> <span class="ss">error</span><span class="p">:</span><span class="kp">nil</span><span class="o">]</span><span class="p">;</span></code></pre></div>
+<h3 id="section-1">（二）思路和框架</h3>
+<hr />
 
-<p>3.UIGestureRecognizer重用的无效问题</p>
+<ul>
+<li><a href="https://github.com/Alamofire/Alamofire">Alamofire</a></li>
+<li><a href="https://github.com/swiftjson/SwiftJson">SwiftyJSON</a></li>
+<li><a href="https://github.com/CoderMJLee/MJRefresh">MJRefresh</a></li>
+</ul>
 
-<p>这是最近在进行Yinner侧滑开发的过程中遇到的一个小问题。在侧滑菜单打开和关闭的时候要用到相同的UIGestureRecognizer对象和一个相同的方法- (void)onPanGuestureRecginizer:(UIPanGestureRecognizer *)pan。而在主界面侧滑缩放以后，需要给主界面添加一个蒙版遮罩，以突出侧滑菜单的重点。这样的情况就是，侧滑菜单在打开的时候主界面需要一个Pan手势，而在侧滑菜单缩放回去的时候主菜单上面的蒙版图层又需要另外一个Pan手势，并且这两个手势所调用的方法是同一个因此，我自作聪明，将这个手势对象设置为全局变量，在侧滑菜单出现后给蒙版也使用addGestureRecognizer方法添加同一个手势对象。这样所造成的问题是，当侧滑菜单消失后，主界面的蒙版也随之消失，而这一个手势对象只能添加在一个VIew中，因此，主界面原来的手势就消失了，导致莫名其妙的手势方法不进入的问题。真是蠢= =。</p>
+<p>思路：其实我们要做的东西也都很简单，无非就是获取到json数据，然后把它转化成一个模型，然后TableView再获取模型数据，最后再把他们展现出来。</p>
 
-<p>4.Navgation下的UITableView存在偏移的解决方法</p>
+<p>那么问题就来了，用什么来获取JSON数据呢？由于觉得AFNetworking太厉害了，所以我选择了同门的Alamofire。至于解析JSON嘛，万能的Github让我找到了SwiftyJSON。至于刷新的框架，本来想用DGElasticPullToRefresh，但是它太过浮夸，而且并没有上拉的实现刷新，所以我还是使用了老牌的MJRefresh。</p>
 
-<p>最近在开发中遇到一个小问题，当一个UITableview嵌套在一个NavgationController上的时候，会发现，明明Tableview的frame以及其他的各项设置没有问题，但是显示的时候还是会存在TableView的向下偏移。后来发现，这个是ios7开始有的一个新的属性，目的是，如果视图中存在唯一一个scrollView，那么它会设置相应的内边距，这样可以占据整个视图。所以只需要把UITableView的automaticallyAdjustsScrollViewInsets属性设置为NO，就能解决这个问题。</p>
+<h3 id="show-you-the-code">（三）SHOW YOU THE CODE</h3>
 
-<p>5.iOS中两种退出触摸键盘的简单方法</p>
+<hr />
 
-<p>比较常用的一种键盘失焦的方法是令UITextfiled对象调用resignFirstResponder。然而这个方法有一定的局限性，如果界面中存在多个UITextFiled输入框，那么你如果想要退出键盘你就需要多次调用上面的方法，这样会显得非常的繁琐。因此，可以的使用如下的方法。</p>
+<h4 id="section-2">1.上拉下拉刷新</h4>
 
-<p>第一种方法</p>
+<p>在刷新的block中，统一调用了一个loadData的方法，并且通过一个Bool的参数来决定是否需要清空数据源重新刷新。这样做的原因是刷新的逻辑大同小异,Don’t  repeat yourself，所以就暂时这个蠢办法。</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">[[[</span><span class="no">UIApplication</span>
- <span class="n">sharedApplication</span><span class="o">]</span> <span class="n">keyWindow</span><span class="o">]</span> <span class="ss">endEditing</span><span class="p">:</span><span class="no">YES</span><span class="o">]</span><span class="p">;</span></code></pre></div>
+<p>        // 下拉刷新<br />
+        tableView.mj_header = MJRefreshNormalHeader(refreshingBlock: { () -&gt; Void in<br />
+            self.loadData(true)<br />
+        });<br />
+        <br />
+        // MJ上拉刷新<br />
+        tableView.mj_footer = MJRefreshBackNormalFooter(refreshingBlock: { () -&gt; Void in<br />
+            self.loadData(false)<br />
+        });</p>
 
-<p>第二种方法</p>
+<h4 id="section-3">2.网络请求</h4>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">[[</span><span class="nb">self</span> <span class="ss">findFirstResponderBeneathView</span><span class="p">:</span><span class="nb">self</span><span class="o">]</span> <span class="n">resignFirstResponder</span><span class="o">]</span><span class="p">;</span>
- 
-<span class="o">-</span> <span class="p">(</span><span class="no">UIView</span><span class="o">*</span><span class="p">)</span><span class="ss">findFirstResponderBeneathView</span><span class="p">:(</span><span class="no">UIView</span><span class="o">*</span><span class="p">)</span><span class="n">view</span> 
-<span class="p">{</span>
-    <span class="sr">//</span> <span class="no">Search</span> <span class="n">recursively</span> <span class="k">for</span> <span class="n">first</span> <span class="n">responder</span>
-    <span class="k">for</span> <span class="p">(</span> <span class="no">UIView</span> <span class="o">*</span><span class="n">childView</span> <span class="k">in</span> <span class="n">view</span><span class="o">.</span><span class="n">subviews</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span> <span class="o">[</span><span class="n">childView</span> <span class="ss">respondsToSelector</span><span class="p">:</span><span class="vi">@selector</span><span class="p">(</span><span class="n">isFirstResponder</span><span class="p">)</span><span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">[</span><span class="n">childView</span> <span class="n">isFirstResponder</span><span class="o">]</span> <span class="p">)</span> 
-            <span class="k">return</span> <span class="n">childView</span><span class="p">;</span>
-        <span class="no">UIView</span> <span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="o">[</span><span class="nb">self</span> <span class="ss">findFirstResponderBeneathView</span><span class="p">:</span><span class="n">childView</span><span class="o">]</span><span class="p">;</span>
-        <span class="k">if</span> <span class="p">(</span> <span class="n">result</span> <span class="p">)</span> 
-            <span class="k">return</span> <span class="n">result</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="k">return</span> <span class="kp">nil</span><span class="p">;</span>
-<span class="p">}</span></code></pre></div>
+<p>是时候Alamofire出场了，其实它给了我一种不一样的Coding感觉，唯一让我不爽的是，它的提示并不十分友好，难道是我的问题？</p>
 
+<pre><code>Alamofire.request(.POST, "\(HOST)/iCCUT/servlet/MediaList",parameters:parmeter, encoding: .URL)             .responseJSON { response in                                  switch response.result {                 case .Success:                                          //第一次的时候清空数据源                     if isSetup {                         self.dataArray.removeAllObjects()                     }                                                               if let value = response.result.value {                                                  let json = JSON(value)                                                  //如果success不为1那么就相关处理                         guard json["success"].boolValue else {                             SCLAlertView().showInfo("温馨提示", subTitle: json["msg"].stringValue)                             //停止刷新                             self.tableView.mj_footer.endRefreshing()                             self.tableView.mj_header.endRefreshing()                             return                         }                                                  debugPrint(json.rawString())                         for (_,subJson): (String,JSON) in json["datas"] {                             let videoItem: CCVideoModel = CCVideoModel()                             videoItem.name = subJson["title"].stringValue                             videoItem.url = subJson["url"].stringValue                             self.dataArray.addObject(videoItem)                         }                                                                       }                                          // 累加                     self.currentIndex++                                          // 刷新                     self.tableView.reloadData()                                          break                 case .Failure:                     SCLAlertView.showNetworkErrorView()                     break                 }                 //停止刷新                 self.tableView.mj_footer.endRefreshing()                 self.tableView.mj_header.endRefreshing()         }
+</code></pre>
+
+<p>其实上面的注释已经很详细了，Alamofire处理请求结果的方法和AFNetworking有很大的差别。统一获取一个闭包中的response，然后通过switch语句获取。至于JSON数据的解析，其实我本来是不想手打的，毕竟有一个比较厉害的人写了一个<a href="https://github.com/CharlinFeng/Reflect">CFRuntime</a>（现在改名成Reflect了），相当于Swity版本的MJExtension。由于我的数据太简单了，所以我也就懒得用这个框架了，通过SwiftyJSON我们可以非常愉快的和Alamofire一起工作，直接将response的value传给SwiftyJSON就可以完美解析数据。</p>
+
+<p>顺便提一嘴，在上面的代码中，我用到了的HUD是<a href="https://github.com/vikmeup/SCLAlertView-Swift">SCLAlertView</a>，开始的时候我用的是MBProgressHUD，但是由于原则是尽量使用Swift框架，所以我就抛弃了它，找了很多找到了它，非常华丽，也非常的简便，点个赞，哈哈~</p>
+
+<h3 id="section-4">(四)番外</h3>
+
+<p>其实这个礼拜还实现了一个功能，就是通过关键字搜索视频，其实实现起来也是非常的简单无非就是一行SQL代码：</p>
+
+<pre><code>String sql = "select * from FreeVideo where title like '%"+ keyword +"%' limit 0,20";
+</code></pre>
+
+<p>然后查询到的数据再通过JSONArray这个框架来返回给客户端视频列表然后再播放，成功如下：</p>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/791315-25397b8c29255295.gif?imageMogr2/auto-orient/strip" alt="SearchAchievement.gif" /></p>
+
+<h3 id="section-5">(五)结语</h3>
+
+<hr />
+
+<p><a href="https://github.com/Maru-zhang/iCCUT">iCCUT</a>这个全栈项目的主要目的还是为了熟悉iOS开发的整个思路，由于是第一次，所以也有很多的遗憾和缺陷，比如服务器代码机器丑陋，比如为什么不用更加轻量级的Flask，比如用户的交互能不能做的再好一点，自己的设计丑的一匹。不过欣慰的是，这个东西并不单单是个练习，我相信它是有生产力的，比如昨天晚上我就用它看了校园网上的《权利的游戏》,我是它的第一个用户，但愿不是最后一个。</p>
 
 
                 <hr>
@@ -240,14 +252,19 @@
                 </style>
                 <div class="ds-share"
                     style="text-align: right"
-                    data-thread-key="/2015/10/20/Something-trouble-in-development-1"
-                    data-title="开发中遇到的那些莫名其妙的坑-第一弹"
-                    data-url="/2015/10/20/Something-trouble-in-development-1/"
-                    data-images="/img/post-bg-01.jpg"
-                    data-content="iOS开发中遇到的那些莫名其妙的坑
+                    data-thread-key="/2015/11/29/Full-Stack-3"
+                    data-title="全栈项目iCCUT之客户端篇（三)"
+                    data-url="/2015/11/29/Full-Stack-3/"
+                    data-images="/img/post-bg-03.jpg"
+                    data-content="
+  Talk is cheap show me the code.
 
 
-  写在前面的话：在苦逼的iOS开发过程中，总会碰到各种各样莫名其妙的问题，有的时候由于Apple官方的限制，有的... | 张斌辉的博客 | Maru Blog " >
+（一）前言
+
+
+
+终于来到了iOS的博文，相比较于之前Python和Java的搞... | 张斌辉的博客 | Maru Blog " >
                     <div class="ds-share-inline">
                       <ul  class="ds-share-icons-16">
                         <li data-toggle="ds-share-icons-more"><a class="ds-more" href="#">分享到：</a></li>
@@ -267,13 +284,9 @@
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2015/06/08/iOS-Development-Delegate,Notification,Block/" data-toggle="tooltip" data-placement="top" title="iOS开发Delegate,Notification,Block使用心得">&larr; Previous Post</a>
+                        <a href="/2015/11/21/Full-Stack-2/" data-toggle="tooltip" data-placement="top" title="全栈项目iCCUT之服务器篇（二)">&larr; Previous Post</a>
                     </li>
                     
-                    
-                    <li class="next">
-                        <a href="/2015/10/26/Full-Stack-1/" data-toggle="tooltip" data-placement="top" title="全栈项目iCCUT之数据篇（一）">Next Post &rarr;</a>
-                    </li>
                     
                 </ul>
 
@@ -282,9 +295,9 @@
                 <!-- 多说评论框 start -->
                 <div class="comment">
                     <div class="ds-thread"
-                        data-thread-key="/2015/10/20/Something-trouble-in-development-1"
-                        data-title="开发中遇到的那些莫名其妙的坑-第一弹"
-                        data-url="/2015/10/20/Something-trouble-in-development-1/" >
+                        data-thread-key="/2015/11/29/Full-Stack-3"
+                        data-title="全栈项目iCCUT之客户端篇（三)"
+                        data-url="/2015/11/29/Full-Stack-3/" >
                     </div>
                 </div>
                 <!-- 多说评论框 end -->

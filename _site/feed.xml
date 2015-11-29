@@ -3,11 +3,97 @@
   <channel>
     <title>Maru Blog</title>
     <description>密集恐惧患者、选择恐惧患者、人际恐惧患者</description>
-    <link>/</link>
-    <atom:link href="/feed.xml" rel="self" type="application/rss+xml" />
-    <pubDate>Mon, 23 Nov 2015 09:30:04 +0800</pubDate>
-    <lastBuildDate>Mon, 23 Nov 2015 09:30:04 +0800</lastBuildDate>
+    <link>//</link>
+    <atom:link href="//feed.xml" rel="self" type="application/rss+xml" />
+    <pubDate>Sun, 29 Nov 2015 14:39:44 +0800</pubDate>
+    <lastBuildDate>Sun, 29 Nov 2015 14:39:44 +0800</lastBuildDate>
     <generator>Jekyll v2.5.3</generator>
+    
+      <item>
+        <title>全栈项目iCCUT之客户端篇（三)</title>
+        <description>&lt;blockquote&gt;
+  &lt;p&gt;Talk is cheap show me the code.&lt;/p&gt;
+&lt;/blockquote&gt;
+
+&lt;h3 id=&quot;section&quot;&gt;（一）前言&lt;/h3&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;终于来到了iOS的博文，相比较于之前Python和Java的搞笑，在这里我终于可以有一点话语权了，虽然不是学了一年半的OC，但是Swift毫无疑问将要是超越OC的存在，所以这个项目几乎是纯Swift的，除了一些框架。&lt;/p&gt;
+
+&lt;p&gt;上一周博主实现了接口的编写，这一周我们要做的事情就是把他们展示出来。成果如下：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/791315-83cd65a11a5510c1.gif?imageMogr2/auto-orient/strip&quot; alt=&quot;Achievement.gif&quot; /&gt;&lt;/p&gt;
+
+&lt;p&gt;由于博主的实际开发这个项目的时候的进程并不是线性的，所以有很多UI上的Code我就忽略掉了（其实也没啥好讲的）。&lt;/p&gt;
+
+&lt;h3 id=&quot;section-1&quot;&gt;（二）思路和框架&lt;/h3&gt;
+&lt;hr /&gt;
+
+&lt;ul&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/Alamofire/Alamofire&quot;&gt;Alamofire&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/swiftjson/SwiftJson&quot;&gt;SwiftyJSON&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&quot;https://github.com/CoderMJLee/MJRefresh&quot;&gt;MJRefresh&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+&lt;p&gt;思路：其实我们要做的东西也都很简单，无非就是获取到json数据，然后把它转化成一个模型，然后TableView再获取模型数据，最后再把他们展现出来。&lt;/p&gt;
+
+&lt;p&gt;那么问题就来了，用什么来获取JSON数据呢？由于觉得AFNetworking太厉害了，所以我选择了同门的Alamofire。至于解析JSON嘛，万能的Github让我找到了SwiftyJSON。至于刷新的框架，本来想用DGElasticPullToRefresh，但是它太过浮夸，而且并没有上拉的实现刷新，所以我还是使用了老牌的MJRefresh。&lt;/p&gt;
+
+&lt;h3 id=&quot;show-you-the-code&quot;&gt;（三）SHOW YOU THE CODE&lt;/h3&gt;
+
+&lt;hr /&gt;
+
+&lt;h4 id=&quot;section-2&quot;&gt;1.上拉下拉刷新&lt;/h4&gt;
+
+&lt;p&gt;在刷新的block中，统一调用了一个loadData的方法，并且通过一个Bool的参数来决定是否需要清空数据源重新刷新。这样做的原因是刷新的逻辑大同小异,Don’t  repeat yourself，所以就暂时这个蠢办法。&lt;/p&gt;
+
+&lt;p&gt;        // 下拉刷新&lt;br /&gt;
+        tableView.mj_header = MJRefreshNormalHeader(refreshingBlock: { () -&amp;gt; Void in&lt;br /&gt;
+            self.loadData(true)&lt;br /&gt;
+        });&lt;br /&gt;
+        &lt;br /&gt;
+        // MJ上拉刷新&lt;br /&gt;
+        tableView.mj_footer = MJRefreshBackNormalFooter(refreshingBlock: { () -&amp;gt; Void in&lt;br /&gt;
+            self.loadData(false)&lt;br /&gt;
+        });&lt;/p&gt;
+
+&lt;h4 id=&quot;section-3&quot;&gt;2.网络请求&lt;/h4&gt;
+
+&lt;p&gt;是时候Alamofire出场了，其实它给了我一种不一样的Coding感觉，唯一让我不爽的是，它的提示并不十分友好，难道是我的问题？&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;Alamofire.request(.POST, &quot;\(HOST)/iCCUT/servlet/MediaList&quot;,parameters:parmeter, encoding: .URL)             .responseJSON { response in                                  switch response.result {                 case .Success:                                          //第一次的时候清空数据源                     if isSetup {                         self.dataArray.removeAllObjects()                     }                                                               if let value = response.result.value {                                                  let json = JSON(value)                                                  //如果success不为1那么就相关处理                         guard json[&quot;success&quot;].boolValue else {                             SCLAlertView().showInfo(&quot;温馨提示&quot;, subTitle: json[&quot;msg&quot;].stringValue)                             //停止刷新                             self.tableView.mj_footer.endRefreshing()                             self.tableView.mj_header.endRefreshing()                             return                         }                                                  debugPrint(json.rawString())                         for (_,subJson): (String,JSON) in json[&quot;datas&quot;] {                             let videoItem: CCVideoModel = CCVideoModel()                             videoItem.name = subJson[&quot;title&quot;].stringValue                             videoItem.url = subJson[&quot;url&quot;].stringValue                             self.dataArray.addObject(videoItem)                         }                                                                       }                                          // 累加                     self.currentIndex++                                          // 刷新                     self.tableView.reloadData()                                          break                 case .Failure:                     SCLAlertView.showNetworkErrorView()                     break                 }                 //停止刷新                 self.tableView.mj_footer.endRefreshing()                 self.tableView.mj_header.endRefreshing()         }
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;其实上面的注释已经很详细了，Alamofire处理请求结果的方法和AFNetworking有很大的差别。统一获取一个闭包中的response，然后通过switch语句获取。至于JSON数据的解析，其实我本来是不想手打的，毕竟有一个比较厉害的人写了一个&lt;a href=&quot;https://github.com/CharlinFeng/Reflect&quot;&gt;CFRuntime&lt;/a&gt;（现在改名成Reflect了），相当于Swity版本的MJExtension。由于我的数据太简单了，所以我也就懒得用这个框架了，通过SwiftyJSON我们可以非常愉快的和Alamofire一起工作，直接将response的value传给SwiftyJSON就可以完美解析数据。&lt;/p&gt;
+
+&lt;p&gt;顺便提一嘴，在上面的代码中，我用到了的HUD是&lt;a href=&quot;https://github.com/vikmeup/SCLAlertView-Swift&quot;&gt;SCLAlertView&lt;/a&gt;，开始的时候我用的是MBProgressHUD，但是由于原则是尽量使用Swift框架，所以我就抛弃了它，找了很多找到了它，非常华丽，也非常的简便，点个赞，哈哈~&lt;/p&gt;
+
+&lt;h3 id=&quot;section-4&quot;&gt;(四)番外&lt;/h3&gt;
+
+&lt;p&gt;其实这个礼拜还实现了一个功能，就是通过关键字搜索视频，其实实现起来也是非常的简单无非就是一行SQL代码：&lt;/p&gt;
+
+&lt;pre&gt;&lt;code&gt;String sql = &quot;select * from FreeVideo where title like &#39;%&quot;+ keyword +&quot;%&#39; limit 0,20&quot;;
+&lt;/code&gt;&lt;/pre&gt;
+
+&lt;p&gt;然后查询到的数据再通过JSONArray这个框架来返回给客户端视频列表然后再播放，成功如下：&lt;/p&gt;
+
+&lt;p&gt;&lt;img src=&quot;http://upload-images.jianshu.io/upload_images/791315-25397b8c29255295.gif?imageMogr2/auto-orient/strip&quot; alt=&quot;SearchAchievement.gif&quot; /&gt;&lt;/p&gt;
+
+&lt;h3 id=&quot;section-5&quot;&gt;(五)结语&lt;/h3&gt;
+
+&lt;hr /&gt;
+
+&lt;p&gt;&lt;a href=&quot;https://github.com/Maru-zhang/iCCUT&quot;&gt;iCCUT&lt;/a&gt;这个全栈项目的主要目的还是为了熟悉iOS开发的整个思路，由于是第一次，所以也有很多的遗憾和缺陷，比如服务器代码机器丑陋，比如为什么不用更加轻量级的Flask，比如用户的交互能不能做的再好一点，自己的设计丑的一匹。不过欣慰的是，这个东西并不单单是个练习，我相信它是有生产力的，比如昨天晚上我就用它看了校园网上的《权利的游戏》,我是它的第一个用户，但愿不是最后一个。&lt;/p&gt;
+</description>
+        <pubDate>Sun, 29 Nov 2015 20:58:00 +0800</pubDate>
+        <link>//2015/11/29/Full-Stack-3/</link>
+        <guid isPermaLink="true">//2015/11/29/Full-Stack-3/</guid>
+        
+        <category>Swift</category>
+        
+        
+      </item>
     
       <item>
         <title>全栈项目iCCUT之服务器篇（二)</title>
@@ -181,8 +267,8 @@
 &lt;p&gt;赶紧为自己开脱一下，本来就不是专门搞服务器的，所以这么简单的功能和这么丑陋的代码就见谅了（虽然本职也不怎么样）。最后源代码敬上，周末愉快！&lt;a href=&quot;https://github.com/Maru-zhang/iCCUT-Server&quot;&gt;iCCUT-Server&lt;/a&gt;&lt;/p&gt;
 </description>
         <pubDate>Sat, 21 Nov 2015 20:58:00 +0800</pubDate>
-        <link>/2015/11/21/Full-Stack-2/</link>
-        <guid isPermaLink="true">/2015/11/21/Full-Stack-2/</guid>
+        <link>//2015/11/21/Full-Stack-2/</link>
+        <guid isPermaLink="true">//2015/11/21/Full-Stack-2/</guid>
         
         <category>Server</category>
         
@@ -301,8 +387,8 @@
 &lt;p&gt;由于个人水平的问题，我也不知道为什么相同的手势一快一慢会造成这样的执行顺序的问题，但是我知道的是，想要解决这个BUG必须防止在从缓存池中获取cell之前先清空的数据源。所以把&lt;code&gt;[_tableData removeAllObjects];&lt;/code&gt;放在了AFNetworking的响应Block中，这样就没有问题了。&lt;/p&gt;
 </description>
         <pubDate>Mon, 16 Nov 2015 20:20:00 +0800</pubDate>
-        <link>/2015/11/16/Think-about-refresh/</link>
-        <guid isPermaLink="true">/2015/11/16/Think-about-refresh/</guid>
+        <link>//2015/11/16/Think-about-refresh/</link>
+        <guid isPermaLink="true">//2015/11/16/Think-about-refresh/</guid>
         
         <category>iOS</category>
         
@@ -632,8 +718,8 @@ pwd = &#39;&#39;
 &lt;p&gt;代码实现非常的简陋，但是第一个全栈项目还是比较有纪念价值的。附上github地址：&lt;a href=&quot;https://github.com/Maru-zhang/CCUTSpider&quot;&gt;CCUTSpider&lt;/a&gt;&lt;/p&gt;
 </description>
         <pubDate>Mon, 26 Oct 2015 20:20:00 +0800</pubDate>
-        <link>/2015/10/26/Full-Stack-1/</link>
-        <guid isPermaLink="true">/2015/10/26/Full-Stack-1/</guid>
+        <link>//2015/10/26/Full-Stack-1/</link>
+        <guid isPermaLink="true">//2015/10/26/Full-Stack-1/</guid>
         
         <category>Python</category>
         
@@ -708,8 +794,8 @@ pwd = &#39;&#39;
 
 </description>
         <pubDate>Tue, 20 Oct 2015 00:58:00 +0800</pubDate>
-        <link>/2015/10/20/Something-trouble-in-development-1/</link>
-        <guid isPermaLink="true">/2015/10/20/Something-trouble-in-development-1/</guid>
+        <link>//2015/10/20/Something-trouble-in-development-1/</link>
+        <guid isPermaLink="true">//2015/10/20/Something-trouble-in-development-1/</guid>
         
         <category>iOS</category>
         
@@ -833,8 +919,8 @@ dispatch_async(dispatch_get_main_queue(), &amp;lt;^(void)block&amp;gt;)，在blo
 当需要进行简单值得传递的时候，比如子控件传输给父控件所点击的IndexPath的时候，更加适合使用Block来传值。因为，如果只是为了传这一个简单的值而没有特别的业务处理而定义一个协议，然后实现协议，设置代理再写方法的话将十分麻烦，得不偿失，这个时候简单高效的Block就可以完美的替代Delegate完成任务了。&lt;/p&gt;
 </description>
         <pubDate>Mon, 08 Jun 2015 00:58:00 +0800</pubDate>
-        <link>/2015/06/08/iOS-Development-Delegate,Notification,Block/</link>
-        <guid isPermaLink="true">/2015/06/08/iOS-Development-Delegate,Notification,Block/</guid>
+        <link>//2015/06/08/iOS-Development-Delegate,Notification,Block/</link>
+        <guid isPermaLink="true">//2015/06/08/iOS-Development-Delegate,Notification,Block/</guid>
         
         <category>iOS</category>
         
@@ -865,8 +951,8 @@ dispatch_async(dispatch_get_main_queue(), &amp;lt;^(void)block&amp;gt;)，在blo
 &lt;p&gt;我在学校的负五星级盥洗台洗漱，偶尔抬头看向窗外的“大雾”，不禁想起那句，大好河山啊~&lt;/p&gt;
 </description>
         <pubDate>Sun, 10 May 2015 08:20:00 +0800</pubDate>
-        <link>/2015/05/10/meaning-for-life/</link>
-        <guid isPermaLink="true">/2015/05/10/meaning-for-life/</guid>
+        <link>//2015/05/10/meaning-for-life/</link>
+        <guid isPermaLink="true">//2015/05/10/meaning-for-life/</guid>
         
         <category>Life</category>
         
