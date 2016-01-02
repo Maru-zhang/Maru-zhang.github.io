@@ -9,9 +9,9 @@
     <meta name="keyword"  content="Maru-zhang，Maru Blog，张斌辉">
     <link rel="shortcut icon" href="img/favicon.ico">
 
-    <title>开发中遇到的那些莫名其妙的坑-第一弹 - 张斌辉的博客 | Maru Blog</title>
+    <title>关于Storyboard你也许不知道的小秘密 - 张斌辉的博客 | Maru Blog</title>
 
-    <link rel="canonical" href="/2015/10/20/Something-trouble-in-development-1/">
+    <link rel="canonical" href="/2016/01/01/about-storyboard/">
 
     <!-- Bootstrap Core CSS -->
     <link rel="stylesheet" href="/css/bootstrap.min.css">
@@ -146,12 +146,12 @@
                         <a class="tag" href="/tags/#iOS" title="iOS">iOS</a>
                         
                     </div>
-                    <h1>开发中遇到的那些莫名其妙的坑-第一弹</h1>
+                    <h1>关于Storyboard你也许不知道的小秘密</h1>
                     
                     
                     <h2 class="subheading"></h2>
                     
-                    <span class="meta">Posted by Maru on October 20, 2015</span>
+                    <span class="meta">Posted by Maru on January 1, 2016</span>
                 </div>
             </div>
         </div>
@@ -169,68 +169,89 @@
                 col-md-10 col-md-offset-1
                 post-container">
 
-				<h1 id="ios">iOS开发中遇到的那些莫名其妙的坑</h1>
+				<h2 id="section">（一）前言</h2>
+<p>最近放纵的过了头，笔记好久没有写了，然而LOL的段位并没有并没有因为多包宿而上升，真是个令人悲伤的故事。Xcode总有一些很少用到隐藏很深的小秘密，今天我们就来扒一扒Storyboard，让哥几个爽一爽。</p>
+
+<h2 id="section-1">（二）正文</h2>
+
+<h3 id="runtime-attribute">1.Runtime Attribute</h3>
 
 <blockquote>
-  <p>写在前面的话：在苦逼的iOS开发过程中，总会碰到各种各样莫名其妙的问题，有的时候由于Apple官方的限制，有的时候又由于技术因素，总会有各种各样的问题困扰着自己。所以我决定把一些让我很生气的坑记录下来，留作纪念和参考，不定时更新。</p>
+  <p>Runtime大法好呀！</p>
 </blockquote>
 
-<p>1.AVAudioRecorder的Duration问题</p>
+<p>我们都知道，Objc是一门动态语言，而这一切都要归功于强大的Runtime库。在日常的使用过程中，我们打交道最多的就是属性面板了（Attributes inspector），改背景颜色啊，改Lable内容啊等等。它非常的方便是没有错，但是它也有局限性。比如设置圆角，在属性面板中并没有这一选项。但是通过Runtime Attribute我们就可以完美的解决问题。当然啦，属性面板能够做的事情，它自然也是不在话下了。</p>
 
-<p>在进行Yinner的开发过程中，用到了系统原生的AVAudioRecorder类来进行真机录音，模拟器上调用<code>- (BOOL)recordForDuration:(NSTimeInterval) duration;</code>的时候完全没有问题，监听录音完成的代理也可以通过代理方法检测到。然而奇怪的是当使用真机的时候代理方法完全没有响应，通过断点最后定位到这一句代码。最后换了一种思路，利用NSNotificationCenter来控制和监听录音的始末动作。</p>
+<p>只需要轻轻一点右下角的加号，然后就像代码中KVC的使用方法那样，填上KeyPath，填上Value，一切搞定！</p>
 
-<p>2.AVAudioRecorder的真机测试无声问题</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/791315-efabc3992cc557d2.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/500" alt="Attributes inspector" /></p>
 
-<p>在进行Yinner的开发过程中，利用原生的AVAudioRecorder进行音频录制并且合成视频。然而，在模拟器上完全没有问题的代码，在进行真机测试的时候就发现变成了“无声电影”。经过查找，发现原因是没有激活真机的硬件音频会话层，官方解释如下：</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/791315-d09b47e5c42d2323.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/500" alt="Storyboard的样式.png" /></p>
 
-<blockquote>
-  <p>Checks to see if calling process has permission to record audio.  The ‘response’ block will be called immediately if permission has already been granted or denied.  Otherwise, it presents a dialog to notify the user and allow them to choose, and calls the block once the UI has been dismissed.  ‘granted’ indicates whether permission has been granted.</p>
-</blockquote>
+<p><img src="http://upload-images.jianshu.io/upload_images/791315-5f92862ddaa2dcce.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/500" alt="运行后的样式" /></p>
 
-<p>因此只需要添加如下代码，激活会话层即可。</p>
+<h3 id="global-tint">2.Global Tint</h3>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">AVAudioSession</span> <span class="o">*</span><span class="n">session</span> <span class="o">=</span> <span class="o">[</span><span class="no">AVAudioSession</span> <span class="n">sharedInstance</span><span class="o">]</span><span class="p">;</span>
-    <span class="no">NSError</span> <span class="o">*</span><span class="n">sessionError</span><span class="p">;</span>
-    <span class="o">[</span><span class="n">session</span> <span class="ss">setCategory</span><span class="p">:</span><span class="no">AVAudioSessionCategoryPlayAndRecord</span> <span class="ss">error</span><span class="p">:</span><span class="o">&amp;</span><span class="n">sessionError</span><span class="o">]</span><span class="err">；</span>
-    <span class="k">if</span><span class="p">(</span><span class="n">session</span> <span class="o">==</span> <span class="kp">nil</span><span class="p">)</span>
-        <span class="no">NSLog</span><span class="p">(</span><span class="err">@</span><span class="s2">&quot;Error creating session: %@&quot;</span><span class="p">,</span> <span class="o">[</span><span class="n">sessionError</span> <span class="n">description</span><span class="o">]</span><span class="p">);</span>
-    <span class="k">else</span>
-        <span class="o">[</span><span class="n">session</span> <span class="ss">setActive</span><span class="p">:</span><span class="no">YES</span> <span class="ss">error</span><span class="p">:</span><span class="kp">nil</span><span class="o">]</span><span class="p">;</span></code></pre></div>
+<p>有的时候我们有这样的需求，在Storyboard中所有的Tint Color都设置为其他的颜色，而不是默认的蓝色。那么，我们如果每添加一个控件就在属性面板中设置这种办法实在是太Low了，好在Apple为我们考虑到了这一点，在Storyboard中的File inspector中的Global Tint为我们完美的解决了这一点。为该属性设置了颜色以后，该Storyboard中的所有控件的Tint Color都变成了你所设置的颜色，比如UIButton的字体颜色、UIProgress进度条的颜色等等，是不是方便了很多呢？</p>
 
-<p>3.UIGestureRecognizer重用的无效问题</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/791315-82ec5d03f344447b.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="Gobal Tint.png" /></p>
 
-<p>这是最近在进行Yinner侧滑开发的过程中遇到的一个小问题。在侧滑菜单打开和关闭的时候要用到相同的UIGestureRecognizer对象和一个相同的方法- (void)onPanGuestureRecginizer:(UIPanGestureRecognizer *)pan。而在主界面侧滑缩放以后，需要给主界面添加一个蒙版遮罩，以突出侧滑菜单的重点。这样的情况就是，侧滑菜单在打开的时候主界面需要一个Pan手势，而在侧滑菜单缩放回去的时候主菜单上面的蒙版图层又需要另外一个Pan手势，并且这两个手势所调用的方法是同一个因此，我自作聪明，将这个手势对象设置为全局变量，在侧滑菜单出现后给蒙版也使用addGestureRecognizer方法添加同一个手势对象。这样所造成的问题是，当侧滑菜单消失后，主界面的蒙版也随之消失，而这一个手势对象只能添加在一个VIew中，因此，主界面原来的手势就消失了，导致莫名其妙的手势方法不进入的问题。真是蠢= =。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/791315-37c7cb034ba1f4ef.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1000" alt="6E9F51DE-7C84-48EE-9C30-AF13EB6BD41B.png" /></p>
 
-<p>4.Navgation下的UITableView存在偏移的解决方法</p>
+<h3 id="outlet-collections">3.Outlet Collections</h3>
 
-<p>最近在开发中遇到一个小问题，当一个UITableview嵌套在一个NavgationController上的时候，会发现，明明Tableview的frame以及其他的各项设置没有问题，但是显示的时候还是会存在TableView的向下偏移。后来发现，这个是ios7开始有的一个新的属性，目的是，如果视图中存在唯一一个scrollView，那么它会设置相应的内边距，这样可以占据整个视图。所以只需要把UITableView的automaticallyAdjustsScrollViewInsets属性设置为NO，就能解决这个问题。</p>
+<p>Outlet是iOS“拖线”开发中最基础也是最常用的操作了，相信大家也已经用的非常熟练了。Outlet Collections从名字上面我们就可以知道，它是Outlet的一种集合。举个例子吧：有一个UI界面中有很多的UIButton，业务逻辑上他们属于同一块，然后你要在.m中获取他们的引用，原来的方法是一个一个的给他们拖线，命名，然后再拖线…但是有了Collection以后世界就不一样了。步骤如下：</p>
 
-<p>5.iOS中两种退出触摸键盘的简单方法</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/791315-2ce134ad1b3e8f39.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="点击鼠标右键，出现的那个黑色HUD.png" /></p>
 
-<p>比较常用的一种键盘失焦的方法是令UITextfiled对象调用resignFirstResponder。然而这个方法有一定的局限性，如果界面中存在多个UITextFiled输入框，那么你如果想要退出键盘你就需要多次调用上面的方法，这样会显得非常的繁琐。因此，可以的使用如下的方法。</p>
+<p><img src="http://upload-images.jianshu.io/upload_images/791315-21aac11abe471bd6.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="拖线设置集合名称.png" /></p>
 
-<p>第一种方法</p>
+<p>其他几个的控件也是相同操作拖线到该Collections。我们可以看到，得到的引用是一个该控件类的数组集合。也就是说，不同类型的组件不能通过Collections来集合获取。</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">[[[</span><span class="no">UIApplication</span>
- <span class="n">sharedApplication</span><span class="o">]</span> <span class="n">keyWindow</span><span class="o">]</span> <span class="ss">endEditing</span><span class="p">:</span><span class="no">YES</span><span class="o">]</span><span class="p">;</span></code></pre></div>
+<p><img src="http://upload-images.jianshu.io/upload_images/791315-70218e3097741cba.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="屏幕快照 2016-01-01 下午2.30.21.png" /></p>
 
-<p>第二种方法</p>
+<p>OK啦，最后我们来测试一下获取那几个Button。</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">[[</span><span class="nb">self</span> <span class="ss">findFirstResponderBeneathView</span><span class="p">:</span><span class="nb">self</span><span class="o">]</span> <span class="n">resignFirstResponder</span><span class="o">]</span><span class="p">;</span>
- 
-<span class="o">-</span> <span class="p">(</span><span class="no">UIView</span><span class="o">*</span><span class="p">)</span><span class="ss">findFirstResponderBeneathView</span><span class="p">:(</span><span class="no">UIView</span><span class="o">*</span><span class="p">)</span><span class="n">view</span> 
-<span class="p">{</span>
-    <span class="sr">//</span> <span class="no">Search</span> <span class="n">recursively</span> <span class="k">for</span> <span class="n">first</span> <span class="n">responder</span>
-    <span class="k">for</span> <span class="p">(</span> <span class="no">UIView</span> <span class="o">*</span><span class="n">childView</span> <span class="k">in</span> <span class="n">view</span><span class="o">.</span><span class="n">subviews</span> <span class="p">)</span> <span class="p">{</span>
-        <span class="k">if</span> <span class="p">(</span> <span class="o">[</span><span class="n">childView</span> <span class="ss">respondsToSelector</span><span class="p">:</span><span class="vi">@selector</span><span class="p">(</span><span class="n">isFirstResponder</span><span class="p">)</span><span class="o">]</span> <span class="o">&amp;&amp;</span> <span class="o">[</span><span class="n">childView</span> <span class="n">isFirstResponder</span><span class="o">]</span> <span class="p">)</span> 
-            <span class="k">return</span> <span class="n">childView</span><span class="p">;</span>
-        <span class="no">UIView</span> <span class="o">*</span><span class="n">result</span> <span class="o">=</span> <span class="o">[</span><span class="nb">self</span> <span class="ss">findFirstResponderBeneathView</span><span class="p">:</span><span class="n">childView</span><span class="o">]</span><span class="p">;</span>
-        <span class="k">if</span> <span class="p">(</span> <span class="n">result</span> <span class="p">)</span> 
-            <span class="k">return</span> <span class="n">result</span><span class="p">;</span>
-    <span class="p">}</span>
-    <span class="k">return</span> <span class="kp">nil</span><span class="p">;</span>
-<span class="p">}</span></code></pre></div>
+<p><img src="http://upload-images.jianshu.io/upload_images/791315-d3ac889b40242462.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="屏幕快照 2016-01-01 下午2.36.03.png" /></p>
 
+<h3 id="storyboard-reference">4.Storyboard Reference</h3>
+
+<p>在使用Storyboard开发中，最为人诟病的可能莫过于多人开发了，唐巧当年在一篇博文中将其称之为“灾难”（详情可见他的个人博客）。机智的苹果也看到了这个的问题，于是Storyboard Reference就出现了。它将一个原本庞大的Storyboard分发成多个子Storyboard，在父本中只能看到子体的引用。在多人开发的过程中，每个人修改自己的那个子体，那么就不会有那么多蛋疼的事情了。</p>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/791315-65e0dc83e3c00698.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="选中你所要重构的控制器，然后选择Editor-&gt;Refactor to storyboard.png" /></p>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/791315-9710c02fdcaf0701.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="设置新的Storyboard的名字.png" /></p>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/791315-b8150bc4ee2fb66d.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="结果.png" /></p>
+
+<p>当然啦，每个人的使用习惯不一样。你也可以选择先新建一个Storyboard，然后再Main.Storyboard中添加一个Storyboard Reference控件，然后在属性面板设置关联，就像下面那样。</p>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/791315-981c17c8c37c2a8c.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="7ADABE74-D7B5-4979-9655-556E009A2968.png" /></p>
+
+<h3 id="section-2">5.对齐相关</h3>
+
+<table>
+  <tbody>
+    <tr>
+      <td>用过PS的人应该都知道辅助线的作业，当然万能的Xcode也是提供了辅助线的功能的。单击某个控件，按下shift+Command+-添加横向辅助线，shift+Command+</td>
+      <td>添加纵向辅助线，添加的位置都是左右/上下居中的。如果你想要删除辅助线，那么把它拖到最边边就可以啦！</td>
+    </tr>
+  </tbody>
+</table>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/791315-3d6f2103465f90ae.png?imageMogr2/auto-orient/strip%7CimageView2/2/w/1240" alt="屏幕快照 2016-01-01 下午3.35.42.png" /></p>
+
+<p>有的时候我们需要快捷的知道某个控件上下左右的距离，那么我们只需要选择相应的控件,然后按下Command就可以啦，当你鼠标移动到其他的控件的时候，也会智能的显示出与该控件的位置距离参数。如下图:</p>
+
+<p><img src="http://upload-images.jianshu.io/upload_images/791315-0a2ae753746725d1.gif?imageMogr2/auto-orient/strip" alt="距离标注.gif" /></p>
+
+<h2 id="section-3">（三）结语</h2>
+
+<p>Storyboard刚出生的时候，它确实有这样那样的缺陷，但是经过几年的发展，苹果不断的改进，它已经成为iOS快速开发不可或缺的重要工具。工程师的时间并不应该浪费在那些无聊乏味的代码上，在这一点上Storyboard一直未忘初心。</p>
+
+<p>关于Storyboard的小技巧我相信还有很多，小伙伴们有什么新发现还记得多多分享哦！</p>
+
+<p>最后的最后，祝大家2016年写出越来越精致的代码，我们Github上见！</p>
 
 
                 <hr>
@@ -240,14 +261,12 @@
                 </style>
                 <div class="ds-share"
                     style="text-align: right"
-                    data-thread-key="/2015/10/20/Something-trouble-in-development-1"
-                    data-title="开发中遇到的那些莫名其妙的坑-第一弹"
-                    data-url="/2015/10/20/Something-trouble-in-development-1/"
+                    data-thread-key="/2016/01/01/about-storyboard"
+                    data-title="关于Storyboard你也许不知道的小秘密"
+                    data-url="/2016/01/01/about-storyboard/"
                     data-images="/img/post-bg-01.jpg"
-                    data-content="iOS开发中遇到的那些莫名其妙的坑
-
-
-  写在前面的话：在苦逼的iOS开发过程中，总会碰到各种各样莫名其妙的问题，有的时候由于Apple官方的限制，有的... | 张斌辉的博客 | Maru Blog " >
+                    data-content="（一）前言
+最近放纵的过了头，笔记好久没有写了，然而LOL的段位并没有并没有因为多包宿而上升，真是个令人悲伤的故事。Xcode总有一些很少用到隐藏很深的小... | 张斌辉的博客 | Maru Blog " >
                     <div class="ds-share-inline">
                       <ul  class="ds-share-icons-16">
                         <li data-toggle="ds-share-icons-more"><a class="ds-more" href="#">分享到：</a></li>
@@ -267,13 +286,9 @@
                 <ul class="pager">
                     
                     <li class="previous">
-                        <a href="/2015/06/08/iOS-Development-Delegate,Notification,Block/" data-toggle="tooltip" data-placement="top" title="iOS开发Delegate,Notification,Block使用心得">&larr; Previous Post</a>
+                        <a href="/2015/12/04/Flask-usage/" data-toggle="tooltip" data-placement="top" title="如何用Flask快速搭建你APP的接口">&larr; Previous Post</a>
                     </li>
                     
-                    
-                    <li class="next">
-                        <a href="/2015/10/26/Full-Stack-1/" data-toggle="tooltip" data-placement="top" title="全栈项目iCCUT之数据篇（一）">Next Post &rarr;</a>
-                    </li>
                     
                 </ul>
 
@@ -282,9 +297,9 @@
                 <!-- 多说评论框 start -->
                 <div class="comment">
                     <div class="ds-thread"
-                        data-thread-key="/2015/10/20/Something-trouble-in-development-1"
-                        data-title="开发中遇到的那些莫名其妙的坑-第一弹"
-                        data-url="/2015/10/20/Something-trouble-in-development-1/" >
+                        data-thread-key="/2016/01/01/about-storyboard"
+                        data-title="关于Storyboard你也许不知道的小秘密"
+                        data-url="/2016/01/01/about-storyboard/" >
                     </div>
                 </div>
                 <!-- 多说评论框 end -->
