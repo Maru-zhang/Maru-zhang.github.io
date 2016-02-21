@@ -180,7 +180,7 @@
 <h3 id="bug-1">1.BUG表现</h3>
 <p>在最近项目中，关于网络请求那部分，还是毫无意外的用到了MJRefresh和AFNetworking。然而这个被玩烂的框架却被我用出了新的BUG：当你以正常人类的速度下拉刷新的时候（就是手指按住屏幕，往下移动，然后放开），刷新正常工作没有任何问题。然而，当你以极快的速度完成上述的动作的时候，奇迹发生了，Crash了！</p>
 
-<p><img src="/img/post-img/2015-11-16-0.gif" alt="下载界面" /><br />
+<p><img src="/img/post-img/2015-11-16-0.gif" alt="下载界面" />
 <img src="/img/post-img/2015-11-16-1.gif" alt="下载界面" /></p>
 
 <h3 id="bug-2">2.BUG分析</h3>
@@ -192,7 +192,7 @@
 
 <p>哦~数据源为空，所以在刷新的时候取值了一个空的数据源数组导致crash。等等，为空？怎么可能！我们先来看一下下拉刷新的方法：</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">-</span> <span class="p">(</span><span class="n">void</span><span class="p">)</span><span class="ss">loadDataByAdd</span><span class="p">:(</span><span class="no">BOOL</span><span class="p">)</span><span class="n">isAdd</span> <span class="p">{</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">-</span> <span class="p">(</span><span class="n">void</span><span class="p">)</span><span class="ss">loadDataByAdd</span><span class="p">:(</span><span class="no">BOOL</span><span class="p">)</span><span class="n">isAdd</span> <span class="p">{</span>
     
     <span class="no">TSLog</span><span class="p">(</span><span class="err">@</span><span class="s2">&quot;刷新&quot;</span><span class="p">);</span>
 
@@ -262,7 +262,7 @@
         <span class="o">[</span><span class="n">weakTableView</span><span class="o">.</span><span class="n">header</span> <span class="n">endRefreshing</span><span class="o">]</span><span class="p">;</span>
         <span class="o">[</span><span class="no">ZMAleart</span> <span class="ss">aleartwithVC</span><span class="p">:</span><span class="nb">self</span> <span class="ss">addRemark</span><span class="p">:</span><span class="err">@</span><span class="s2">&quot;服务器连接失败,请检查网络&quot;</span><span class="o">]</span><span class="p">;</span>
     <span class="p">}</span><span class="o">]</span><span class="p">;</span>
-<span class="p">}</span></code></pre></div>
+<span class="p">}</span></code></pre></figure>
 
 <p>从上面的代码可以看出来，当isAdd为NO时，也就是下拉刷新的时候，在请求之前我们先移除了所有数据源的内容，然后再进行请求刷新。那么问题来了，按照这个顺序，为什么在<code>- (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath</code>这个方法中拿到的数据源会是空呢？</p>
 

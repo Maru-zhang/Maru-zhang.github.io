@@ -190,57 +190,57 @@
 
 <p>由于我们需要通过Python连接数据库，因此我们少不了使用MySQLdb模块。唉…Mac装这玩意还真没我想象中轻松啊。</p>
 
-<p>1.安装MySQLdb<br />
+<p>1.安装MySQLdb
 在max os x下安装mysql,我们需要使用python访问mysql数据库，需要安装MySQLdb模块，方法如下：</p>
 
 <p>在下面的网址下载mysqldb模块：</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="ss">http</span><span class="p">:</span><span class="sr">//sou</span><span class="n">rceforge</span><span class="o">.</span><span class="n">net</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">mysql</span><span class="o">-</span><span class="n">python</span><span class="o">/</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="ss">http</span><span class="p">:</span><span class="sr">//sou</span><span class="n">rceforge</span><span class="o">.</span><span class="n">net</span><span class="o">/</span><span class="n">projects</span><span class="o">/</span><span class="n">mysql</span><span class="o">-</span><span class="n">python</span><span class="o">/</span></code></pre></figure>
 
 <p>解压以后，在解压文件中找到setup_posix.py</p>
 
 <p>找到:</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">mysql_config</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="s2">&quot;mysql_config&quot;</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">mysql_config</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="s2">&quot;mysql_config&quot;</span></code></pre></figure>
 
 <p>改为：</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">mysql_config</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="s2">&quot;/usr/local/mysql/bin/mysql_config&quot;</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">mysql_config</span><span class="o">.</span><span class="n">path</span> <span class="o">=</span> <span class="s2">&quot;/usr/local/mysql/bin/mysql_config&quot;</span></code></pre></figure>
 
 <p>然后执行：</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">sudo</span> <span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">install</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">sudo</span> <span class="n">python</span> <span class="n">setup</span><span class="o">.</span><span class="n">py</span> <span class="n">install</span></code></pre></figure>
 
 <p>安装成功后，在命令行输入python进入python环境，输入import MySQLdb，我的环境中报下面的错误：</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">&gt;&gt;&gt;</span> <span class="n">import</span> <span class="no">MySQLdb</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">&gt;&gt;&gt;</span> <span class="n">import</span> <span class="no">MySQLdb</span>
 <span class="no">Traceback</span> <span class="p">(</span><span class="n">most</span> <span class="n">recent</span> <span class="n">call</span> <span class="n">last</span><span class="p">):</span>
   <span class="no">File</span> <span class="s2">&quot;&lt;stdin&gt;&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">1</span><span class="p">,</span> <span class="k">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
   <span class="no">File</span> <span class="s2">&quot;/Library/Python/2.7/site-packages/MySQL_python-1.2.4b4-py2.7-macosx-10.11-intel.egg/MySQLdb/__init__.py&quot;</span><span class="p">,</span> <span class="n">line</span> <span class="mi">19</span><span class="p">,</span> <span class="k">in</span> <span class="o">&lt;</span><span class="n">module</span><span class="o">&gt;</span>
     <span class="n">import</span> <span class="n">_mysql</span>
 <span class="ss">ImportError</span><span class="p">:</span> <span class="n">dlopen</span><span class="p">(</span><span class="sr">/Library/</span><span class="no">Python</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="no">MySQL_python</span><span class="o">-</span><span class="mi">1</span><span class="o">.</span><span class="mi">2</span><span class="o">.</span><span class="mi">4</span><span class="n">b4</span><span class="o">-</span><span class="n">py2</span><span class="o">.</span><span class="mi">7</span><span class="o">-</span><span class="n">macosx</span><span class="o">-</span><span class="mi">10</span><span class="o">.</span><span class="mi">11</span><span class="o">-</span><span class="n">intel</span><span class="o">.</span><span class="n">egg</span><span class="o">/</span><span class="n">_mysql</span><span class="o">.</span><span class="n">so</span><span class="p">,</span> <span class="mi">2</span><span class="p">):</span> <span class="no">Library</span> <span class="ow">not</span> <span class="ss">loaded</span><span class="p">:</span> <span class="n">libmysqlclient</span><span class="o">.</span><span class="mi">18</span><span class="o">.</span><span class="n">dylib</span>
   <span class="no">Referenced</span> <span class="ss">from</span><span class="p">:</span> <span class="sr">/Library/</span><span class="no">Python</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="no">MySQL_python</span><span class="o">-</span><span class="mi">1</span><span class="o">.</span><span class="mi">2</span><span class="o">.</span><span class="mi">4</span><span class="n">b4</span><span class="o">-</span><span class="n">py2</span><span class="o">.</span><span class="mi">7</span><span class="o">-</span><span class="n">macosx</span><span class="o">-</span><span class="mi">10</span><span class="o">.</span><span class="mi">11</span><span class="o">-</span><span class="n">intel</span><span class="o">.</span><span class="n">egg</span><span class="o">/</span><span class="n">_mysql</span><span class="o">.</span><span class="n">so</span>
-  <span class="ss">Reason</span><span class="p">:</span> <span class="n">unsafe</span> <span class="n">use</span> <span class="n">of</span> <span class="n">relative</span> <span class="n">rpath</span> <span class="n">libmysqlclient</span><span class="o">.</span><span class="mi">18</span><span class="o">.</span><span class="n">dylib</span> <span class="k">in</span> <span class="sr">/Library/</span><span class="no">Python</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="no">MySQL_python</span><span class="o">-</span><span class="mi">1</span><span class="o">.</span><span class="mi">2</span><span class="o">.</span><span class="mi">4</span><span class="n">b4</span><span class="o">-</span><span class="n">py2</span><span class="o">.</span><span class="mi">7</span><span class="o">-</span><span class="n">macosx</span><span class="o">-</span><span class="mi">10</span><span class="o">.</span><span class="mi">11</span><span class="o">-</span><span class="n">intel</span><span class="o">.</span><span class="n">egg</span><span class="o">/</span><span class="n">_mysql</span><span class="o">.</span><span class="n">so</span> <span class="n">with</span> <span class="n">restricted</span> <span class="n">binary</span></code></pre></div>
+  <span class="ss">Reason</span><span class="p">:</span> <span class="n">unsafe</span> <span class="n">use</span> <span class="n">of</span> <span class="n">relative</span> <span class="n">rpath</span> <span class="n">libmysqlclient</span><span class="o">.</span><span class="mi">18</span><span class="o">.</span><span class="n">dylib</span> <span class="k">in</span> <span class="sr">/Library/</span><span class="no">Python</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="no">MySQL_python</span><span class="o">-</span><span class="mi">1</span><span class="o">.</span><span class="mi">2</span><span class="o">.</span><span class="mi">4</span><span class="n">b4</span><span class="o">-</span><span class="n">py2</span><span class="o">.</span><span class="mi">7</span><span class="o">-</span><span class="n">macosx</span><span class="o">-</span><span class="mi">10</span><span class="o">.</span><span class="mi">11</span><span class="o">-</span><span class="n">intel</span><span class="o">.</span><span class="n">egg</span><span class="o">/</span><span class="n">_mysql</span><span class="o">.</span><span class="n">so</span> <span class="n">with</span> <span class="n">restricted</span> <span class="n">binary</span></code></pre></figure>
 
 <p>在10.10的系统环境下只需要：</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">sudo</span> <span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="sr">/usr/</span><span class="n">local</span><span class="o">/</span><span class="n">mysql</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">libmysqlclient</span><span class="o">.</span><span class="mi">18</span><span class="o">.</span><span class="n">dylib</span> <span class="sr">/usr/</span><span class="n">lib</span><span class="o">/</span><span class="n">libmysqlclient</span><span class="o">.</span><span class="mi">18</span><span class="o">.</span><span class="n">dylib</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">sudo</span> <span class="n">ln</span> <span class="o">-</span><span class="n">s</span> <span class="sr">/usr/</span><span class="n">local</span><span class="o">/</span><span class="n">mysql</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">libmysqlclient</span><span class="o">.</span><span class="mi">18</span><span class="o">.</span><span class="n">dylib</span> <span class="sr">/usr/</span><span class="n">lib</span><span class="o">/</span><span class="n">libmysqlclient</span><span class="o">.</span><span class="mi">18</span><span class="o">.</span><span class="n">dylib</span></code></pre></figure>
 
 <p>然而，我的系统已经升级到了10.11，输入上述的指令以后报错：</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="ss">ln</span><span class="p">:</span> <span class="sr">/usr/</span><span class="n">lib</span><span class="o">/</span><span class="n">libmysqlclient</span><span class="o">.</span><span class="mi">18</span><span class="o">.</span><span class="n">dylib</span><span class="p">:</span> <span class="no">Operation</span> <span class="ow">not</span> <span class="n">permitted</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="ss">ln</span><span class="p">:</span> <span class="sr">/usr/</span><span class="n">lib</span><span class="o">/</span><span class="n">libmysqlclient</span><span class="o">.</span><span class="mi">18</span><span class="o">.</span><span class="n">dylib</span><span class="p">:</span> <span class="no">Operation</span> <span class="ow">not</span> <span class="n">permitted</span></code></pre></figure>
 
-<p>出现如下提示的原因是：<br />
+<p>出现如下提示的原因是：
 OS X 10.11 中System Integrity Protection 的功能，阻止了写入的操作的，默认是开启的，需要关闭。</p>
 
-<p>关闭方式：<br />
+<p>关闭方式：
 重启电脑，开机时按住 cmd + R，进入 Recovery 模式。然后打开终端工具 ，输入命令：csrutil diable，然后再次重启电脑即可。</p>
 
 <p>但是关闭以后，10.11安全性方面的特性就不复存在了，假如既不想关闭 System Intergrity Protection 功能，又想解决Python-MysqlDB的问题，经过Google的帮助，找到了一个解决方法：</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">sudo</span> <span class="n">install_name_tool</span> <span class="o">-</span><span class="n">change</span> <span class="n">libmysqlclient</span><span class="o">.</span><span class="mi">18</span><span class="o">.</span><span class="n">dylib</span> <span class="p">\</span>  
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">sudo</span> <span class="n">install_name_tool</span> <span class="o">-</span><span class="n">change</span> <span class="n">libmysqlclient</span><span class="o">.</span><span class="mi">18</span><span class="o">.</span><span class="n">dylib</span> <span class="p">\</span>  
 <span class="sr">/usr/</span><span class="n">local</span><span class="o">/</span><span class="n">mysql</span><span class="o">/</span><span class="n">lib</span><span class="o">/</span><span class="n">libmysqlclient</span><span class="o">.</span><span class="mi">18</span><span class="o">.</span><span class="n">dylib</span> <span class="p">\</span>  
-<span class="sr">/Library/</span><span class="no">Python</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="no">MySQL_python</span><span class="o">-</span><span class="mi">1</span><span class="o">.</span><span class="mi">2</span><span class="o">.</span><span class="mi">4</span><span class="n">b4</span><span class="o">-</span><span class="n">py2</span><span class="o">.</span><span class="mi">7</span><span class="o">-</span><span class="n">macosx</span><span class="o">-</span><span class="mi">10</span><span class="o">.</span><span class="mi">9</span><span class="o">-</span><span class="n">intel</span><span class="o">.</span><span class="n">egg</span><span class="o">/</span><span class="n">_mysql</span><span class="o">.</span><span class="n">so</span></code></pre></div>
+<span class="sr">/Library/</span><span class="no">Python</span><span class="o">/</span><span class="mi">2</span><span class="o">.</span><span class="mi">7</span><span class="o">/</span><span class="n">site</span><span class="o">-</span><span class="n">packages</span><span class="o">/</span><span class="no">MySQL_python</span><span class="o">-</span><span class="mi">1</span><span class="o">.</span><span class="mi">2</span><span class="o">.</span><span class="mi">4</span><span class="n">b4</span><span class="o">-</span><span class="n">py2</span><span class="o">.</span><span class="mi">7</span><span class="o">-</span><span class="n">macosx</span><span class="o">-</span><span class="mi">10</span><span class="o">.</span><span class="mi">9</span><span class="o">-</span><span class="n">intel</span><span class="o">.</span><span class="n">egg</span><span class="o">/</span><span class="n">_mysql</span><span class="o">.</span><span class="n">so</span>  </code></pre></figure>
 
 <p>在Python环境下再次import MySQLdb，OK！大功告成，模块已经安装成功了。</p>
 
@@ -270,7 +270,7 @@ OS X 10.11 中System Integrity Protection 的功能，阻止了写入的操作�
 
 <p>所有的资源地址都有相同的规律，即:</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="ss">http</span><span class="p">:</span><span class="sr">//</span><span class="n">v8</span><span class="o">.</span><span class="n">ccut</span><span class="o">.</span><span class="n">edu</span><span class="o">.</span><span class="n">cn</span><span class="o">/</span><span class="n">article</span><span class="o">.</span><span class="n">php?</span><span class="o">/</span><span class="no">XXXXX</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="ss">http</span><span class="p">:</span><span class="sr">//</span><span class="n">v8</span><span class="o">.</span><span class="n">ccut</span><span class="o">.</span><span class="n">edu</span><span class="o">.</span><span class="n">cn</span><span class="o">/</span><span class="n">article</span><span class="o">.</span><span class="n">php?</span><span class="o">/</span><span class="no">XXXXX</span></code></pre></figure>
 
 <p>有了这样的规律以后，就根本不需要翻进去翻出来的爬取数据了，校园网果然有二流学校的作风，连scrapy模块都可以省略了。</p>
 
@@ -286,7 +286,7 @@ OS X 10.11 中System Integrity Protection 的功能，阻止了写入的操作�
 
 <p>观察一下HTML源码：</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">&lt;</span><span class="n">table</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;100%&quot;</span> <span class="n">border</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">cellspacing</span><span class="o">=</span><span class="s2">&quot;4&quot;</span> <span class="n">cellpadding</span><span class="o">=</span><span class="s2">&quot;0&quot;</span>  <span class="n">bgcolor</span><span class="o">=</span><span class="s2">&quot;#EEEEEE&quot;</span><span class="o">&gt;</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">&lt;</span><span class="n">table</span> <span class="n">width</span><span class="o">=</span><span class="s2">&quot;100%&quot;</span> <span class="n">border</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">cellspacing</span><span class="o">=</span><span class="s2">&quot;4&quot;</span> <span class="n">cellpadding</span><span class="o">=</span><span class="s2">&quot;0&quot;</span>  <span class="n">bgcolor</span><span class="o">=</span><span class="s2">&quot;#EEEEEE&quot;</span><span class="o">&gt;</span>
   <span class="o">&lt;</span><span class="n">tr</span><span class="o">&gt;</span>
     <span class="o">&lt;</span><span class="n">td</span><span class="o">&gt;</span>
       <span class="o">&lt;</span><span class="n">span</span> <span class="n">class</span><span class="o">=</span><span class="s2">&quot;normalfont&quot;</span><span class="o">&gt;&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;http://v8.ccut.edu.cn/index.php&quot;</span><span class="o">&gt;</span><span class="no">VideoBar</span><span class="o">&lt;</span><span class="sr">/a&gt; /</span> <span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;http://v8.ccut.edu.cn/sort.php?/1&quot;</span><span class="o">&gt;</span><span class="err">纪录片</span><span class="o">&lt;</span><span class="sr">/a&gt; /</span> <span class="o">&lt;</span><span class="n">a</span> <span class="n">href</span><span class="o">=</span><span class="s2">&quot;http://v8.ccut.edu.cn/sort.php?/17&quot;</span><span class="o">&gt;</span><span class="err">走近科学</span><span class="o">&lt;</span><span class="sr">/a&gt; /</span> <span class="err">湖底迷城</span><span class="o">&lt;</span><span class="sr">/span&gt;</span>
@@ -310,7 +310,7 @@ OS X 10.11 中System Integrity Protection 的功能，阻止了写入的操作�
 <span class="sr">              &lt;/</span><span class="n">tr</span><span class="o">&gt;</span>
               <span class="o">&lt;</span><span class="n">tr</span><span class="o">&gt;</span>
                 <span class="o">&lt;</span><span class="n">td</span> <span class="n">valign</span><span class="o">=</span><span class="s2">&quot;top&quot;</span> <span class="n">colspan</span><span class="o">=</span><span class="s2">&quot;2&quot;</span><span class="o">&gt;</span>
-                  <span class="o">&lt;</span><span class="n">table</span>    <span class="n">width</span><span class="o">=</span><span class="s2">&quot;100%&quot;</span> <span class="n">border</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">cellspacing</span><span class="o">=</span><span class="s2">&quot;1&quot;</span> <span class="n">cellpadding</span><span class="o">=</span><span class="s2">&quot;4&quot;</span><span class="o">&gt;</span></code></pre></div>
+                  <span class="o">&lt;</span><span class="n">table</span>    <span class="n">width</span><span class="o">=</span><span class="s2">&quot;100%&quot;</span> <span class="n">border</span><span class="o">=</span><span class="s2">&quot;0&quot;</span> <span class="n">cellspacing</span><span class="o">=</span><span class="s2">&quot;1&quot;</span> <span class="n">cellpadding</span><span class="o">=</span><span class="s2">&quot;4&quot;</span><span class="o">&gt;</span></code></pre></figure>
 
 <p>然后再定义三个正则表达式，分别从下载界面中获取视频名称、地址和两个分类。</p>
 
@@ -371,7 +371,7 @@ pwd = ''
 
 <p>最后就是把mysql.py和ParserPage.py整和起来使用了。完整的代码如下：</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">mysql</span><span class="o">.</span><span class="n">py</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">mysql</span><span class="o">.</span><span class="n">py</span>
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;Maru&#39;</span>
 <span class="c1">#coding=gb2312</span>
@@ -404,9 +404,9 @@ pwd = ''
             <span class="nb">self</span><span class="o">.</span><span class="n">cur</span><span class="o">.</span><span class="n">execute</span><span class="p">(</span><span class="n">sql</span><span class="p">)</span>
             <span class="nb">self</span><span class="o">.</span><span class="n">conn</span><span class="o">.</span><span class="n">commit</span><span class="p">()</span>
         <span class="n">except</span> <span class="no">MySQLdb</span><span class="o">.</span><span class="n">Error</span><span class="p">,</span><span class="ss">e</span><span class="p">:</span>
-            <span class="nb">print</span> <span class="s2">&quot;Mysql Error %d: %s&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="p">)</span></code></pre></div>
+            <span class="nb">print</span> <span class="s2">&quot;Mysql Error %d: %s&quot;</span> <span class="o">%</span> <span class="p">(</span><span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="o">[</span><span class="mi">0</span><span class="o">]</span><span class="p">,</span> <span class="n">e</span><span class="o">.</span><span class="n">args</span><span class="o">[</span><span class="mi">1</span><span class="o">]</span><span class="p">)</span></code></pre></figure>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">ParserPage</span><span class="o">.</span><span class="n">py</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">ParserPage</span><span class="o">.</span><span class="n">py</span>
 
 
 <span class="n">__author__</span> <span class="o">=</span> <span class="s1">&#39;maru&#39;</span>
@@ -471,7 +471,7 @@ pwd = ''
             <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;resultError-----%s&quot;</span> <span class="o">%</span> <span class="n">index</span><span class="p">)</span>
             <span class="n">continue</span>
         <span class="ss">finally</span><span class="p">:</span>
-            <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span></code></pre></div>
+            <span class="n">index</span> <span class="o">+=</span> <span class="mi">1</span></code></pre></figure>
 
 <h3>（六）一些需要留意的坑</h3>
 
@@ -484,7 +484,7 @@ pwd = ''
 
 <p>学校大概有两万多的资源，我只测试了2000个，晒一晒最终的成果：</p>
 
-<p><img src="/img/post-img/1026-4.png" alt="结果" /><br />
+<p><img src="/img/post-img/1026-4.png" alt="结果" />
 <img src="/img/post-img/1026-5.png" alt="结果" /></p>
 
 <p>代码实现非常的简陋，但是第一个全栈项目还是比较有纪念价值的。附上github地址：<a href="https://github.com/Maru-zhang/CCUTSpider">CCUTSpider</a></p>

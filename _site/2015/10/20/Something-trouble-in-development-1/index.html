@@ -189,13 +189,14 @@
 
 <p>因此只需要添加如下代码，激活会话层即可。</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">AVAudioSession</span> <span class="o">*</span><span class="n">session</span> <span class="o">=</span> <span class="o">[</span><span class="no">AVAudioSession</span> <span class="n">sharedInstance</span><span class="o">]</span><span class="p">;</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby">	<span class="no">AVAudioSession</span> <span class="o">*</span><span class="n">session</span> <span class="o">=</span> <span class="o">[</span><span class="no">AVAudioSession</span> <span class="n">sharedInstance</span><span class="o">]</span><span class="p">;</span>
     <span class="no">NSError</span> <span class="o">*</span><span class="n">sessionError</span><span class="p">;</span>
     <span class="o">[</span><span class="n">session</span> <span class="ss">setCategory</span><span class="p">:</span><span class="no">AVAudioSessionCategoryPlayAndRecord</span> <span class="ss">error</span><span class="p">:</span><span class="o">&amp;</span><span class="n">sessionError</span><span class="o">]</span><span class="err">；</span>
     <span class="k">if</span><span class="p">(</span><span class="n">session</span> <span class="o">==</span> <span class="kp">nil</span><span class="p">)</span>
         <span class="no">NSLog</span><span class="p">(</span><span class="err">@</span><span class="s2">&quot;Error creating session: %@&quot;</span><span class="p">,</span> <span class="o">[</span><span class="n">sessionError</span> <span class="n">description</span><span class="o">]</span><span class="p">);</span>
     <span class="k">else</span>
-        <span class="o">[</span><span class="n">session</span> <span class="ss">setActive</span><span class="p">:</span><span class="no">YES</span> <span class="ss">error</span><span class="p">:</span><span class="kp">nil</span><span class="o">]</span><span class="p">;</span></code></pre></div>
+        <span class="o">[</span><span class="n">session</span> <span class="ss">setActive</span><span class="p">:</span><span class="no">YES</span> <span class="ss">error</span><span class="p">:</span><span class="kp">nil</span><span class="o">]</span><span class="p">;</span>
+ </code></pre></figure>
 
 <p>3.UIGestureRecognizer重用的无效问题</p>
 
@@ -211,12 +212,13 @@
 
 <p>第一种方法</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">[[[</span><span class="no">UIApplication</span>
- <span class="n">sharedApplication</span><span class="o">]</span> <span class="n">keyWindow</span><span class="o">]</span> <span class="ss">endEditing</span><span class="p">:</span><span class="no">YES</span><span class="o">]</span><span class="p">;</span></code></pre></div>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"> <span class="o">[[[</span><span class="no">UIApplication</span>
+ <span class="n">sharedApplication</span><span class="o">]</span> <span class="n">keyWindow</span><span class="o">]</span> <span class="ss">endEditing</span><span class="p">:</span><span class="no">YES</span><span class="o">]</span><span class="p">;</span>
+ </code></pre></figure>
 
 <p>第二种方法</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="o">[[</span><span class="nb">self</span> <span class="ss">findFirstResponderBeneathView</span><span class="p">:</span><span class="nb">self</span><span class="o">]</span> <span class="n">resignFirstResponder</span><span class="o">]</span><span class="p">;</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"> <span class="o">[[</span><span class="nb">self</span> <span class="ss">findFirstResponderBeneathView</span><span class="p">:</span><span class="nb">self</span><span class="o">]</span> <span class="n">resignFirstResponder</span><span class="o">]</span><span class="p">;</span>
  
 <span class="o">-</span> <span class="p">(</span><span class="no">UIView</span><span class="o">*</span><span class="p">)</span><span class="ss">findFirstResponderBeneathView</span><span class="p">:(</span><span class="no">UIView</span><span class="o">*</span><span class="p">)</span><span class="n">view</span> 
 <span class="p">{</span>
@@ -229,7 +231,7 @@
             <span class="k">return</span> <span class="n">result</span><span class="p">;</span>
     <span class="p">}</span>
     <span class="k">return</span> <span class="kp">nil</span><span class="p">;</span>
-<span class="p">}</span></code></pre></div>
+<span class="p">}</span></code></pre></figure>
 
 
 

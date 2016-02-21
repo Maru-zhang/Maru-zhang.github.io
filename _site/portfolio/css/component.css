@@ -35,8 +35,8 @@
 /* The date/time */
 .cbp_tmtimeline > li .cbp_tmtime {
 	display: block;
-	width: 25%;
-	padding-right: 100px;
+	width: 10%;
+	padding-right: 200px;
 	position: absolute;
 }
 

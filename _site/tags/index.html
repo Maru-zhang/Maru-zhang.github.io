@@ -144,7 +144,325 @@
 <div class="container">
 	<div class="row">
 		<div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1">
-			<!--  -->
+			<!-- <!-- Page Header -->
+<header class="intro-header" style="background-image: url('/img/home-bg.jpg')">
+    <div class="container">
+        <div class="row">
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 ">
+                <div class="site-heading">
+                    <h1>Maru Blog</h1>
+                    <!--<hr class="small">-->
+                    <span class="subheading">Craftsman's spirit & Geek creed</span>
+                </div>
+            </div>
+        </div>
+    </div>
+</header>
+
+<!-- Main Content -->
+<div class="container">
+	<div class="row">
+        
+<!-- NO SIDEBAR -->
+    <!-- Post Container -->
+            <div class="col-lg-8 col-lg-offset-2 col-md-10 col-md-offset-1 post-container">
+                
+<div class="post-preview">
+    <a href="/2016/01/01/about-storyboard/">
+        <h2 class="post-title">
+            关于Storyboard你也许不知道的小秘密
+        </h2>
+        
+        <h3 class="post-subtitle">
+            
+        </h3>
+        
+        <div class="post-content-preview">
+            （一）前言
+最近放纵的过了头，笔记好久没有写了，然而LOL的段位并没有并没有因为多包宿而上升，真是个令人悲伤的故事。Xcode总有一些很少用到隐藏很深的小秘密，今天我们就来扒一扒Storyboard，让哥几个爽一爽。
+
+（二）正文
+
+1.Runtime Attribute
+
+
+  Runtime大法好呀！
+
+
+我们都知道，Objc是一门动态语言，而这一切都要归功于强大的Runtime库。在日...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Maru on January 1, 2016
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2015/12/04/Flask-usage/">
+        <h2 class="post-title">
+            如何用Flask快速搭建你APP的接口
+        </h2>
+        
+        <h3 class="post-subtitle">
+            
+        </h3>
+        
+        <div class="post-content-preview">
+            (一)前言
+
+最近在做自己的全栈项目的时候，免不了要自己做一个接口。作为一名菜鸟的后端码农，刚开始用的是MyEclipse 10 + Servlet来构建自己的接口，虽然这个IDE已经给我提供了极大的便利（原来的作法），但是当我知道Flask的时候我就知道：我已经回不去了。
+
+(二)万年不变
+
+1.简介
+
+在Python浩如烟海的框架中，有两款著名的Web框架，一个是Django，另一个就是...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Maru on December 4, 2015
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2015/11/29/Full-Stack-3/">
+        <h2 class="post-title">
+            全栈项目iCCUT之客户端篇（三)
+        </h2>
+        
+        <h3 class="post-subtitle">
+            
+        </h3>
+        
+        <div class="post-content-preview">
+            
+  Talk is cheap show me the code.
+
+
+（一）前言
+
+
+
+终于来到了iOS的博文，相比较于之前Python和Java的搞笑，在这里我终于可以有一点话语权了，虽然不是学了一年半的OC，但是Swift毫无疑问将要是超越OC的存在，所以这个项目几乎是纯Swift的，除了一些框架。
+
+上一周博主实现了接口的编写，这一周我们要做的事情就是把他们展示出来。成果如下：
+
+...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Maru on November 29, 2015
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2015/11/21/Full-Stack-2/">
+        <h2 class="post-title">
+            全栈项目iCCUT之服务器篇（二)
+        </h2>
+        
+        <h3 class="post-subtitle">
+            
+        </h3>
+        
+        <div class="post-content-preview">
+            （一）序言
+
+秉承着一个礼拜装一次*的原则，我又开始写这个LowB全栈系列的博文了。上一次博主已经通过Python获取到了20000+多条的数据，当然啦，最后还是要APP获取这些数据的，那么这个时候流弊的服务器就需要站出来了！由于我们专业学的是JSP，所以我也就用Tomcat+Servlet来进行服务器端的开发，其实博主特别想用PHP来写，但是奈何精力不够。
+
+顺便提一嘴。之前博主一直在用的...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Maru on November 21, 2015
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2015/11/16/Think-about-refresh/">
+        <h2 class="post-title">
+            关于一个下拉刷新BUG的一些思考
+        </h2>
+        
+        <h3 class="post-subtitle">
+            
+        </h3>
+        
+        <div class="post-content-preview">
+            关于一个下拉刷新BUG的一些思考
+
+
+  世界上没有什么事儿是一顿烧烤不能解决的。如果有,那就两顿。——亚洲气质舞王尼古拉斯 赵四
+
+
+1.BUG表现
+在最近项目中，关于网络请求那部分，还是毫无意外的用到了MJRefresh和AFNetworking。然而这个被玩烂的框架却被我用出了新的BUG：当你以正常人类的速度下拉刷新的时候（就是手指按住屏幕，往下移动，然后放开），刷新正常工作没有任何问...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Maru on November 16, 2015
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2015/10/26/Full-Stack-1/">
+        <h2 class="post-title">
+            全栈项目iCCUT之数据篇（一）
+        </h2>
+        
+        <h3 class="post-subtitle">
+            
+        </h3>
+        
+        <div class="post-content-preview">
+            （一）项目简介
+
+由于博主是一个二流大学的码农，所以想为二流大学量身定做一款APP（当然啦，我只做iOS端的），一来方便学校生活，二来也锻炼一下自己的全栈能力。这个项目的主要功能嘛，无非就是搞个校园新闻首页，偷看学校的免费影视资源，还有就是自动登录上网账号什么的。OK，废话不多说，开始上手。
+
+（二）开发准备
+
+在本篇中，博主的主要目的是用简单的爬虫把校园网上的影视资源爬取下来并且存储到My...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Maru on October 26, 2015
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2015/10/20/Something-trouble-in-development-1/">
+        <h2 class="post-title">
+            开发中遇到的那些莫名其妙的坑-第一弹
+        </h2>
+        
+        <h3 class="post-subtitle">
+            
+        </h3>
+        
+        <div class="post-content-preview">
+            iOS开发中遇到的那些莫名其妙的坑
+
+
+  写在前面的话：在苦逼的iOS开发过程中，总会碰到各种各样莫名其妙的问题，有的时候由于Apple官方的限制，有的时候又由于技术因素，总会有各种各样的问题困扰着自己。所以我决定把一些让我很生气的坑记录下来，留作纪念和参考，不定时更新。
+
+
+1.AVAudioRecorder的Duration问题
+
+在进行Yinner的开发过程中，用到了系统原生的AVA...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Maru on October 20, 2015
+    </p>
+</div>
+<hr>
+
+<div class="post-preview">
+    <a href="/2015/06/08/iOS-Development-Delegate,Notification,Block/">
+        <h2 class="post-title">
+            iOS开发Delegate,Notification,Block使用心得
+        </h2>
+        
+        <h3 class="post-subtitle">
+            
+        </h3>
+        
+        <div class="post-content-preview">
+            （一）简要介绍
+
+1.Delegate(代理、委托)
+ 代理几乎是iOS开发中最常用的传值方式，在项目中的AppDelegate就是使用的这种设计模式，不仅如此，还有很多原生的控件也使用的这种设计模式，比如：UITextFiled，UITableView等等。官方给出的解释如下：
+
+
+  Delegation is a simple and powerful pattern in which...
+        </div>
+    </a>
+    <p class="post-meta">
+        Posted by Maru on June 8, 2015
+    </p>
+</div>
+<hr>
+
+
+<!-- Pager -->
+
+<ul class="pager">
+    
+    
+    <li class="next">
+        <a href="/page2">Older Posts &rarr;</a>
+    </li>
+    
+</ul>
+
+
+            </div>
+    <!-- Sidebar Container -->
+            <div class="
+                col-lg-8 col-lg-offset-2
+                col-md-10 col-md-offset-1
+                sidebar-container">
+
+                <!-- Featured Tags -->
+                
+                <section>
+                    <!-- no hr -->
+                    <h5><a href="/tags/">FEATURED TAGS</a></h5>
+                    <div class="tags">
+        				
+                            
+        				
+                            
+                				<a href="/tags/#iOS" title="iOS" rel="4">
+                                    iOS
+                                </a>
+                            
+        				
+                            
+        				
+                            
+                				<a href="/tags/#Python" title="Python" rel="2">
+                                    Python
+                                </a>
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+        				
+                            
+        				
+        			</div>
+                </section>
+                
+
+                <!-- Friends Blog -->
+                
+                <hr>
+                <h5>FRIENDS</h5>
+                <ul class="list-inline">
+                    
+                        <li><a href="http://laichanwai.github.io/">Ivy的博客</a></li>
+                    
+                        <li><a href="xiefei.ml">Fay的博客</a></li>
+                    
+                </ul>
+                
+            </div>
+        
+	</div>
+</div>
+ -->
             <!-- 标签云 -->
 			<div id='tag_cloud' class="tags">
 				

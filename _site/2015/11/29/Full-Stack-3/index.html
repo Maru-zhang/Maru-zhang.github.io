@@ -206,19 +206,20 @@
 
 <p>在刷新的block中，统一调用了一个loadData的方法，并且通过一个Bool的参数来决定是否需要清空数据源重新刷新。这样做的原因是刷新的逻辑大同小异,Don’t  repeat yourself，所以就暂时这个蠢办法。</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">tableView</span><span class="o">.</span><span class="n">mj_header</span> <span class="o">=</span> <span class="no">MJRefreshNormalHeader</span><span class="p">(</span><span class="ss">refreshingBlock</span><span class="p">:</span> <span class="p">{</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="no">Void</span> <span class="k">in</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">tableView</span><span class="o">.</span><span class="n">mj_header</span> <span class="o">=</span> <span class="no">MJRefreshNormalHeader</span><span class="p">(</span><span class="ss">refreshingBlock</span><span class="p">:</span> <span class="p">{</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="no">Void</span> <span class="k">in</span>
     <span class="nb">self</span><span class="o">.</span><span class="n">loadData</span><span class="p">(</span><span class="kp">true</span><span class="p">)</span>
 <span class="p">});</span>
 
 <span class="n">tableView</span><span class="o">.</span><span class="n">mj_footer</span> <span class="o">=</span> <span class="no">MJRefreshBackNormalFooter</span><span class="p">(</span><span class="ss">refreshingBlock</span><span class="p">:</span> <span class="p">{</span> <span class="p">()</span> <span class="o">-&gt;</span> <span class="no">Void</span> <span class="k">in</span>
     <span class="nb">self</span><span class="o">.</span><span class="n">loadData</span><span class="p">(</span><span class="kp">false</span><span class="p">)</span>
-<span class="p">});</span></code></pre></div>
+<span class="p">});</span>
+ </code></pre></figure>
 
 <h4 id="section-3">2.网络请求</h4>
 
 <p>是时候Alamofire出场了，其实它给了我一种不一样的Coding感觉，唯一让我不爽的是，它的提示并不十分友好，难道是我的问题？</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">Alamofire</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span> <span class="s2">&quot;\(HOST)/iCCUT/servlet/MediaList&quot;</span><span class="p">,</span> <span class="ss">parameters</span><span class="p">:</span><span class="n">parmeter</span><span class="p">,</span> <span class="ss">encoding</span><span class="p">:</span> <span class="o">.</span><span class="n">URL</span><span class="p">)</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby">        <span class="no">Alamofire</span><span class="o">.</span><span class="n">request</span><span class="p">(</span><span class="o">.</span><span class="n">POST</span><span class="p">,</span> <span class="s2">&quot;\(HOST)/iCCUT/servlet/MediaList&quot;</span><span class="p">,</span> <span class="ss">parameters</span><span class="p">:</span><span class="n">parmeter</span><span class="p">,</span> <span class="ss">encoding</span><span class="p">:</span> <span class="o">.</span><span class="n">URL</span><span class="p">)</span>
             <span class="o">.</span><span class="n">responseJSON</span> <span class="p">{</span> <span class="n">response</span> <span class="k">in</span>
                 
                 <span class="n">switch</span> <span class="n">response</span><span class="o">.</span><span class="n">result</span> <span class="p">{</span>
@@ -263,7 +264,7 @@
                 <span class="p">}</span>
                 <span class="nb">self</span><span class="o">.</span><span class="n">tableView</span><span class="o">.</span><span class="n">mj_footer</span><span class="o">.</span><span class="n">endRefreshing</span><span class="p">()</span>
                 <span class="nb">self</span><span class="o">.</span><span class="n">tableView</span><span class="o">.</span><span class="n">mj_header</span><span class="o">.</span><span class="n">endRefreshing</span><span class="p">()</span>
-        <span class="p">}</span></code></pre></div>
+        <span class="p">}</span></code></pre></figure>
 
 <p>其实上面的注释已经很详细了，Alamofire处理请求结果的方法和AFNetworking有很大的差别。统一获取一个闭包中的response，然后通过switch语句获取。至于JSON数据的解析，其实我本来是不想手打的，毕竟有一个比较厉害的人写了一个<a href="https://github.com/CharlinFeng/Reflect">CFRuntime</a>（现在改名成Reflect了），相当于Swity版本的MJExtension。由于我的数据太简单了，所以我也就懒得用这个框架了，通过SwiftyJSON我们可以非常愉快的和Alamofire一起工作，直接将response的value传给SwiftyJSON就可以完美解析数据。</p>
 

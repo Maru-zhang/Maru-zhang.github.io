@@ -213,7 +213,7 @@
 
 <p>由于连接数据库的操作相对独立，我使用了一个单独的类来实现服务器的连接。</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">package</span> <span class="n">com</span><span class="o">.</span><span class="n">Alloc</span><span class="p">;</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="n">package</span> <span class="n">com</span><span class="o">.</span><span class="n">Alloc</span><span class="p">;</span>
 <span class="n">import</span> <span class="n">java</span><span class="o">.</span><span class="n">sql</span><span class="o">.</span><span class="n">*</span><span class="p">;</span>
 
 <span class="kp">public</span> <span class="k">class</span> <span class="nc">DBHelper</span> <span class="p">{</span>
@@ -248,7 +248,10 @@
         <span class="p">}</span>  
     <span class="p">}</span>  
     
-<span class="p">}</span></code></pre></div>
+<span class="p">}</span>
+
+
+ </code></pre></figure>
 
 <blockquote>
   <p>这一部分值得一提的是，在连接MySQL的地址的时候，有的时候因为编码的问题还是需要加上characterEncoding，这就再一次提醒自己，编码的统一是多么的重要啊，具体的原因后面会讲。</p>
@@ -260,27 +263,30 @@
 
 <p>由于我们返回的格式无论客户机传给我们的是什么，响应的格式都是严格按照之前的接口规范来的，因此我先写了一个返回JSON的基类。如下：</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="kp">private</span> <span class="no">JSONObject</span> <span class="n">getBaseJsonObject</span><span class="p">(</span><span class="no">Object</span> <span class="n">object</span><span class="p">,</span><span class="nb">String</span> <span class="n">msg</span><span class="p">,</span><span class="no">Boolean</span> <span class="n">success</span><span class="p">)</span> <span class="p">{</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby">	<span class="kp">private</span> <span class="no">JSONObject</span> <span class="n">getBaseJsonObject</span><span class="p">(</span><span class="no">Object</span> <span class="n">object</span><span class="p">,</span><span class="nb">String</span> <span class="n">msg</span><span class="p">,</span><span class="no">Boolean</span> <span class="n">success</span><span class="p">)</span> <span class="p">{</span>
 		
 		<span class="no">JSONObject</span> <span class="n">baseObject</span> <span class="o">=</span> <span class="kp">new</span> <span class="no">JSONObject</span><span class="p">();</span>
 		<span class="n">baseObject</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s2">&quot;datas&quot;</span><span class="p">,</span> <span class="n">object</span><span class="p">);</span>
 		<span class="n">baseObject</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s2">&quot;msg&quot;</span><span class="p">,</span> <span class="n">msg</span><span class="p">);</span>
 		<span class="n">baseObject</span><span class="o">.</span><span class="n">put</span><span class="p">(</span><span class="s2">&quot;success&quot;</span><span class="p">,</span> <span class="n">success</span><span class="p">);</span>
 		<span class="k">return</span> <span class="n">baseObject</span><span class="p">;</span>
-	<span class="p">}</span></code></pre></div>
+	<span class="p">}</span>
+ </code></pre></figure>
 
 <p>OK,然后就是考虑当用户APP传入错误的参数或者必选的参数缺省的时候的响应内容。</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="kp">private</span> <span class="no">JSONObject</span> <span class="n">getErrorJSONObject</span><span class="p">()</span> <span class="p">{</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby">	<span class="kp">private</span> <span class="no">JSONObject</span> <span class="n">getErrorJSONObject</span><span class="p">()</span> <span class="p">{</span>
 		<span class="no">JSONObject</span> <span class="n">baseObject</span> <span class="o">=</span> <span class="n">getBaseJsonObject</span><span class="p">(</span><span class="s2">&quot;&quot;</span><span class="p">,</span> <span class="s2">&quot;访问失败&quot;</span><span class="p">,</span> <span class="kp">false</span><span class="p">);</span>
 		<span class="k">return</span> <span class="n">baseObject</span><span class="p">;</span>
-	<span class="p">}</span></code></pre></div>
+	<span class="p">}</span>
+
+ </code></pre></figure>
 
 <p>好吧，我承认我偷懒了，其实应该写的更加的细化一点，根据不同的操作响应不同的提示信息。不过对我这种懒货来说，已经可以了。</p>
 
 <p>好，接下来就是真正的响应处理了，leve1和index参数为必传参数，而leve2为可选参数。首先是响应的检查处理，看传入的参数是否符合要求，如果没有通过那么就返回错误信息响应:</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="nb">Integer</span> <span class="n">index</span> <span class="o">=</span> <span class="nb">Integer</span><span class="o">.</span><span class="n">parseInt</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">getParameter</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">));</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby">		<span class="nb">Integer</span> <span class="n">index</span> <span class="o">=</span> <span class="nb">Integer</span><span class="o">.</span><span class="n">parseInt</span><span class="p">(</span><span class="n">request</span><span class="o">.</span><span class="n">getParameter</span><span class="p">(</span><span class="s2">&quot;index&quot;</span><span class="p">));</span>
 		<span class="nb">String</span> <span class="n">leve1</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">getParameter</span><span class="p">(</span><span class="s2">&quot;leve1&quot;</span><span class="p">);</span>
 		<span class="nb">String</span> <span class="n">leve2</span> <span class="o">=</span> <span class="n">request</span><span class="o">.</span><span class="n">getParameter</span><span class="p">(</span><span class="s2">&quot;leve2&quot;</span><span class="p">);</span>
 		
@@ -289,11 +295,14 @@
 			<span class="no">PrintWriter</span> <span class="n">out</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">getWriter</span><span class="p">();</span>
 			<span class="n">out</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">object</span><span class="p">);</span>
 			<span class="k">return</span><span class="p">;</span>
-		<span class="p">}</span></code></pre></div>
+		<span class="p">}</span>
+		
+
+ </code></pre></figure>
 
 <p>检查通过以后就是根据不同的情况进行SQL语句的查询和响应的返回结果了。</p>
 
-<div class="highlight"><pre><code class="language-ruby" data-lang="ruby"><span class="no">JSONArray</span> <span class="n">resultList</span> <span class="o">=</span> <span class="kp">new</span> <span class="no">JSONArray</span><span class="p">();</span>
+<figure class="highlight"><pre><code class="language-ruby" data-lang="ruby">		<span class="no">JSONArray</span> <span class="n">resultList</span> <span class="o">=</span> <span class="kp">new</span> <span class="no">JSONArray</span><span class="p">();</span>
 		
 		<span class="no">DBHelper</span> <span class="n">dbHelper</span><span class="p">;</span>
 		<span class="nb">String</span> <span class="n">sql</span><span class="p">;</span>
@@ -326,7 +335,10 @@
 			<span class="n">obect</span> <span class="o">=</span> <span class="n">this</span><span class="o">.</span><span class="n">getBaseJsonObject</span><span class="p">(</span><span class="n">resultList</span><span class="p">,</span><span class="s2">&quot;成功查询&quot;</span><span class="p">,</span> <span class="kp">true</span><span class="p">);</span>
 		<span class="p">}</span>
 		<span class="no">PrintWriter</span> <span class="n">out</span> <span class="o">=</span> <span class="n">response</span><span class="o">.</span><span class="n">getWriter</span><span class="p">();</span>
-		<span class="n">out</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">obect</span><span class="p">);</span></code></pre></div>
+		<span class="n">out</span><span class="o">.</span><span class="n">print</span><span class="p">(</span><span class="n">obect</span><span class="p">);</span>
+
+
+ </code></pre></figure>
 
 <blockquote>
   <p>这里需要注意的就是当SQL语句中出现中文查询的时候，字符集的统一就是特别重要了。否则你会发现明明什么都是对的，但是为什么就是查询不到结果呢？这就是那句characterEncoding的力量！</p>
