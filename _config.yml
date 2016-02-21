@@ -8,7 +8,8 @@ keyword: "Maru-zhang，Maru Blog，张斌辉"
 url: ""
 baseurl: "" 
 
-
+# Gems:
+gems: [jekyll-paginate]
 
 # SNS settings
 RSS: false
